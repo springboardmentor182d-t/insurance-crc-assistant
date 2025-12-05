@@ -1,0 +1,45 @@
+# -------------------------
+# Root Git Ignore
+# React + FastAPI Project
+# -------------------------
+
+# Node modules (React)
+client/node_modules/
+client/.cache/
+client/build/
+client/dist/
+
+# Python virtual environment (FastAPI)
+server/.venv/
+server/__pycache__/
+server/**/*.pyc
+
+# Environment variables
+*.env
+.env.*
+client/.env
+server/.env
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# VS Code / IDE folders
+.vscode/
+.idea/
+
+# Python test cache
+server/.pytest_cache/
+server/htmlcov/
+server/.coverage
+
+# Local DB files
+*.db
+*.sqlite3
+
+# Docker
+docker-data/
+*.pid
