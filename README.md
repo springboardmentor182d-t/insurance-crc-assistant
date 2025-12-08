@@ -1,4 +1,4 @@
 # insurance-crc-assistant
 
-![DATABASE_DESIGN](assets/DATABASE_DESIGN.png)
+![DATABASE_DESIGN](client/src/assets/DATABASE_DESIGN.png)
 
