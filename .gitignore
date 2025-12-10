@@ -1,5 +1,7 @@
 venv/
-env/
-.venv/
-
+__pycache__/
+*.pyc
 *.pdf
+*.png
+
+All Documents/
