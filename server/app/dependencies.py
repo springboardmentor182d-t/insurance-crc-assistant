@@ -1,0 +1,63 @@
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from sqlalchemy.orm import selectinload
+from jose import JWTError
+
+from app.database import get_db
+from app import models
+from app.security import decode_access_token
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+
+
+async def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: AsyncSession = Depends(get_db),
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = decode_access_token(token)
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    # ✅ IMPORTANT: eager-load role
+    result = await db.execute(
+        select(models.User)
+        .options(selectinload(models.User.role))
+        .where(models.User.id == int(user_id))
+    )
+
+    user = result.scalar_one_or_none()
+    if user is None:
+        raise credentials_exception
+
+    return user
+
+
+def require_role(*roles: str):
+    async def role_checker(current_user=Depends(get_current_user)):
+        if not current_user.role:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User has no role assigned",
+            )
+
+        if current_user.role.name not in roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient permissions",
+            )
+
+        return current_user
+
+    return role_checker
