@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.api import router as api_router
 
-app = FastAPI(title="Insurance CRC Assistant API")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,10 +12,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+app.include_router(api_router)
 
-@app.get("/api/test")
-def test():
-    return {"message": "Hello from FastAPI"}
+@app.get("/")
+def root():
+    return {"message": "Server running"}
