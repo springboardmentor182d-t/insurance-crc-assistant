@@ -173,51 +173,69 @@ export default function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-              <input
-                type="number"
-                value={profile.budget}
-                onChange={(e) =>
-                  setProfile({ ...profile, budget: Number(e.target.value) })
-                }
-                className="border rounded-md px-3 py-2"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-500">
+                  Monthly Budget
+                </label>
+                <input
+                  type="number"
+                  value={profile.budget}
+                  onChange={(e) =>
+                    setProfile({ ...profile, budget: Number(e.target.value) })
+                  }
+                  className="border rounded-md px-3 py-2"
+                />
+              </div>
 
-              <select
-                value={profile.risk}
-                onChange={(e) =>
-                  setProfile({ ...profile, risk: e.target.value })
-                }
-                className="border rounded-md px-3 py-2"
-              >
-                <option>Low</option>
-                <option>Medium</option>
-                <option>High</option>
-              </select>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-500">Risk Level</label>
+                <select
+                  value={profile.risk}
+                  onChange={(e) =>
+                    setProfile({ ...profile, risk: e.target.value })
+                  }
+                  className="border rounded-md px-3 py-2"
+                >
+                  <option>Low</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </div>
 
-              <input
-                type="number"
-                min={1}
-                value={profile.familySize}
-                onChange={(e) =>
-                  setProfile({
-                    ...profile,
-                    familySize: Number(e.target.value),
-                  })
-                }
-                className="border rounded-md px-3 py-2"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-500">
+                  Family Size
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={profile.familySize}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      familySize: Number(e.target.value),
+                    })
+                  }
+                  className="border rounded-md px-3 py-2"
+                />
+              </div>
 
-              <select
-                value={profile.goal}
-                onChange={(e) =>
-                  setProfile({ ...profile, goal: e.target.value })
-                }
-                className="border rounded-md px-3 py-2"
-              >
-                <option>Family Protection</option>
-                <option>Tax Saving</option>
-                <option>Lowest Premium</option>
-              </select>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-500">
+                  Coverage Goal
+                </label>
+                <select
+                  value={profile.goal}
+                  onChange={(e) =>
+                    setProfile({ ...profile, goal: e.target.value })
+                  }
+                  className="border rounded-md px-3 py-2"
+                >
+                  <option>Family Protection</option>
+                  <option>Tax Saving</option>
+                  <option>Lowest Premium</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
