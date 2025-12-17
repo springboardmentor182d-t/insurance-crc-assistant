@@ -5,3 +5,17 @@ __pycache__/
 *.png
 
 All Documents/
+
+*.log
+.env
+
+node_modules/
+dist/
+build/
+
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+
