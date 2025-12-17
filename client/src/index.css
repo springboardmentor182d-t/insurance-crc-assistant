@@ -1,0 +1,6 @@
+/* base reset */
+* { box-sizing: border-box; }
+html,body,#root { height: 100%; }
+body { margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: #f6f8fb; color: #0f172a; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
