@@ -2,19 +2,16 @@
 # Node / Frontend
 # =========================
 node_modules/
-.pnp
-.pnp.js
 coverage/
 build/
 dist/
-.next/
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 # =========================
-# Environment files
+# Environment files (Frontend + Backend)
 # =========================
 .env
 .env.*
@@ -24,7 +21,7 @@ yarn-error.log*
 .env.production.local
 
 # =========================
-# Python / FastAPI
+# Python / Virtual Environments
 # =========================
 .venv/
 venv/
@@ -33,10 +30,20 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Accidental venv inside server (VERY IMPORTANT)
+# =========================
+# Server-specific virtual environment (VERY IMPORTANT)
+# =========================
+server/venv/
 server/Lib/
 server/Scripts/
 server/pyvenv.cfg
+
+# =========================
+# Backend runtime / logs
+# =========================
+*.log
+logs/
+*.sqlite3
 
 # =========================
 # OS / Editor
