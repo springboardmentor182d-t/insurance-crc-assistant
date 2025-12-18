@@ -1,7 +1,7 @@
 ﻿# app/create_tables.py
 import asyncio
-from app.database import async_engine, Base
-from app import models
+from src.database.database import async_engine, Base
+from src import models
 
 async def create_tables():
     async with async_engine.begin() as conn:

@@ -1,6 +1,6 @@
 import asyncio
-from app.database import engine, Base
-from app import models  # 🔥 THIS LINE IS REQUIRED
+from src.database.database import engine, Base
+from src import models  # 🔥 THIS LINE IS REQUIRED
 
 async def init():
     async with engine.begin() as conn:

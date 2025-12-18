@@ -1,9 +1,9 @@
 ﻿# app/create_admin.py
 import asyncio
 from sqlalchemy import select
-from app.database import async_session
-from app.models import User, Role
-from app.security import get_password_hash
+from src.database.database import async_session
+from src import User, Role
+from src.auth.security import get_password_hash
 
 ADMIN_EMAIL = "admin@insurehub.local"
 ADMIN_PASSWORD = "Admin123!"

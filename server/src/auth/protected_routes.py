@@ -1,6 +1,6 @@
 # app/protected_routes.py
 from fastapi import APIRouter, Depends
-from app.dependencies import require_role
+from src.database.dependencies import require_role
 
 router = APIRouter(prefix="/api", tags=["protected"])
 

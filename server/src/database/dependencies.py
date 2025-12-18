@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from jose import JWTError
 
-from app.database import get_db
-from app import models
-from app.security import decode_access_token
+from src.database.database import get_db
+from src.users import models
+from src.auth.security import decode_access_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 

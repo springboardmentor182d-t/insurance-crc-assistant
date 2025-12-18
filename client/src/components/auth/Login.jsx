@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/insurehub.css";
+import "../../styles/Login.css";   // ✅ NEW CSS FILE
 import AuthIllustration from "../../components/common/AuthIllustration";
 import { login } from "../../api/authService";
 
@@ -13,29 +14,26 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
-  e.preventDefault();
-  setMsg(null);
-  setLoading(true);
+    e.preventDefault();
+    setMsg(null);
+    setLoading(true);
 
-  try {
-    const res = await login(email, password);
-
-    localStorage.setItem("access_token", res.data.access_token);
-    localStorage.setItem("refresh_token", res.data.refresh_token);
-
-    nav("/dashboard");
-  } catch (err) {
-    setMsg(err?.response?.data?.detail || "Invalid email or password");
-  } finally {
-    setLoading(false);
-  }
-};
-
+    try {
+      const res = await login(email, password);
+      localStorage.setItem("access_token", res.data.access_token);
+      localStorage.setItem("refresh_token", res.data.refresh_token);
+      nav("/dashboard");
+    } catch (err) {
+      setMsg(err?.response?.data?.detail || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="signup-page">
       {/* HEADER */}
-      <header className="insure-header" style={{ borderBottom: "none" }}>
+      <header className="insure-header header-no-border">
         <div className="brand">
           <div className="logo" aria-hidden>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -56,119 +54,84 @@ export default function Login() {
       <main className="signup-container">
         <div className="signup-card login-layout" role="main" aria-labelledby="login-title">
 
-          {/* LEFT Illustration (50%) */}
-          <div
-            className="signup-left-image"
-            style={{
-              background: "#EEF8FF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: 40
-            }}
-          >
+          {/* LEFT */}
+          <div className="login-left">
             <AuthIllustration width={480} height={480} />
           </div>
 
-          {/* RIGHT LOGIN FORM (50%) */}
-          <div
-            className="signup-right-form"
-            style={{
-              padding: "60px 50px",
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "center"
-            }}
-          >
-            <div style={{ width: "100%", maxWidth: 500 }}>
-              <h1 id="login-title" style={{ marginBottom: 10, fontSize: 44, fontWeight: 800, color: "#071043" }}>
+          {/* RIGHT */}
+          <div className="login-right">
+            <div className="login-form-wrapper">
+              <h1 id="login-title" className="login-title">
                 Welcome Back
               </h1>
 
-              <p className="lead" style={{ marginBottom: 20 }}>
+              <p className="lead login-subtitle">
                 Login to access your insurance dashboard
               </p>
 
-              {msg && (
-                <div className="msg-error" style={{ marginBottom: 12 }}>{msg}</div>
-              )}
+              {msg && <div className="msg-error login-error">{msg}</div>}
 
               <form onSubmit={submit}>
                 <label className="field-label">Email Address</label>
                 <input
-                  autoComplete="off"
                   className="input"
-                  placeholder="Enter your email"
                   type="email"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="off"
                   required
                 />
 
                 <label className="field-label">Password</label>
                 <input
-                  autoComplete="new-password"
                   className="input"
-                  placeholder="Enter your password"
                   type="password"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   required
                 />
 
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-                  <label style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                    <span style={{ fontWeight: 600, color: "#0b1b3a" }}>Remember me</span>
+                <div className="login-options">
+                  <label className="remember-me">
+                    <input
+                      type="checkbox"
+                      checked={remember}
+                      onChange={(e) => setRemember(e.target.checked)}
+                    />
+                    <span>Remember me</span>
                   </label>
-                  <Link to="/forgot-password" className="small-link">Forgot Password?</Link>
+
+                  <Link to="/forgot-password" className="small-link">
+                    Forgot Password?
+                  </Link>
                 </div>
 
-                {/* smaller centered button */}
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div className="login-button-wrapper">
                   <button
-                    className="btn-primary"
+                    className="btn-primary login-btn"
                     type="submit"
                     disabled={loading}
-                    style={{
-                      marginTop: 20,
-                      width: 240,
-                      height: 45,
-                      fontSize: 16,
-                      borderRadius: 10
-                    }}
                   >
                     {loading ? "Logging in..." : "Login"}
                   </button>
                 </div>
               </form>
 
-              <div style={{ marginTop: 25, textAlign: "center" }}>
-                Don't have an account? <Link to="/signup" className="small-link">Create Account</Link>
+              <div className="login-footer">
+                Don't have an account?{" "}
+                <Link to="/signup" className="small-link">
+                  Create Account
+                </Link>
               </div>
             </div>
           </div>
+
         </div>
       </main>
-
-      <style>{`
-        .signup-card.login-layout {
-          display: grid;
-          grid-template-columns: 1fr 1fr;   /* 50% 50% */
-          width: 100%;
-          max-width: 1180px;
-          overflow: hidden;
-          border-radius: 18px;
-          box-shadow: 0 30px 60px rgba(16, 24, 40, 0.08);
-          border: 1px solid rgba(2, 6, 23, 0.04);
-        }
-
-        @media (max-width: 900px) {
-          .signup-card.login-layout {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </div>
   );
 }

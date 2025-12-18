@@ -2,17 +2,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/insurehub.css";
+import "../../styles/Signup.css";   // ✅ NEW CSS FILE
 import AuthIllustration from "../../components/common/AuthIllustration";
 import { register } from "../../api/authService";
 
-/**
- * Signup page (50/50 layout)
- * - Left: form (50%)
- * - Right: illustration (50%)
- * - Reduced-width Create Account button (centered)
- *
- * Save as: src/components/auth/Signup.jsx
- */
 export default function Signup() {
   const nav = useNavigate();
   const [fullName, setFullName] = useState("");
@@ -24,39 +17,37 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
 
   const handleCreate = async (e) => {
-  e.preventDefault();
-  setError(null);
+    e.preventDefault();
+    setError(null);
 
-  if (!fullName || !email || !password || !confirm) {
-    setError("Please fill all required fields");
-    return;
-  }
-  if (password !== confirm) {
-    setError("Passwords do not match");
-    return;
-  }
+    if (!fullName || !email || !password || !confirm) {
+      setError("Please fill all required fields");
+      return;
+    }
+    if (password !== confirm) {
+      setError("Passwords do not match");
+      return;
+    }
 
-  setLoading(true);
-  try {
-    await register({
-      full_name: fullName,
-      email,
-      password,
-    });
-
-    nav("/login"); // go to login after signup
-  } catch (err) {
-    setError(err?.response?.data?.detail || "Registration failed");
-  } finally {
-    setLoading(false);
-  }
-};
-
+    setLoading(true);
+    try {
+      await register({
+        full_name: fullName,
+        email,
+        password,
+      });
+      nav("/login");
+    } catch (err) {
+      setError(err?.response?.data?.detail || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="signup-page">
       {/* Header */}
-      <header className="insure-header" style={{ borderBottom: "none" }}>
+      <header className="insure-header header-no-border">
         <div className="brand">
           <div className="logo" aria-hidden>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -76,19 +67,21 @@ export default function Signup() {
       {/* Main area */}
       <main className="signup-container">
         <div className="signup-card signup-layout" role="main" aria-labelledby="signup-title">
-          {/* LEFT: Form (50%) */}
-          <div style={{ padding: "60px 56px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ maxWidth: 520, width: "100%" }}>
-              <h1 id="signup-title" style={{ fontSize: 44, fontWeight: 800, marginBottom: 8, color: "#071043" }}>
+
+          {/* LEFT: Form */}
+          <div className="signup-left">
+            <div className="signup-form-wrapper">
+              <h1 id="signup-title" className="signup-title">
                 Create Account
               </h1>
-              <p className="lead" style={{ marginBottom: 18 }}>
+
+              <p className="lead signup-subtitle">
                 Join us and simplify your insurance journey
               </p>
 
-              {error && <div className="msg-error" style={{ marginBottom: 12 }}>{error}</div>}
+              {error && <div className="msg-error signup-error">{error}</div>}
 
-              <form onSubmit={handleCreate}>
+              <form onSubmit={handleCreate} autoComplete="off">
                 <label className="field-label">Full Name</label>
                 <input
                   className="input"
@@ -101,10 +94,11 @@ export default function Signup() {
                 <label className="field-label">Email Address</label>
                 <input
                   className="input"
-                  placeholder="Enter your email"
                   type="email"
+                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="off"
                   required
                 />
 
@@ -119,81 +113,52 @@ export default function Signup() {
                 <label className="field-label">Password</label>
                 <input
                   className="input"
-                  placeholder="Create a password"
                   type="password"
+                  placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   required
                 />
 
                 <label className="field-label">Confirm Password</label>
                 <input
                   className="input"
-                  placeholder="Confirm your password"
                   type="password"
+                  placeholder="Confirm your password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
+                  autoComplete="new-password"
                   required
                 />
 
-                {/* Compact centered Create Account button */}
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div className="signup-button-wrapper">
                   <button
-                    className="btn-primary"
+                    className="btn-primary signup-btn"
                     type="submit"
                     disabled={loading}
-                    style={{
-                      marginTop: 18,
-                      width: 260,
-                      height: 48,
-                      fontSize: 16,
-                      borderRadius: 10,
-                    }}
                   >
                     {loading ? "Creating..." : "Create Account"}
                   </button>
                 </div>
               </form>
 
-              <div style={{ marginTop: 18, textAlign: "center", color: "var(--muted)" }}>
-                Already have an account? <Link to="/login" className="small-link">Login</Link>
+              <div className="signup-footer">
+                Already have an account?{" "}
+                <Link to="/login" className="small-link">Login</Link>
               </div>
             </div>
           </div>
 
-          {/* RIGHT: Illustration (50%) */}
-          <div style={{
-            background: "#FFF3D8", /* warm yellow background like screenshot */
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 40
-          }}>
-            {/* The same illustration component; adjust size so it fits */}
-            <div style={{ width: 480, height: 480, maxWidth: "100%" }}>
+          {/* RIGHT: Illustration */}
+          <div className="signup-right">
+            <div className="signup-illustration-wrapper">
               <AuthIllustration width={480} height={480} />
             </div>
           </div>
+
         </div>
       </main>
-
-      {/* Embedded CSS to enforce 50/50 layout and responsive behavior */}
-      <style>{`
-        .signup-card.signup-layout {
-          display: grid;
-          grid-template-columns: 1fr 1fr;  /* 50% / 50% */
-          width: 100%;
-          max-width: 1180px;
-          overflow: hidden;
-          border-radius: 18px;
-          box-shadow: 0 30px 60px rgba(16,24,40,0.08);
-          border: 1px solid rgba(2,6,23,0.04);
-        }
-
-        @media (max-width: 900px) {
-          .signup-card.signup-layout { grid-template-columns: 1fr; }
-        }
-      `}</style>
     </div>
   );
 }

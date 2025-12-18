@@ -2,9 +2,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../styles/insurehub.css";
+import "../../styles/EnterOtp.css"; // ✅ NEW CSS FILE
 import AuthIllustration from "../../components/common/AuthIllustration";
-import { verifyOtp } from "../../api/authService";
-import { forgotPassword } from "../../api/authService";
+import { verifyOtp, forgotPassword } from "../../api/authService";
 
 export default function EnterOtp() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function EnterOtp() {
   const [resendLoading, setResendLoading] = useState(false);
 
   useEffect(() => {
-    if (inputsRef.current[0]) inputsRef.current[0].focus();
+    inputsRef.current[0]?.focus();
   }, []);
 
   const handleChange = (e, idx) => {
@@ -26,10 +26,7 @@ export default function EnterOtp() {
     const newOtp = [...otp];
     newOtp[idx] = val ? val[val.length - 1] : "";
     setOtp(newOtp);
-
-    if (val && idx < 5) {
-      inputsRef.current[idx + 1].focus();
-    }
+    if (val && idx < 5) inputsRef.current[idx + 1].focus();
   };
 
   const handleKeyDown = (e, idx) => {
@@ -38,11 +35,9 @@ export default function EnterOtp() {
     }
   };
 
-  // 🔥 FIXED: OTP VERIFY LOGIC (ONLY LOGIC)
   const verifyOtpHandler = async (e) => {
     e.preventDefault();
     setError(null);
-
     const code = otp.join("");
     if (code.length !== 6) {
       setError("Please enter the 6-digit OTP");
@@ -51,18 +46,15 @@ export default function EnterOtp() {
 
     setLoading(true);
     try {
-      await verifyOtp(email, code); // backend validation
+      await verifyOtp(email, code);
       navigate("/reset-password", { state: { email } });
     } catch (err) {
-      setError(
-        err?.response?.data?.detail || "Invalid or expired OTP"
-      );
+      setError(err?.response?.data?.detail || "Invalid or expired OTP");
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔥 FIXED: RESEND OTP (LOGIC ONLY)
   const resendOtp = async (e) => {
     e.preventDefault();
     setError(null);
@@ -75,10 +67,11 @@ export default function EnterOtp() {
       setResendLoading(false);
     }
   };
+
   return (
     <div className="signup-page">
       {/* Header */}
-      <header className="insure-header" style={{ borderBottom: "none" }}>
+      <header className="insure-header header-no-border">
         <div className="brand">
           <div className="logo" aria-hidden>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
@@ -95,37 +88,36 @@ export default function EnterOtp() {
         </nav>
       </header>
 
-      {/* Main area */}
-      <main className="signup-container">
-        <div className="signup-card login-layout" role="main" aria-labelledby="otp-title" style={{ alignItems: "stretch" }}>
-          {/* LEFT: Illustration (wider like ForgotPassword) */}
-          <div className="signup-right" style={{ background: "#EEF8FF", padding: 48, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 520, height: 520, maxWidth: "100%" }}>
+      <main className="signup-container otp-container">
+        <div className="signup-card otp-layout" role="main" aria-labelledby="otp-title">
+
+          {/* LEFT */}
+          <div className="otp-illustration">
+            <div className="otp-illustration-inner">
               <AuthIllustration width={520} height={520} />
             </div>
           </div>
 
-          {/* RIGHT: OTP card */}
-          <div className="signup-left" style={{ paddingLeft: 46, paddingRight: 46, display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
-            <div style={{ width: "100%", maxWidth: 560 }}>
-              <Link to="/login" className="small-link" style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                <span style={{ transform: "rotate(180deg)" }}>↩</span>
-                <span style={{ color: "var(--muted)" }}>Back</span>
+          {/* RIGHT */}
+          <div className="otp-form">
+            <div className="otp-form-inner">
+              <Link to="/login" className="otp-back">
+                <span className="back-arrow">↩</span>
+                <span>Back</span>
               </Link>
 
-              <h1 id="otp-title" style={{ marginTop: 12, marginBottom: 6, fontSize: 44, lineHeight: 1.02, color: "#071043" }}>
-                Enter OTP
-              </h1>
+              <h1 id="otp-title" className="otp-title">Enter OTP</h1>
 
-              <p className="lead" style={{ marginBottom: 18 }}>
-                We've sent a 6-digit code to <strong style={{ color: "#0b1b3a" }}>{email}</strong>
+              <p className="lead otp-subtitle">
+                We've sent a 6-digit code to <strong>{email}</strong>
               </p>
+
               <div className="msg-success">OTP sent successfully</div>
 
               <form onSubmit={verifyOtpHandler}>
                 <label className="field-label">One-Time Password</label>
 
-                <div style={{ display: "flex", gap: 12, marginTop: 10, marginBottom: 22 }}>
+                <div className="otp-input-row">
                   {otp.map((val, idx) => (
                     <input
                       key={idx}
@@ -136,43 +128,26 @@ export default function EnterOtp() {
                       maxLength={1}
                       inputMode="numeric"
                       pattern="[0-9]*"
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 8,
-                        border: "2px solid #d6dfee",
-                        textAlign: "center",
-                        fontSize: 22,
-                        outline: "none",
-                        background: "#fff",
-                      }}
+                      className="otp-input"
                     />
                   ))}
                 </div>
 
-                {error && <div className="msg-error" style={{ marginBottom: 12 }}>{error}</div>}
+                {error && <div className="msg-error otp-error">{error}</div>}
 
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div className="otp-button-wrapper">
                   <button
-                    className="btn-primary"
+                    className="btn-primary otp-btn"
                     type="submit"
                     disabled={loading}
-                    style={{
-                      marginTop: 4,
-                      width: 420,
-                      height: 48,
-                      fontSize: 16,
-                      borderRadius: 10,
-                      boxShadow: "0 10px 25px rgba(37,99,235,0.18)"
-                    }}
                   >
                     {loading ? "Verifying..." : "Verify OTP"}
                   </button>
                 </div>
 
-                <div style={{ marginTop: 16, textAlign: "center", color: "var(--muted)" }}>
+                <div className="otp-resend">
                   Didn't receive the code?{" "}
-                  <a href="#resend" onClick={resendOtp} style={{ color: "#2563EB", cursor: "pointer" }}>
+                  <a href="#resend" onClick={resendOtp}>
                     {resendLoading ? "Resending..." : "Resend OTP"}
                   </a>
                 </div>
@@ -181,72 +156,29 @@ export default function EnterOtp() {
           </div>
         </div>
 
-        {/* Featuresbar under the main card */}
-        <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: 40 }}>
-          <div style={{
-            width: "85%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 20,
-            background: "linear-gradient(180deg,#F3F8FF,#EAF6FF)",
-            padding: "30px 40px",
-            borderRadius: 20,
-            boxShadow: "0px 10px 25px rgba(0,0,0,0.05)"
-          }}>
-            <div style={{ flex: 1, textAlign: "center", padding: "8px 12px" }}>
-              <div style={{
-                width: 64, height: 64, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "0 auto 12px", background: "#e6f0ff", color: "#1a73e8", fontSize: 28
-              }}>✉</div>
-              <h3 style={{ fontSize: 20, margin: "0 0 8px", fontWeight: 700, color: "#071043" }}>Secure OTP</h3>
-              <p style={{ margin: 0, color: "var(--muted)", fontSize: 15, lineHeight: 1.45 }}>
-                6-digit one-time password sent to your registered email
-              </p>
+        {/* FEATURES BAR */}
+        <div className="otp-features">
+          <div className="features-inner">
+            <div className="feature">
+              <div className="feature-icon email">✉</div>
+              <h3>Secure OTP</h3>
+              <p>6-digit one-time password sent to your registered email</p>
             </div>
 
-            <div style={{ flex: 1, textAlign: "center", padding: "8px 12px" }}>
-              <div style={{
-                width: 64, height: 64, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "0 auto 12px", background: "#e9fff2", color: "#06c08a", fontSize: 28
-              }}>⤓</div>
-              <h3 style={{ fontSize: 20, margin: "0 0 8px", fontWeight: 700, color: "#071043" }}>Instant Reset</h3>
-              <p style={{ margin: 0, color: "var(--muted)", fontSize: 15, lineHeight: 1.45 }}>
-                Reset your password instantly without leaving the page
-              </p>
+            <div className="feature">
+              <div className="feature-icon download">⤓</div>
+              <h3>Instant Reset</h3>
+              <p>Reset your password instantly without leaving the page</p>
             </div>
 
-            <div style={{ flex: 1, textAlign: "center", padding: "8px 12px" }}>
-              <div style={{
-                width: 64, height: 64, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center",
-                margin: "0 auto 12px", background: "#fff6e6", color: "#f59e0b", fontSize: 28
-              }}>✓</div>
-              <h3 style={{ fontSize: 20, margin: "0 0 8px", fontWeight: 700, color: "#071043" }}>Verified Security</h3>
-              <p style={{ margin: 0, color: "var(--muted)", fontSize: 15, lineHeight: 1.45 }}>
-                Multi-step verification ensures your account security
-              </p>
+            <div className="feature">
+              <div className="feature-icon verify">✓</div>
+              <h3>Verified Security</h3>
+              <p>Multi-step verification ensures your account security</p>
             </div>
           </div>
         </div>
       </main>
-
-      {/* Embedded CSS: left wider, responsive */}
-      <style>{`
-        .signup-card.login-layout {
-          grid-template-columns: 60% 40% !important;
-          width: 100%;
-          max-width: 1180px;
-          display: grid;
-          border-radius: 18px;
-          box-shadow: 0 30px 60px rgba(16,24,40,0.08);
-          border: 1px solid rgba(2,6,23,0.04);
-          overflow: visible;
-        }
-        .signup-container { display:flex; flex-direction:column; align-items:center; padding:40px 72px 80px; min-height: calc(100vh - 72px); }
-        @media (max-width:1000px) {
-          .signup-card.login-layout { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
     </div>
   );
 }

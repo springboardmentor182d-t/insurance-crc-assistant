@@ -12,7 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import RoleBasedRoute from './components/RoleBasedRoute';
 import EnterOtp from "./components/auth/EnterOtp";
 import ResetPassword from "./components/auth/ResetPassword";
-import { AuthContext } from './contexts/AuthContext';
+import { AuthContext } from './context/AuthContext';
 
 export default function App(){
   const { user } = useContext(AuthContext);
