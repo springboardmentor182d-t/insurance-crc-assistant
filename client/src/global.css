@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #F5F5F5;
+  color: #1E293B;
+}
+
+/* Header Styles */
+.header {
+  height: 70px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Main Layout */
+.app-container {
+  display: flex;
+  padding: 40px 60px;
+  gap: 40px;
+}
+
+/* Sidebar / Filters */
+.filter-sidebar {
+  width: 280px;
+  background: white;
+  padding: 30px;
+  border-radius: 24px;
+  height: fit-content;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Catalog Grid */
+.catalog-section {
+  flex: 1;
+}
+
+.policy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two cards per row */
+  gap: 24px;
+}
+
+/* Card Styling */
+.policy-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
