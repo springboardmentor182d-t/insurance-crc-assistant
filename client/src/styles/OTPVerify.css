@@ -1,0 +1,49 @@
+/* Layout */
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+/* Illustration section */
+.auth-illustration {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card */
+.auth-card {
+  flex: 1;
+  background: #ffffff;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Back link */
+.auth-back {
+  margin-bottom: 12px;
+}
+
+/* Title & subtitle */
+.auth-title {
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  margin-bottom: 18px;
+}
+
+/* Button */
+.otpverify-btn {
+  margin-top: 18px;
+}
+
+/* Resend */
+.otpverify-resend {
+  text-align: center;
+  margin-top: 12px;
+}

@@ -1,0 +1,607 @@
+/* src/styles/insurehub.css - complete stylesheet for InsureHub landing + auth pages */
+
+/* ---------- Root colors & base ---------- */
+:root{
+  --primary: #2563EB;
+  --primary-600: #1e4fd8;
+  --muted: #64748b;
+  --bg: #f6f8fb;
+  --card: #fff;
+  --radius-xl: 28px;
+  --soft-shadow: 0 20px 40px rgba(16,24,40,0.06);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --glow-blue: 0 0 0 4px rgba(37, 99, 235, 0.18);
+}
+.signup-page,
+.login-page,
+.reset-page {
+  animation: fadeSlideIn 0.6s var(--ease-soft) both;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Base reset ---------- */
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body { margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: var(--bg); color:#071043; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+a { text-decoration:none; color:inherit; }
+button { font-family: inherit; }
+
+/* ---------- Header ---------- */
+.insure-header{
+  height:72px; display:flex; align-items:center; justify-content:space-between;
+  padding: 0 28px; background:transparent; border-bottom:1px solid rgba(2,6,23,0.04);
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.logo{ width:52px; height:52px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:linear-gradient(180deg,#EAF2FF,#D7EAFF); box-shadow: 0 8px 20px rgba(37,99,235,0.08); }
+.brand-name{ color:var(--primary); font-weight:700; font-size:18px; }
+.nav-actions{ display:flex; align-items:center; gap:18px; }
+.nav-link{ color:var(--primary); text-decoration:none; font-weight:500; }
+.btn-signup{ padding:8px 14px; background:var(--primary); color:#fff; border-radius:12px; text-decoration:none; box-shadow: 0 8px 20px rgba(37,99,235,0.12); }
+
+/* ---------- Landing hero (kept minimal here) ---------- */
+.landing-hero{ display:grid; grid-template-columns: 1fr 520px; gap:40px; align-items:center; padding:64px 72px; }
+.hero-left{ max-width:760px; }
+.hero-left h1{ font-size:48px; margin:0 0 8px; font-weight:800; letter-spacing:-0.6px; color:#071043; }
+.hero-sub{ margin:0 0 20px; color:var(--muted); font-size:16px }
+.hero-cta-row{ margin-top:10px; display:flex; gap:12px; align-items:center; }
+.cta-primary{ display:inline-block; padding:14px 20px; background:linear-gradient(90deg,var(--primary),var(--primary-600)); color:#fff; border-radius:14px; font-weight:800; box-shadow: 0 14px 36px rgba(37,99,235,0.16); text-decoration:none; }
+.cta-ghost{ display:inline-block; padding:12px 16px; border-radius:12px; border:1px solid #e7f0ff; background:#fff; text-decoration:none; color:#0b1b3a; }
+
+/* Features */
+.section-title{ font-size:20px; margin:36px 0 4px; text-align:left; color:#071043; font-weight:700; }
+.section-desc{ color:var(--muted); margin:0 0 18px; }
+.features-row{ display:flex; gap:18px; margin-top:14px; }
+.feature-card{ background:var(--card); border-radius:14px; padding:18px; width:100%; box-shadow: 0 20px 40px rgba(6,12,34,0.04); min-height:110px; }
+.feature-icon{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+.feature-title{ font-weight:700; margin-bottom:6px; font-size:16px; }
+.feature-desc{ color:var(--muted); font-size:14px; line-height:1.3; }
+.hero-right{ display:flex; align-items:center; justify-content:center; }
+.hero-svg{ border-radius:20px; box-shadow: var(--soft-shadow); }
+
+/* CTA wide (big blue bar) */
+.cta-wide{ padding:36px 72px; }
+.cta-inner{ background: linear-gradient(90deg,var(--primary),var(--primary-600)); color:#fff; padding:30px; border-radius:18px; text-align:center; box-shadow: 0 24px 48px rgba(16,24,40,0.08); margin-top:30px; }
+.cta-inner h2{ margin:0 0 8px; font-size:28px; }
+.cta-inner p{ margin:0 0 12px; color:rgba(255,255,255,0.92); }
+.cta-button{ background:#fff; color:var(--primary); padding:10px 16px; border-radius:12px; font-weight:700; text-decoration:none; }
+
+/* ---------- AUTH CARD (Signup/Login) ---------- */
+
+/* Container that centers card in viewport (leaves space for header) */
+.signup-page { min-height: 100vh; display:flex; flex-direction:column; background:var(--bg); }
+.signup-container { display:flex; align-items:center; justify-content:center; padding:40px 72px 80px; min-height: calc(100vh - 72px); }
+
+/* Card base */
+.signup-card {
+  width: 100%;
+  max-width: 1180px;
+  background: #fff;
+  border-radius: 18px;
+  display: grid;
+  gap: 0;
+  box-shadow: 0 30px 60px rgba(16,24,40,0.08);
+  border: 1px solid rgba(2,6,23,0.04);
+  overflow: hidden;
+  align-items: stretch; /* ensures columns match height for centering */
+}
+
+/* Two grid presets - apply the right one per page:
+   - login-layout: illustration left (420px) + form right (1fr)
+   - signup-layout: form left (1fr) + yellow panel right (460px) */
+.signup-card.login-layout { grid-template-columns: 420px 1fr; }
+.signup-card.signup-layout { grid-template-columns: 1fr 460px; }
+
+/* Left form column */
+.signup-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 48px 46px 56px 46px;
+  background: #fff;
+}
+.signup-left h1 { margin:0 0 6px; font-size:32px; font-weight:800; color:#071043; }
+.signup-left .lead { color:var(--muted); margin-bottom:14px; }
+
+/* Right illustration column */
+.signup-right {
+  display:flex; align-items:center; justify-content:center; padding:40px;
+}
+.signup-right--yellow {
+  background: linear-gradient(180deg,#FFF6D7,#FFF0B8);
+  display:flex; align-items:center; justify-content:center; padding:40px;
+}
+.signup-card > .signup-right { border-top-right-radius: 26px; border-bottom-right-radius: 26px; }
+
+/* ensure illustration is centered and scales */
+.signup-illustration, .hero-illustration, .auth-illustration { display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+.signup-illustration svg, .hero-illustration svg, .auth-illustration svg { display:block; max-width:100%; height:auto; margin:0 auto; }
+
+/* ---------- AUTH FORM / INPUT RULES (stacked inputs) ---------- */
+
+/* Labels */
+.field-label {
+  display:block;
+  margin-top:16px;
+  margin-bottom:8px;
+  font-weight:600;
+  color:#0b1b3a;
+  font-size:14px;
+}
+
+/* Inputs */
+.input {
+  display:block;
+  width:100%;
+  height:46px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid #e6eef8;
+  background:#fff;
+  box-sizing:border-box;
+  margin:0;
+  font-size:14px;
+  color:#0b1b3a;
+  outline:none;
+}
+.signup-left textarea.input { min-height:80px; }
+
+/* placeholder style */
+.input::placeholder { color:#9aa8bf; }
+
+/* small gap between inputs */
+.signup-left form > *:not(.btn-primary) { margin-bottom:8px; }
+
+/* Primary button */
+.btn-primary,
+.signup-left .btn-primary,
+.login-left .btn-primary {
+  display:inline-block;
+  background: linear-gradient(90deg,#2563EB,#1e4fd8);
+  color:#fff;
+  border:none;
+  padding:12px 20px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow: 0 12px 30px rgba(37,99,235,0.18);
+  text-align:center;
+}
+.btn-primary:focus { outline: 3px solid rgba(37,99,235,0.12); outline-offset:2px; }
+.btn-primary:active { transform: translateY(1px); }
+
+/* error message */
+.msg-error { background:#fff4f5; color:#9b2c2c; padding:10px 12px; border-radius:8px; border:1px solid rgba(155,44,44,0.08); margin-bottom:12px; }
+
+/* small link */
+.small-link { color: var(--primary); text-decoration:none; font-weight:600; }
+
+/* checkbox size */
+input[type="checkbox"] { width:18px; height:18px; }
+
+/* ---------- Auth centering fixes (ensures illustration vertically centered) ---------- */
+.signup-container { align-items:center; }
+.signup-card { align-items: stretch; }
+.signup-right .signup-illustration > div,
+.signup-right > div { margin:0; display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+.signup-right svg { transform: translateY(0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width:1000px) {
+  .landing-hero { grid-template-columns:1fr; padding:24px; gap:24px; }
+  .hero-right { order:2; }
+  .hero-left { order:1; }
+  .features-row { flex-direction:column; }
+  .signup-card, .signup-card.login-layout, .signup-card.signup-layout { grid-template-columns: 1fr !important; }
+  .signup-left, .signup-right { padding:28px !important; }
+}
+
+/* ---------- small helpers ---------- */
+.lead { color:var(--muted); font-size:15px; }
+/* ---- Forgot Password specific styles & feature bar ---- */
+
+.card-inner { background: transparent; } /* keep card white from parent */
+
+.feature-bar {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 22px;
+  background: linear-gradient(180deg,#F3F8FF,#EAF6FF);
+  padding: 28px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(16,24,40,0.04);
+}
+
+.feature {
+  text-align: center;
+  padding: 12px 10px;
+}
+.feature-icon {
+  width:64px; height:64px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;
+}
+.feature-title { font-size:20px; margin:0 0 8px; font-weight:700; color:#071043; }
+.feature-desc { margin:0; color:var(--muted); font-size:14px; line-height:1.45; }
+
+/* Make sure the illustration and right card align exactly like screenshots */
+.signup-right { padding: 48px; }
+.signup-left { padding: 46px 46px; }
+
+/* slightly larger heading on forgot page */
+#forgot-title { font-weight:800; color:#071043; }
+
+/* keep input icon left offset correct */
+.signup-left input[type="email"] { padding-left:44px; }
+
+/* responsive adjustments */
+@media (max-width:1000px) {
+  .feature-bar { grid-template-columns: 1fr; padding:18px; gap:16px; }
+  .signup-card.login-layout { grid-template-columns: 1fr !important; }
+  .signup-right, .signup-left { padding:24px !important; }
+}
+/* --- FORGOT PASSWORD BOTTOM FEATURE CARDS --- */
+.fp-features-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.fp-features {
+  width: 85%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  background: #eef6ff;
+  padding: 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.fp-feature-card {
+  flex: 1;
+  text-align: center;
+}
+
+.fp-feature-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 15px auto;
+  font-size: 28px;
+}
+
+.fp-feature-icon.blue {
+  background: #e0eaff;
+  color: #1a73e8;
+}
+
+.fp-feature-icon.green {
+  background: #e7fceb;
+  color: #1aa75c;
+}
+
+.fp-feature-icon.yellow {
+  background: #fff1d6;
+  color: #f2a100;
+}
+
+.fp-feature-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.fp-feature-card p {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.4;
+}
+/* ===============================
+   SMOOTH HOVER / FOCUS INTERACTIONS
+   =============================== */
+
+/* ---------- INPUT FIELDS ---------- */
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid #d0d5dd;
+
+  /* 🔑 IMPORTANT FIX */
+  color: #071043;          /* actual typed text color */
+  background-color: #fff;  /* force clean background */
+
+  outline: none;
+}
+
+
+.input:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08);
+}
+
+.input:focus {
+  transform: translateY(-2px);
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ---------- LABEL LIFT EFFECT ---------- */
+.field-label {
+  transition: 
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.input:focus + .field-label,
+.input:hover + .field-label {
+  color: #2563EB;
+  transform: translateY(-2px);
+}
+
+/* ---------- PRIMARY BUTTON ---------- */
+.btn-primary {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 35px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+}
+
+/* ---------- LINK HOVER ---------- */
+.small-link,
+.nav-link {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.small-link:hover,
+.nav-link:hover {
+  color: #1E40AF;
+  transform: translateY(-1px);
+}
+
+/* ---------- CHECKBOX / ICON HOVER ---------- */
+input[type="checkbox"] {
+  cursor: pointer;
+}
+/* ================================
+   INSUREHUB UI ENHANCEMENTS
+   Safe polish – no layout changes
+================================ */
+
+/* ---- Global smoothness ---- */
+* {
+  transition: all 0.25s ease;
+}
+
+/* ---- Page background depth ---- */
+.signup-page,
+.signup-container {
+  background: radial-gradient(
+    circle at top,
+    #f4f9ff 0%,
+    #f7fbff 40%,
+    #ffffff 100%
+  );
+}
+
+/* ---- Card hover lift ---- */
+.signup-card {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.signup-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 40px 80px rgba(16, 24, 40, 0.12);
+}
+
+/* ---- Input fields polish ---- */
+.input {
+  background: linear-gradient(
+    180deg,
+    #f6faff,
+    #eef5ff
+  );
+  border: 1px solid #dbe7ff;
+  font-size: 15px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.15),
+    0 12px 25px rgba(37, 99, 235, 0.12);
+}
+
+/* ---- Label interaction ---- */
+.field-label {
+  font-weight: 700;
+  color: #0b1b3a;
+  letter-spacing: 0.2px;
+}
+
+.input:focus + .field-label,
+.input:hover + .field-label {
+  color: #2563eb;
+}
+
+/* ---- Primary button animation ---- */
+.btn-primary {
+  background: linear-gradient(
+    180deg,
+    #2d6df6,
+    #1f58d6
+  );
+  box-shadow:
+    0 14px 30px rgba(37, 99, 235, 0.25);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 22px 45px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow:
+    0 12px 22px rgba(37, 99, 235, 0.25);
+}
+
+/* ---- Header subtle blur ---- */
+.insure-header {
+  backdrop-filter: blur(12px);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95),
+    rgba(255, 255, 255, 0.85)
+  );
+}
+
+/* ---- Links feel alive ---- */
+.small-link,
+.nav-link {
+  position: relative;
+}
+
+.small-link::after,
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0%;
+  height: 2px;
+  background: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.small-link:hover::after,
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ---- Error messages better contrast ---- */
+.msg-error {
+  background: linear-gradient(
+    180deg,
+    #fff1f1,
+    #ffe5e5
+  );
+  border-left: 4px solid #e11d48;
+  font-weight: 600;
+}
+
+/* ---- Checkbox alignment polish ---- */
+input[type="checkbox"] {
+  accent-color: #2563eb;
+  transform: scale(1.05);
+}
+
+/* ---- Illustration container glow ---- */
+.signup-left-image,
+.signup-layout > div:last-child {
+  box-shadow:
+    inset 0 0 0 rgba(0, 0, 0, 0),
+    0 30px 60px rgba(16, 24, 40, 0.06);
+}
+.input {
+  transition: 
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  box-shadow: var(--glow-blue);
+  transform: translateY(-1px);
+}
+.btn-primary {
+  transition: 
+    transform 0.2s var(--ease-soft),
+    box-shadow 0.2s var(--ease-soft),
+    background 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:active {
+  transform: scale(0.96);
+}
+.msg-success {
+  animation: successPop 0.6s var(--ease-bounce);
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.msg-error {
+  animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+.small-link,
+.nav-link {
+  position: relative;
+}
+
+.small-link::after,
+.nav-link::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background: #2563eb;
+  transition: width 0.3s ease;
+}
+
+.small-link:hover::after,
+.nav-link:hover::after {
+  width: 100%;
+}

@@ -1,0 +1,98 @@
+/* Header */
+.header-no-border {
+  border-bottom: none;
+}
+
+/* Layout */
+.signup-card.login-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 1180px;
+  overflow: hidden;
+  border-radius: 18px;
+  box-shadow: 0 30px 60px rgba(16, 24, 40, 0.08);
+  border: 1px solid rgba(2, 6, 23, 0.04);
+}
+
+@media (max-width: 900px) {
+  .signup-card.login-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left side */
+.login-left {
+  background: #eef8ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* Right side */
+.login-right {
+  padding: 60px 50px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Typography */
+.login-title {
+  margin-bottom: 10px;
+  font-size: 44px;
+  font-weight: 800;
+  color: #071043;
+}
+
+.login-subtitle {
+  margin-bottom: 20px;
+}
+
+.login-error {
+  margin-bottom: 12px;
+}
+
+/* Options row */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.remember-me span {
+  font-weight: 600;
+  color: #0b1b3a;
+}
+
+/* Button */
+.login-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.login-btn {
+  margin-top: 20px;
+  width: 240px;
+  height: 45px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+/* Footer */
+.login-footer {
+  margin-top: 25px;
+  text-align: center;
+}

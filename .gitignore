@@ -2,10 +2,16 @@
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+*.db
 
-# Virtual env
+# Virtual environment
 venv/
 .env
 
 # Node
 node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
