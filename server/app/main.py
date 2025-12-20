@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
-from app.routers import profile, recommendations
+from app.routers import profile, recommendations, dashboard
+from app.models import user, policy, claim 
 
 app = FastAPI(title="Insurance CRC Assistant")
 
@@ -18,6 +19,7 @@ Base.metadata.create_all(bind=engine)
 
 app.include_router(profile.router)
 app.include_router(recommendations.router)
+app.include_router(dashboard.router)
 
 @app.get("/")
 def root():
