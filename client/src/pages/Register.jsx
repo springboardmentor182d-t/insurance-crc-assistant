@@ -25,7 +25,7 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/auth/send-otp", null, {
+      await api.post("/auth/register/send-otp", null, {
         params: { email },
       });
       setOtpSent(true);
@@ -46,7 +46,7 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/auth/verify-otp", null, {
+      await api.post("/auth/register/verify-otp", null, {
         params: { email, otp },
       });
       setOtpVerified(true);
