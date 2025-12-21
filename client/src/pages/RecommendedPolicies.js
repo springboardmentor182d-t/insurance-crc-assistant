@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { ShieldCheck } from "lucide-react";
 
@@ -7,17 +7,48 @@ export default function RecommendedPolicies() {
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState("best");
 
+  // FETCH DATA
   useEffect(() => {
     setLoading(true);
 
     axios
-      .get(`/api/recommendations?sort=${sortType}`)
+      .get("/api/recommendations")
       .then((res) => {
-        setPolicies(res.data);
+        const normalized = res.data.map((p) => ({
+          ...p,
+          premium: Number(p.premium),
+          score: Number(p.score),
+        }));
+
+        setPolicies(normalized);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [sortType]);
+  }, []);
+
+  // ✅ SORTING LOGIC (FINAL)
+  const sortedPolicies = useMemo(() => {
+    if (!policies.length) return [];
+
+    const sorted = [...policies];
+
+    // BEST MATCH → highest score
+    if (sortType === "best") {
+      return sorted.sort((a, b) => b.score - a.score);
+    }
+
+    // LOWEST PREMIUM → low to high
+    if (sortType === "premium") {
+      return sorted.sort((a, b) => a.premium - b.premium);
+    }
+
+    // ✅ COMPREHENSIVE → HIGH PREMIUM TO LOW PREMIUM
+    if (sortType === "comprehensive") {
+      return sorted.sort((a, b) => b.premium - a.premium);
+    }
+
+    return sorted;
+  }, [policies, sortType]);
 
   if (loading) {
     return <p className="text-center mt-20">Loading recommendations...</p>;
@@ -74,7 +105,7 @@ export default function RecommendedPolicies() {
 
       {/* POLICY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {policies.map((policy, index) => (
+        {sortedPolicies.map((policy, index) => (
           <div
             key={policy.id}
             className="relative border rounded-2xl p-6 shadow-sm hover:shadow-xl transition bg-white"
@@ -95,15 +126,15 @@ export default function RecommendedPolicies() {
             </p>
 
             <ul className="text-sm text-gray-600 space-y-2 mb-6">
-              <li>✔ {policy.coverage}</li>
-              <li>✔ Risk Level: {policy.risk_level}</li>
               <li>✔ Match Score: {policy.score}</li>
             </ul>
 
             <div className="flex justify-between items-end">
               <div>
                 <p className="text-xs text-gray-500">Annual Premium</p>
-                <p className="text-2xl font-bold">₹{policy.premium}</p>
+                <p className="text-2xl font-bold">
+                  ₹{policy.premium.toLocaleString()}
+                </p>
               </div>
               <button className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
                 Select Plan
