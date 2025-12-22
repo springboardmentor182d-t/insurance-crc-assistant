@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from src.api import router as api_router
+from src.auth.routes.auth_routes import router as auth_router
+from src.auth.routes.auth_otp_routes import router as register_otp_router
+from src.auth.routes.forgot_password import router as forgot_password_router
 
 app = FastAPI()
 
@@ -12,8 +16,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(api_router)
-
 @app.get("/")
 def root():
     return {"message": "Server running"}
+
+app.include_router(api_router)
+app.include_router(auth_router)
+app.include_router(register_otp_router)
+app.include_router(forgot_password_router)
