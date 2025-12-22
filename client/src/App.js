@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import {PolicyLanding} from "./pages/PolicyLanding";
+import { PolicyCatalogPage } from "./pages/PolicyCatalogPage";
+import { ComparePage } from "./pages/Comparsion";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+     
+        <Route path="/policies" element={<PolicyLanding />} />
+
+     
+        <Route
+          path="/policies/:policyType"
+          element={<PolicyCatalogPage />}
+        />
+
+     
+        <Route path="/compare" element={<ComparePage />} />
+
+      
+        <Route
+          path="*"
+          element={<div style={{ padding: 32 }}>Page Not Found</div>}
+        />
+      </Routes>
+    </Router>
   );
 }
 
