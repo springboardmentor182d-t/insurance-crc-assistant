@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import PolicyCatalog from "./pages/PolicyCatalog";
+import PolicyDetails from "./pages/PolicyDetails";
+import PremiumCalculator from "./pages/PremiumCalculator";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<PolicyCatalog />} />
+        <Route path="/policy-details/:id" element={<PolicyDetails />} />
+        <Route path="/premium-calculator" element={<PremiumCalculator />} />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 
