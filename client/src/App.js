@@ -13,7 +13,8 @@ import RoleBasedRoute from './components/RoleBasedRoute';
 import EnterOtp from "./components/auth/EnterOtp";
 import ResetPassword from "./components/auth/ResetPassword";
 import { AuthContext } from './context/AuthContext';
-
+import ClaimsList from "./pages/claims/ClaimsList";
+import ClaimDetails from "./pages/claims/ClaimDetails";
 export default function App(){
   const { user } = useContext(AuthContext);
   return (
@@ -26,6 +27,8 @@ export default function App(){
       <Route path="/enter-otp" element={<EnterOtp/>} />
       <Route path="/reset-password" element={<ResetPassword/>} />
       <Route path="/landing" element={<Landing/>} />
+      <Route path="/claims" element={<ClaimsList />} />
+      <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
       </Route>

@@ -1,0 +1,326 @@
+/* PAGE */
+.claims-page {
+  padding: 40px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.claims-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.claims-header h1 {
+  font-size: 32px;
+  margin-bottom: 6px;
+}
+
+.claims-header p {
+  color: #64748b;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.file-new-claim-btn {
+  background: linear-gradient(180deg, #2563eb, #1d4ed8); /* blue gradient */
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  /* shadow like UI */
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+}
+
+.file-new-claim-btn:hover {
+  background: linear-gradient(180deg, #1e40af, #1e3a8a);
+}
+
+
+.btn-outline {
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  padding: 8px 16px;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+}
+
+/* SUMMARY */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.summary-card {
+  background: white;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.summary-card p {
+  color: #64748b;
+}
+
+.summary-card h2 {
+  margin-top: 8px;
+}
+
+.summary-card.approved h2 {
+  color: #22c55e;
+}
+
+.summary-card.review h2 {
+  color: #f59e0b;
+}
+
+.summary-card.amount h2 {
+  color: #2563eb;
+}
+
+/* SEARCH */
+.search-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.filter-btn {
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+}
+
+/* TABLE */
+.claims-table-wrapper {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.claims-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.claims-table th {
+  text-align: left;
+  padding: 18px;
+  background: #f8fafc;
+  color: #334155;
+}
+
+.claims-table td {
+  padding: 18px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* STATUS PILLS */
+.status-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.status-approved {
+  background: #dcfce7;
+  color: #16a34a;
+  border: 1px solid #22c55e;
+}
+
+.status-review {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #f59e0b;
+}
+
+.status-pending {
+  background: #ffedd5;
+  color: #ea580c;
+  border: 1px solid #fb923c;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #f87171;
+}
+.claim-details-page {
+  padding: 32px;
+  background: #f6f9fc;
+}
+
+/* HEADER */
+.claim-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 28px;
+  border-radius: 16px;
+  color: white;
+  margin-bottom: 24px;
+}
+
+.claim-header.approved {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+.claim-header.under-review,
+.claim-header.pending-documents {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.claim-header.rejected {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.amount-box {
+  background: white;
+  color: black;
+  padding: 16px;
+  border-radius: 12px;
+  min-width: 160px;
+}
+
+/* GRID */
+.claim-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.card.full {
+  margin-top: 20px;
+}
+
+/* TIMELINE */
+.timeline .step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timeline .step span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline .step.done span {
+  background: #22c55e;
+  color: white;
+}
+
+/* BUTTONS */
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.btn-outline {
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  padding: 10px;
+  border-radius: 10px;
+  background: white;
+}
+
+/* SUMMARY */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.summary-row.total {
+  font-weight: bold;
+}
+
+.green {
+  color: #16a34a;
+}
+
+/* ASSESSOR */
+.assessor {
+  display: flex;
+  gap: 12px;
+}
+
+.avatar {
+  background: #2563eb;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* INFO */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.description {
+  margin-top: 16px;
+}
+
+/* DOCUMENTS */
+.document {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-top: 10px;
+}
