@@ -1,9 +1,7 @@
-import axios from "axios";
-
-export const fetchDashboardData = async (userId) => {
-  const token = localStorage.getItem("token"); // ensure your login flow sets this
-  const res = await axios.get(`http://localhost:8000/dashboard/${userId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+export async function fetchDashboardData(userId) {
+  const res = await fetch(`http://127.0.0.1:8000/dashboard/${userId}`, {
+    headers: { "Content-Type": "application/json" },
   });
-  return res.data;
-};
+  if (!res.ok) throw new Error("Failed to load dashboard");
+  return res.json();
+}

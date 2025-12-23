@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   BookOpen,
@@ -11,6 +11,7 @@ import {
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menu = [
     { name: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -23,7 +24,7 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 bg-white border-r min-h-screen flex flex-col justify-between">
-      
+
       {/* ================= TOP ================= */}
       <div>
         {/* Logo */}
@@ -44,7 +45,6 @@ export default function Sidebar() {
           {menu.map((item) => {
             const Icon = item.icon;
 
-            // ⭐ FIX: Recommendation should stay active for ALL recommendation-related routes
             const isRecommendationActive =
               item.path === "/recommendations" &&
               (
@@ -83,15 +83,20 @@ export default function Sidebar() {
             <Headphones size={18} />
             <p className="font-semibold text-sm">Need Help?</p>
           </div>
+
           <p className="text-xs text-indigo-200 mb-3">
             Our support team is available 24/7 to assist with your claims.
           </p>
-          <button className="w-full bg-white text-indigo-600 text-xs font-semibold py-2 rounded-lg hover:bg-indigo-50 transition">
+
+          <button
+            onClick={() => navigate("/support")}
+            className="w-full bg-white text-indigo-600 text-xs font-semibold py-2 rounded-lg hover:bg-indigo-50 transition"
+          >
             Contact Support
           </button>
         </div>
 
-        {/* Profile Navigation */}
+        {/* Profile */}
         <NavLink
           to="/profile"
           className={({ isActive }) =>

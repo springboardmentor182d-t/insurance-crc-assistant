@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PageContainer from "./layout/PageContainer";
 import Home from "./pages/Home";
+// import UserDashboard from "./pages/UserDashboard";
 import Recommendations from "./pages/Recommendations";
 import HealthRecommendation from "./pages/HealthRecommendation";
 import MotorRecommendation from "./pages/MotorRecommendation";
@@ -11,13 +12,20 @@ import BusinessRecommendation from "./pages/BusinessRecommendation";
 import FireRecommendation from "./pages/FireRecommendation";
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
+import TestFetch from "./pages/TestFetch";
+
+// inside <Routes>:
+
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Pages WITH sidebar & navbar */}
+        {/* <Route path="/dashboard" element={<UserDashboard />} />  */}
         <Route element={<PageContainer />}>
           <Route path="/" element={<Home />} />
+          {/* <Route path="/dashboard" element={<UserDashboard />} />  */}
           <Route path="/recommendations" element={<Recommendations />} />
           <Route
             path="/health_insurance_rec"
@@ -55,7 +63,9 @@ export default function App() {
             path="/recommendedPolicies"
             element={<RecommendedPolicies />}
           />
+          <Route path="/test" element={<TestFetch />} />
         </Route>
+        
 
         {/* Fallback */}
         <Route path="*" element={<h1>Page Not Found</h1>} />

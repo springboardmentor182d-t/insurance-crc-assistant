@@ -1,6 +1,6 @@
 # server/app/models/claim.py
 from sqlalchemy import Column, Integer, Float, Date, ForeignKey, String
-from app.database import Base
+from server.app.database import Base
 
 class Claim(Base):
     __tablename__ = "claims"

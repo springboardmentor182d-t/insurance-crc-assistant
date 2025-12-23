@@ -1,6 +1,6 @@
 # server/app/models/policy.py
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
-from app.database import Base
+from server.app.database import Base
 
 class Policy(Base):
     __tablename__ = "policies"

@@ -1,6 +1,6 @@
 # server/app/models/user.py
 from sqlalchemy import Column, Integer, String
-from app.database import Base
+from server.app.database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -8,3 +8,4 @@ class User(Base):
     username = Column(String, index=True)
     email = Column(String, index=True)
     role = Column(String, default="customer")
+    photo = Column(String, nullable=True) 

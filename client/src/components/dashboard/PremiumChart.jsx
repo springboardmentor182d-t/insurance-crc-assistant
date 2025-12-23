@@ -1,37 +1,95 @@
-export default function PremiumChart({ policies = [] }) {
-  // Compute totals by type for a simple bar representation (can swap to Chart.js later)
-  const data = policies.reduce((acc, p) => {
-    acc[p.policy_type] = (acc[p.policy_type] || 0) + (Number(p.premium) || 0);
+import { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+export default function PremiumChart({ data = [] }) {
+  const [mode, setMode] = useState("annual");
+
+  // Group data by frequency and category, aggregate if multiple rows exist
+  const grouped = data.reduce((acc, item) => {
+    const freq = (item.frequency || "").toLowerCase();
+    const cat = (item.category || "").toLowerCase();
+
+    if (!acc[freq]) acc[freq] = {};
+    if (!acc[freq][cat]) acc[freq][cat] = { market: 0, user: 0 };
+
+    acc[freq][cat].market += Number(item.market_cost) || 0;
+    acc[freq][cat].user += Number(item.user_cost) || 0;
+
     return acc;
   }, {});
-  const entries = Object.entries(data);
+
+  const chartData = grouped[mode] || {};
+
+  // Format for Recharts
+  const formatted = ["auto", "home", "health", "life"].map((type) => ({
+    category: type.charAt(0).toUpperCase() + type.slice(1),
+    MarketAvg: chartData[type]?.market || 1000,
+    YourPremium: chartData[type]?.user || 1500,
+  }));
 
   return (
-    <div className="bg-white rounded shadow p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Premium analysis</h2>
-        <div className="text-sm text-gray-500">Annually / Monthly</div>
-      </div>
-      {entries.length === 0 ? (
-        <p className="text-sm text-gray-500 mt-2">No policy data available.</p>
-      ) : (
-        <div className="mt-4 space-y-3">
-          {entries.map(([type, sum]) => (
-            <div key={type}>
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">{type}</span>
-                <span>${sum}</span>
-              </div>
-              <div className="h-2 bg-gray-200 rounded">
-                <div
-                  className="h-2 bg-blue-600 rounded"
-                  style={{ width: `${Math.min(100, (sum / 300) * 100)}%` }}
-                />
-              </div>
-            </div>
-          ))}
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h3 className="text-lg font-semibold">Premium Analysis</h3>
+          <p className="text-sm text-gray-500">
+            Your {mode} costs vs. market average
+          </p>
         </div>
-      )}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setMode("annual")}
+            className={`px-3 py-1 rounded text-sm ${
+              mode === "annual" ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
+          >
+            Annually
+          </button>
+          <button
+            onClick={() => setMode("monthly")}
+            className={`px-3 py-1 rounded text-sm ${
+              mode === "monthly" ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
+          >
+            Monthly
+          </button>
+        </div>
+      </div>
+            {/* <div>
+              data{formatted.length === 0 ? (
+  <p>No data available</p>
+) : (
+  formatted.map(item => <div key={item.id}>{item.name}</div>)
+)}
+            </div> */}
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={formatted} barCategoryGap="30%">
+          <XAxis dataKey="category" />
+          <YAxis domain={[0, 3500]} />
+          <Tooltip />
+          <Legend />
+          <Bar
+            dataKey="YourPremium"
+            fill="#3b82f6"
+            name="Your Premium"
+            barSize={20}
+          />
+          <Bar
+            dataKey="MarketAvg"
+            fill="#8b5cf6"
+            name="Market Avg"
+            barSize={20}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

@@ -1,15 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models.profile import Profile
-from app.schemas.profile import ProfileCreate
+
+from server.app.database import get_db
+from server.app.models.profile import UserProfile
+from server.app.schemas.profile import ProfileCreate
 
 router = APIRouter(prefix="/api/profile", tags=["Profile"])
 
 # ================= GET PROFILE =================
 @router.get("/")
 def get_profile(db: Session = Depends(get_db)):
-    profile = db.query(Profile).first()
+    profile = db.query(UserProfile).first()
     if not profile:
         return {}
 
@@ -26,12 +27,12 @@ def get_profile(db: Session = Depends(get_db)):
 # ================= SAVE PROFILE =================
 @router.post("/")
 def save_profile(data: ProfileCreate, db: Session = Depends(get_db)):
-    profile = db.query(Profile).first()
+    profile = db.query(UserProfile).first()
 
     categories_str = ",".join(data.categories)
 
     if not profile:
-        profile = Profile(
+        profile = UserProfile(
             dob=data.dob,
             address=data.address,
             categories=categories_str,

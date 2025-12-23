@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models.profile import Profile
-from app.models.policy import Policy
+from server.app.database import get_db  # updated
+from server.app.models.profile import UserProfile
+from server.app.models.policy import Policy
 
 router = APIRouter(
     prefix="/api/recommendations",
@@ -12,9 +12,9 @@ router = APIRouter(
 @router.get("/")
 def recommend_policies(
     sort: str = Query("best"),  # kept for UI, but best = score-based
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db)  # updated
 ):
-    profile = db.query(Profile).first()
+    profile = db.query(UserProfile).first()
     if not profile:
         return []
 
