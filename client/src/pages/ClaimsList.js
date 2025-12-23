@@ -53,7 +53,7 @@ function ClaimsList() {
           <h1>Track Claims</h1>
           <p>Monitor the status of your insurance claims</p>
         </div>
-        <button className="btn primary">File New Claim</button>
+        <button className="btn primary" onClick={() => navigate("/file-claim")} >File New Claim</button>
       </div>
 
       {/* SUMMARY */}
