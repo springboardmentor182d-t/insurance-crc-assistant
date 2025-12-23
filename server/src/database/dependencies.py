@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from jose import JWTError
-
+from src.database.database import async_session_maker
 from src.database.database import get_db
 from src.users import models
 from src.auth.security import decode_access_token
@@ -61,3 +61,6 @@ def require_role(*roles: str):
         return current_user
 
     return role_checker
+async def get_db():
+    async with async_session_maker() as session:
+        yield session
