@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 export default function MyPolicies({ policies = [] }) {
   const navigate = useNavigate();
-
+  
   if (!policies.length) {
     return (
       <div className="bg-white shadow-md rounded-lg p-6 text-center">

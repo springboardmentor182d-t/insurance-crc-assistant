@@ -14,3 +14,4 @@ class UserProfile(Base):
     risk = Column(String, nullable=True)
     family_size = Column(Integer, nullable=True)
     goal = Column(String, nullable=True)    # 
+    

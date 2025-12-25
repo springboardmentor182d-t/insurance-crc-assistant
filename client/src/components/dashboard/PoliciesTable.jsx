@@ -12,6 +12,7 @@ export default function PoliciesTable({ policies = [] }) {
     );
   }
 
+  
   return (
     <div className="bg-white rounded shadow p-4">
       <div className="flex items-center justify-between mb-2">

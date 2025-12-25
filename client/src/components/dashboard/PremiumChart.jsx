@@ -63,13 +63,7 @@ export default function PremiumChart({ data = [] }) {
           </button>
         </div>
       </div>
-            {/* <div>
-              data{formatted.length === 0 ? (
-  <p>No data available</p>
-) : (
-  formatted.map(item => <div key={item.id}>{item.name}</div>)
-)}
-            </div> */}
+      
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={formatted} barCategoryGap="30%">
           <XAxis dataKey="category" />

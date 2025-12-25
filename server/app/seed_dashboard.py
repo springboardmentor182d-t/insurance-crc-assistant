@@ -6,7 +6,6 @@ from server.app.models.claim import Claim
 from server.app.models.profile import UserProfile
 from server.app.models.premium_analysis import PremiumAnalysis
 from server.app.models.recommendation import Recommendation
-
 def run():
     db = SessionLocal()
 

@@ -8,4 +8,4 @@ class Recommendation(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     title = Column(String(100), nullable=False)
     description = Column(Text, nullable=False)
-    link = Column(Text)          #
+    link = Column(Text)         

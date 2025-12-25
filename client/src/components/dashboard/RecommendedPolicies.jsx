@@ -13,6 +13,7 @@ export default function RecommendedPolicies({ recommendations = [] }) {
     );
   }
 
+  
   return (
     <div className="bg-white shadow-md rounded-lg p-6 space-y-4">
       {/* Header */}

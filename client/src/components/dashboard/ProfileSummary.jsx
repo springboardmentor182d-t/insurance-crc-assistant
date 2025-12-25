@@ -7,6 +7,7 @@ export default function ProfileSummary({ profile }) {
     );
   }
 
+  
   return (
     <div className="bg-white shadow-md rounded-lg p-6 w-full flex flex-col items-center">
       {/* Profile Image */}

@@ -1,7 +1,6 @@
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
-
 export default function PageContainer() {
   return (
     <div className="flex min-h-screen bg-gray-50">

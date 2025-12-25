@@ -1,6 +1,5 @@
 import { FiHeadphones, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-
 function SidebarSupport({ user }) {
   const navigate = useNavigate();
 

@@ -9,4 +9,5 @@ class PremiumAnalysis(Base):
     category = Column(String(50), nullable=False)       # Auto, Home, Health, Life
     market_cost = Column(Numeric(10, 2), nullable=False)
     user_cost = Column(Numeric(10, 2), nullable=False)
-    frequency = Column(String(20), nullable=False)      
+    frequency = Column(String(20), nullable=False)    
+      

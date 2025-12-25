@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-
 export default function TopNavbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
