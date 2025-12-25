@@ -1,5 +1,4 @@
-import json
-from psycopg2.extras import RealDictCursor
+from sqlalchemy import text
 
 def display_policy(db, policy_type: str, filters: dict = None):
     if filters is None:
@@ -17,45 +16,43 @@ def display_policy(db, policy_type: str, filters: dict = None):
             pr.name AS provider_name
         FROM Policies p
         JOIN Providers pr ON p.provider_id = pr.id
-        WHERE p.policy_type ILIKE %(policy_type)s
+        WHERE p.policy_type ILIKE :policy_type
     """
-    
-    params = {'policy_type': policy_type}
 
-    # Providers filter
+    params = {'policy_type': f"%{policy_type}%"}
+
     if filters.get('providers'):
-        sql += " AND pr.name = ANY(%(providers)s)"
+        sql += " AND pr.name = ANY(:providers)"
         params['providers'] = filters['providers']
 
-    # Duration filter
     if filters.get('duration') is not None:
-        sql += " AND p.term_months = %(term_months)s"
+        sql += " AND p.term_months = :term_months"
         params['term_months'] = int(filters['duration']) * 12
 
-    # Price filter
     price_range = filters.get("premium_range")
     if price_range:
         if price_range == "Upto ₹5 Lakh":
-            sql += " AND p.premium::numeric <= %(max_price)s"
+            sql += " AND p.premium::numeric <= :max_price"
             params['max_price'] = 500000
         elif price_range == "₹5-10 Lakh":
-            sql += " AND p.premium::numeric > %(min_price)s AND p.premium::numeric <= %(max_price)s"
+            sql += " AND p.premium::numeric > :min_price AND p.premium::numeric <= :max_price"
             params['min_price'] = 500000
             params['max_price'] = 1000000
         elif price_range == "Above ₹10 Lakh":
-            sql += " AND p.premium::numeric > %(min_price)s"
+            sql += " AND p.premium::numeric > :min_price"
             params['min_price'] = 1000000
 
-    # Sorting by term
     if filters.get('sort_term'):
         sort_order = filters['sort_term'].lower()
         if sort_order in ['asc', 'desc']:
             sql += f" ORDER BY p.term_months {sort_order.upper()}"
 
-    db.execute(sql, params)
-    rows = db.fetchall()
+    stmt = text(sql)
+    result = db.execute(stmt, params)
 
-    # Build results
+ 
+    rows = result.mappings().all()
+
     results = []
     for row in rows:
         results.append({
@@ -70,14 +67,16 @@ def display_policy(db, policy_type: str, filters: dict = None):
 
     return results
 
+
 def get_providers_by_policy_type(db, policy_type: str):
     sql = """
         SELECT DISTINCT pr.name
         FROM Policies p
         JOIN Providers pr ON p.provider_id = pr.id
-        WHERE p.policy_type ILIKE %(policy_type)s
+        WHERE p.policy_type ILIKE :policy_type
     """
-    params = {'policy_type': policy_type}
-    db.execute(sql, params)
-    rows = db.fetchall()
+    params = {'policy_type': f"%{policy_type}%"}
+    stmt = text(sql)
+    result = db.execute(stmt, params)
+    rows = result.mappings().all()  
     return [row['name'] for row in rows]

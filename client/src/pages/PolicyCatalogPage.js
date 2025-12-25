@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Navbar } from "../layout/Navbar";
+import { PolicyNavbar } from "../layout/Navbar";
 import { InfoCard, PolicyCard } from "../layout/PageContainer";
 import { SidebarFilter } from "../layout/Sidebar";
+import "../index.css";
 
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 export function PolicyCatalogPage() {
   const { policyType } = useParams();
   const navigate = useNavigate();
@@ -26,7 +28,8 @@ export function PolicyCatalogPage() {
     if (!policyType) return;
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/policies/${policyType}/providers`
+      `${BASE_URL}/policies/${policyType}/providers`
+
       );
       const data = await res.json();
       setFilterOptions({ providers: data.providers || [] });
@@ -39,7 +42,7 @@ export function PolicyCatalogPage() {
     if (!policyType) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/policies/${policyType}`);
+      const res = await fetch(`${BASE_URL}/policies/${policyType}`);
       const data = await res.json();
       let fetchedPolicies = data.results || [];
 
@@ -113,7 +116,7 @@ export function PolicyCatalogPage() {
 
   return (
     <div>
-      <Navbar />
+      <PolicyNavbar />
       <InfoCard />
 
       <div className="flex gap-6 max-w-6xl mx-auto p-6">

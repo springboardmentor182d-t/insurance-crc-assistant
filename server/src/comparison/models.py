@@ -13,7 +13,7 @@ class Policy(BaseModel):
     provider_id: int
     policy_type: str
     title: str
-    coverage: Dict = Field(default_factory=dict)  # avoids shared mutable dict
+    coverage: Dict = Field(default_factory=dict)
     premium: Optional[float] = None
     term_months: Optional[int] = None
     deductible: Optional[float] = None

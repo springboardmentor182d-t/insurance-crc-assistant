@@ -1,48 +1,41 @@
 import os
 from dotenv import load_dotenv
-from psycopg2 import pool
-from psycopg2.extras import RealDictCursor
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = int(os.getenv("DB_PORT", 5432))
+DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "insurance_db")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
-DB_MIN_CONN = int(os.getenv("DB_MIN_CONN", 1))
-DB_MAX_CONN = int(os.getenv("DB_MAX_CONN", 10))
 
+DATABASE_URL = (
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}"
+    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 
-try:
-    db_pool = pool.SimpleConnectionPool(
-        minconn=DB_MIN_CONN,
-        maxconn=DB_MAX_CONN,
-        host=DB_HOST,
-        port=DB_PORT,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
-    if db_pool:
-        print("Connection pool created successfully")
-except Exception as e:
-    print("Error creating connection pool:", e)
-    raise
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=int(os.getenv("DB_POOL_SIZE", 10)),
+    max_overflow=int(os.getenv("DB_MAX_OVERFLOW", 5)),
+    pool_pre_ping=True,
+    echo=False
+)
+
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+Base = declarative_base()
 
 
 def get_db():
-    
-    conn = db_pool.getconn()
+    db = SessionLocal()
     try:
-        
-        yield conn.cursor(cursor_factory=RealDictCursor)
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        raise e
+        yield db
     finally:
-         
-        db_pool.putconn(conn)
+        db.close()

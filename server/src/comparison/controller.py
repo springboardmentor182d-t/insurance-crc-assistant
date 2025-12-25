@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
-from database.core import get_db
-from comparison.service import display_policy, get_providers_by_policy_type
+from src.database.core import get_db
+from src.comparison.service import display_policy, get_providers_by_policy_type
 
 
 
@@ -26,10 +26,10 @@ def display_policies_endpoint(
         "sort_term": sort_term
     }
 
-    # results is a list of dictionaries
+    
     results = display_policy(db, policy_type, filters)
     
-    # FastAPI converts this dictionary return into a JSON response
+   
     return {"results": results}
 @router.get("/policies/{policy_type}/providers")
 def get_providers_by_policy_type_endpoint(
