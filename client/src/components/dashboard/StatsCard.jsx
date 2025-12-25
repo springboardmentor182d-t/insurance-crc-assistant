@@ -1,3 +1,4 @@
+
 export default function StatsCard({ policies = [] }) {
   const active = policies.filter(
     (p) => p.status && p.status.toLowerCase() === "active"

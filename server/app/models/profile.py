@@ -13,4 +13,4 @@ class UserProfile(Base):
     budget = Column(Integer, nullable=True)
     risk = Column(String, nullable=True)
     family_size = Column(Integer, nullable=True)
-    goal = Column(String, nullable=True)
+    goal = Column(String, nullable=True)    # 

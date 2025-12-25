@@ -84,7 +84,7 @@ def run():
 
     # Final commit
     db.commit()
-    db.close()
+    db.close()  # close
 
 if __name__ == "__main__":
     run()

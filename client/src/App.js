@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PageContainer from "./layout/PageContainer";
-import Home from "./pages/Home";
-// import UserDashboard from "./pages/UserDashboard";
+import Home from "./pages/Home";   // used for UserDashboard
 import Recommendations from "./pages/Recommendations";
 import HealthRecommendation from "./pages/HealthRecommendation";
 import MotorRecommendation from "./pages/MotorRecommendation";
@@ -15,8 +14,6 @@ import RecommendedPolicies from "./pages/RecommendedPolicies";
 import TestFetch from "./pages/TestFetch";
 
 // inside <Routes>:
-
-
 export default function App() {
   return (
     <BrowserRouter>

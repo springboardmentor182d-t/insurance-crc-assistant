@@ -1,5 +1,4 @@
 import { FiStar } from "react-icons/fi";
-
 export default function RecommendedPolicies({ recommendations = [] }) {
   if (!recommendations.length) {
     return (

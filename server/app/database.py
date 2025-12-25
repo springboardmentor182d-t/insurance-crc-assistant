@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# ✅ Single Database URL (Dashboard DB)
 DATABASE_URL = "postgresql://kartheek_dashboard_user:kartheek777@127.0.0.1:5432/db_insurance"
 
 # Engine

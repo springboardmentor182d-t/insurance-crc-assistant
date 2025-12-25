@@ -12,7 +12,7 @@ export default function ProfileSummary({ profile }) {
       {/* Profile Image */}
       <div className="relative mb-4">
         <img
-          src={profile.photo || "https://via.placeholder.com/100"}
+          src={profile.photo || "https://via.placeholder.com/100"}  // image link
           alt="User"
           className="w-24 h-24 rounded-full object-cover border-2 border-blue-500"
         />

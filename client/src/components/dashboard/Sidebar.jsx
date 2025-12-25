@@ -49,7 +49,7 @@ function SidebarSupport({ user }) {
         <FiLogOut
           className="text-lg cursor-pointer hover:text-white"
           title="Logout"
-          onClick={handleLogout}
+          onClick={handleLogout}  // functionality for logout button
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-# server/app/models/claim.py
+
 from sqlalchemy import Column, Integer, Float, Date, ForeignKey, String
 from server.app.database import Base
 

@@ -1,3 +1,4 @@
+
 export default function ClaimsTable({ claims = [], policies = [] }) {
   if (!claims.length) {
     return (

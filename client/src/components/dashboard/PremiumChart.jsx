@@ -32,7 +32,7 @@ export default function PremiumChart({ data = [] }) {
   const formatted = ["auto", "home", "health", "life"].map((type) => ({
     category: type.charAt(0).toUpperCase() + type.slice(1),
     MarketAvg: chartData[type]?.market || 1000,
-    YourPremium: chartData[type]?.user || 1500,
+    YourPremium: chartData[type]?.user || 1500,  // inserted values
   }));
 
   return (

@@ -1,3 +1,4 @@
+
 export default function PoliciesTable({ policies = [] }) {
   if (!policies.length) {
     return (
