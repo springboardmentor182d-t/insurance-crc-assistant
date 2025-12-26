@@ -1,101 +1,66 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.profile import Profile
-from app.models.policy import Policy
+from sqlalchemy import text
 
 router = APIRouter(
     prefix="/api/recommendations",
     tags=["Recommendations"]
 )
 
-@router.get("/")
-def recommend_policies(
-    sort: str = Query("best"),  # kept for UI, but best = score-based
-    db: Session = Depends(get_db)
-):
-    profile = db.query(Profile).first()
-    if not profile:
-        return []
+@router.get("/{profile_id}")
+def get_recommendations(profile_id: int, db: Session = Depends(get_db)):
+    query = text("""
+        SELECT
+          p.id AS policy_id,
+          p.name,
+          (p.pricing_rules->>'base_premium')::INT AS premium,
+          p.coverage_details->>'category' AS category,
 
-    # Normalize categories
-    user_categories = (
-        [c.strip().title() for c in profile.categories.split(",")]
-        if profile.categories
-        else []
-    )
+          jsonb_build_object(
+            'risk', lpr.risk_score,
+            'budget_ok', (
+              (pref.budget_preferences->>'monthly_max')::INT
+              >= (p.pricing_rules->>'base_premium')::INT
+            ),
+            'goal', pref.goal_preferences->>'goal'
+          ) AS explanation
 
-    # Category filter (fallback to all)
-    if user_categories:
-        policies = (
-            db.query(Policy)
-            .filter(Policy.category.in_(user_categories))
-            .all()
-        )
-    else:
-        policies = db.query(Policy).all()
+        FROM policies p
+        JOIN latest_profile_risk lpr
+          ON lpr.profile_id = :profile_id
+        JOIN profile_preferences pref
+          ON pref.profile_id = :profile_id
 
-    recommendations = []
+        WHERE p.is_active = true
 
-    # Budget tolerance
-    BUDGET_BUFFER = 2000
-    max_allowed_premium = (
-        profile.budget + BUDGET_BUFFER
-        if profile.budget
-        else None
-    )
+          -- risk filter
+          AND (p.eligibility_rules->'allowed_risk_levels') ? lpr.risk_score
 
-    for policy in policies:
-        # 🚫 FILTER: above budget tolerance
-        if max_allowed_premium and policy.premium > max_allowed_premium:
-            continue
+          -- budget filter
+          AND (
+            (pref.budget_preferences->>'monthly_max')::INT
+            >= (p.pricing_rules->>'base_premium')::INT
+          )
 
-        # 🎯 SCORE CALCULATION
-        score = 0
+          -- ✅ CATEGORY FILTER (THE FIX)
+          AND (
+            p.coverage_details->>'category' IN (
+              SELECT jsonb_array_elements_text(
+                pref.coverage_preferences->'categories'
+              )
+            )
+          )
 
-        # Base category relevance
-        score += 3
+        ORDER BY premium ASC;
+    """)
 
-        # Budget fit
-        if profile.budget and policy.premium <= profile.budget:
-            score += 3
+    result = db.execute(
+        query,
+        {"profile_id": profile_id}
+    ).mappings().all()
 
-        # Risk match
-        if profile.risk and policy.risk_level == profile.risk:
-            score += 2
-
-        # Family size relevance
-        if profile.family_size:
-            if profile.family_size >= 4 and "Family" in policy.coverage:
-                score += 2
-            elif profile.family_size <= 2:
-                score += 1
-
-        # Goal-based preference
-        if profile.goal == "Lowest Premium":
-            score += max(0, 20000 - policy.premium) // 5000
-
-        elif profile.goal == "Family Protection":
-            if "Family" in policy.coverage or policy.category in ["Health", "Life"]:
-                score += 2
-
-        elif profile.goal == "Tax Saving":
-            if policy.category in ["Health", "Life"]:
-                score += 2
-
-        recommendations.append({
-            "id": policy.id,
-            "name": policy.name,
-            "category": policy.category,
-            "premium": policy.premium,
-            "coverage": policy.coverage,
-            "risk_level": policy.risk_level,
-            "score": score
-        })
-
-    # 🥇 FINAL SORT: HIGH SCORE FIRST, THEN LOWER PREMIUM
-    recommendations.sort(
-        key=lambda x: (-x["score"], x["premium"])
-    )
-
-    return recommendations[:6]
+    return {
+        "profile_id": profile_id,
+        "recommendations": result
+    }
