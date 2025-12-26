@@ -35,3 +35,4 @@ htmlcov/
 # DB files
 *.db
 *.sqlite3
+server\.env
