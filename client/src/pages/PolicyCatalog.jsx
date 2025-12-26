@@ -1,85 +1,101 @@
+import Sidebar from "../layout/Sidebar";
 import Header from "../components/Header";
+import PolicyFilter from "../features/policies/components/PolicyFilter";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+const baseURL = "http://127.0.0.1:8000";
+
 const PolicyCatalog = () => {
   const [policies, setPolicies] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("");
+  const [policyTypes, setPolicyTypes] = useState([]);
+  const [ranges, setRanges] = useState([]);
+
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "",
+    range: null,
+  });
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/policies")
+    fetch(`${baseURL}/policies`)
       .then(res => res.json())
-      .then(data => setPolicies(data));
+      .then(setPolicies);
+
+    fetch(`${baseURL}/policies/filters`)
+      .then(res => res.json())
+      .then(data => {
+        setPolicyTypes(data.types);
+        setRanges(data.ranges);
+      });
   }, []);
 
-  // 🔹 Browse logic
-  const filteredPolicies = policies.filter(policy =>
-    policy.title.toLowerCase().includes(search.toLowerCase()) &&
-    (filterType === "" || policy.policy_type === filterType)
-  );
+  
+ 
+const filteredPolicies = policies.filter(policy => {
+  const matchesSearch =
+    policy.title.toLowerCase().includes(filters.search.toLowerCase());
+
+  const matchesType =
+    !filters.type || policy.policy_type === filters.type;
+
+  const matchesRange =
+    !filters.range ||
+    (policy.premium >= filters.range.min &&
+     policy.premium <= filters.range.max);
+
+  return matchesSearch && matchesType && matchesRange;
+});
+
 
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen bg-[#0D99FF]">
+      <Sidebar />
 
-      <div className="p-8 bg-gray-50 min-h-screen">
-        <h1 className="text-2xl font-semibold mb-6">Policy Catalog</h1>
+      <div className="flex-1 bg-gray-50">
+        <Header />
+        
 
-        {/* 🔍 Search & Filter */}
-        <div className="flex gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Search policy..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 border rounded w-1/3"
+      
+
+      
+          <PolicyFilter
+            filters={filters}
+            setFilters={setFilters}
+            policyTypes={policyTypes}
+            ranges={ranges}
           />
 
-          <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-            className="px-4 py-2 border rounded"
-          >
-            <option value="">All Types</option>
-            <option value="Health Insurance">Health</option>
-            <option value="Life Insurance">Life</option>
-            <option value="Travel Insurance">Travel</option>
-            <option value="Accident Insurance">Accident</option>
-            <option value="Savings Plan">Savings</option>
-          </select>
-        </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            {filteredPolicies.length === 0 && (
+              <p className="text-gray-500">No policies found</p>
+            )}
 
-        {/* 🧾 Policy Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredPolicies.length === 0 && (
-            <p>No policies found</p>
-          )}
-
-          {filteredPolicies.map(policy => (
-            <div
-              key={policy.id}
-              className="bg-white p-6 rounded-xl shadow"
-            >
-              <h3 className="text-lg font-semibold">
-                {policy.title}
-              </h3>
-
-              <p className="text-gray-500 mt-2">
-                {policy.policy_type}
-              </p>
-
-              <Link
-                to={`/policy-details/${policy.id}`}
-                className="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+            {filteredPolicies.map(policy => (
+              <div
+                key={policy.id}
+                className="bg-white p-6 rounded-xl shadow"
               >
-                View Details
-              </Link>
-            </div>
-          ))}
+                <h3 className="text-lg font-semibold">
+                  {policy.title}
+                </h3>
+
+                <p className="text-gray-500 mt-2">
+                  {policy.policy_type}
+                </p>
+
+                <Link
+                  to={`/policy-details/${policy.id}`}
+                  className="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+                >
+                  View Details
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </>
   );
 };
 

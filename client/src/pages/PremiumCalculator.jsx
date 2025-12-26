@@ -36,7 +36,7 @@ const PremiumCalculator = () => {
         </h1>
 
         <div className="bg-white p-6 rounded-xl shadow w-full md:w-1/2">
-          {/* Coverage */}
+        
           <label className="block mb-2 font-medium">
             Coverage Amount (₹)
           </label>
@@ -48,7 +48,7 @@ const PremiumCalculator = () => {
             onChange={(e) => setCoverage(e.target.value)}
           />
 
-          {/* Policy Type */}
+          
           <label className="block mb-2 font-medium">
             Policy Type
           </label>
@@ -64,7 +64,7 @@ const PremiumCalculator = () => {
             <option value="Accident Insurance">Accident Insurance</option>
           </select>
 
-          {/* Payment Frequency */}
+          
           <label className="block mb-2 font-medium">
             Payment Frequency
           </label>
@@ -78,7 +78,7 @@ const PremiumCalculator = () => {
             <option value="Yearly">Yearly</option>
           </select>
 
-          {/* Button */}
+          
           <button
             onClick={calculatePremium}
             className="bg-blue-600 text-white px-4 py-2 rounded"
@@ -86,7 +86,7 @@ const PremiumCalculator = () => {
             Calculate Premium
           </button>
 
-          {/* Result */}
+         
           {premium && (
             <div className="mt-6 text-lg font-semibold">
               Estimated Premium: ₹ {premium}
