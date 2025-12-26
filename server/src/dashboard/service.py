@@ -21,5 +21,5 @@ def get_recommendations():
     return read_json("recommendations.json")
 
 
-def get_claims_overview():
+def get_claims_overview(): 
     return read_json("claims.json")
