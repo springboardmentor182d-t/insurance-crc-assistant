@@ -7,42 +7,47 @@ export default function RecommendedPolicies() {
   const [loading, setLoading] = useState(true);
   const [sortType, setSortType] = useState("best");
 
-  // FETCH DATA
+  // =========================
+  // FETCH RECOMMENDATIONS
+  // =========================
   useEffect(() => {
     setLoading(true);
 
     axios
-      .get("/api/recommendations")
+      .get("http://127.0.0.1:8000/api/recommendations/1")
       .then((res) => {
-        const normalized = res.data.map((p) => ({
-          ...p,
-          premium: Number(p.premium),
-          score: Number(p.score),
-        }));
-
-        setPolicies(normalized);
+        setPolicies(res.data.recommendations || []);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("Failed to load recommendations", err);
+        setLoading(false);
+      });
   }, []);
 
-  // ✅ SORTING LOGIC (FINAL)
+  // =========================
+  // SORTING LOGIC
+  // =========================
   const sortedPolicies = useMemo(() => {
     if (!policies.length) return [];
 
     const sorted = [...policies];
 
-    // BEST MATCH → highest score
+    // BEST MATCH → prioritize Life & Health
     if (sortType === "best") {
-      return sorted.sort((a, b) => b.score - a.score);
+      const priority = ["Life", "Health"];
+      return sorted.sort(
+        (a, b) =>
+          priority.indexOf(a.category) - priority.indexOf(b.category)
+      );
     }
 
-    // LOWEST PREMIUM → low to high
+    // LOWEST PREMIUM FIRST
     if (sortType === "premium") {
       return sorted.sort((a, b) => a.premium - b.premium);
     }
 
-    // ✅ COMPREHENSIVE → HIGH PREMIUM TO LOW PREMIUM
+    // COMPREHENSIVE → HIGHEST PREMIUM FIRST
     if (sortType === "comprehensive") {
       return sorted.sort((a, b) => b.premium - a.premium);
     }
@@ -50,10 +55,20 @@ export default function RecommendedPolicies() {
     return sorted;
   }, [policies, sortType]);
 
+  // =========================
+  // LOADING STATE
+  // =========================
   if (loading) {
-    return <p className="text-center mt-20">Loading recommendations...</p>;
+    return (
+      <p className="text-center mt-20 text-gray-600">
+        Loading recommendations...
+      </p>
+    );
   }
 
+  // =========================
+  // UI
+  // =========================
   return (
     <div className="p-6">
       {/* HEADER */}
@@ -63,7 +78,8 @@ export default function RecommendedPolicies() {
           <span className="text-indigo-600">Profile</span>
         </h1>
         <p className="text-gray-500 mt-2 max-w-2xl">
-          Personalized insurance plans based on your preferences.
+          Personalized insurance plans based on your risk profile,
+          budget, and goals.
         </p>
       </div>
 
@@ -103,11 +119,18 @@ export default function RecommendedPolicies() {
         </button>
       </div>
 
+      {/* EMPTY STATE */}
+      {sortedPolicies.length === 0 && (
+        <div className="bg-white p-6 rounded-xl shadow text-gray-600">
+          No policies match your current profile.
+        </div>
+      )}
+
       {/* POLICY CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {sortedPolicies.map((policy, index) => (
           <div
-            key={policy.id}
+            key={policy.policy_id}
             className="relative border rounded-2xl p-6 shadow-sm hover:shadow-xl transition bg-white"
           >
             {index === 0 && (
@@ -125,8 +148,17 @@ export default function RecommendedPolicies() {
               {policy.category} Insurance
             </p>
 
+            {/* EXPLANATION */}
             <ul className="text-sm text-gray-600 space-y-2 mb-6">
-              <li>✔ Match Score: {policy.score}</li>
+              <li>
+                ✔ Suitable for{" "}
+                <b>{policy.explanation.risk}</b> risk profile
+              </li>
+              <li>✔ Fits within your budget</li>
+              <li>
+                ✔ Matches your goal:{" "}
+                <b>{policy.explanation.goal}</b>
+              </li>
             </ul>
 
             <div className="flex justify-between items-end">
