@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { ShieldCheck } from "lucide-react";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 export default function RecommendedPolicies() {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,18 +13,27 @@ export default function RecommendedPolicies() {
   // FETCH RECOMMENDATIONS
   // =========================
   useEffect(() => {
+    let isMounted = true;
+
     setLoading(true);
 
     axios
-      .get("http://127.0.0.1:8000/api/recommendations/1")
+      .get(`${BASE_URL}/api/recommendations/1`)
       .then((res) => {
+        if (!isMounted) return;
+
+        console.log("✅ RECOMMENDATIONS API:", res.data.recommendations);
         setPolicies(res.data.recommendations || []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Failed to load recommendations", err);
-        setLoading(false);
+        console.error("❌ Failed to load recommendations", err);
+        if (isMounted) setLoading(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // =========================
@@ -33,21 +44,10 @@ export default function RecommendedPolicies() {
 
     const sorted = [...policies];
 
-    // BEST MATCH → prioritize Life & Health
-    if (sortType === "best") {
-      const priority = ["Life", "Health"];
-      return sorted.sort(
-        (a, b) =>
-          priority.indexOf(a.category) - priority.indexOf(b.category)
-      );
-    }
-
-    // LOWEST PREMIUM FIRST
+    if (sortType === "best") return sorted;
     if (sortType === "premium") {
       return sorted.sort((a, b) => a.premium - b.premium);
     }
-
-    // COMPREHENSIVE → HIGHEST PREMIUM FIRST
     if (sortType === "comprehensive") {
       return sorted.sort((a, b) => b.premium - a.premium);
     }
@@ -119,8 +119,8 @@ export default function RecommendedPolicies() {
         </button>
       </div>
 
-      {/* EMPTY STATE */}
-      {sortedPolicies.length === 0 && (
+      {/* EMPTY STATE (SAFE) */}
+      {!loading && policies.length === 0 && (
         <div className="bg-white p-6 rounded-xl shadow text-gray-600">
           No policies match your current profile.
         </div>
@@ -133,7 +133,7 @@ export default function RecommendedPolicies() {
             key={policy.policy_id}
             className="relative border rounded-2xl p-6 shadow-sm hover:shadow-xl transition bg-white"
           >
-            {index === 0 && (
+            {index === 0 && sortType === "best" && (
               <span className="absolute top-4 right-4 px-3 py-1 text-xs rounded-full bg-indigo-100 text-indigo-700 font-semibold">
                 Top Pick
               </span>
@@ -148,16 +148,12 @@ export default function RecommendedPolicies() {
               {policy.category} Insurance
             </p>
 
-            {/* EXPLANATION */}
             <ul className="text-sm text-gray-600 space-y-2 mb-6">
               <li>
-                ✔ Suitable for{" "}
-                <b>{policy.explanation.risk}</b> risk profile
+                ✔ Risk Level: <b>{policy.explanation.risk}</b>
               </li>
-              <li>✔ Fits within your budget</li>
               <li>
-                ✔ Matches your goal:{" "}
-                <b>{policy.explanation.goal}</b>
+                ✔ Goal: <b>{policy.explanation.goal}</b>
               </li>
             </ul>
 
