@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   Building2,
   Store,
@@ -8,6 +9,7 @@ import {
   Briefcase,
   ShieldCheck,
   Lock,
+  Wallet,
 } from "lucide-react";
 
 export default function BusinessRecommendation() {
@@ -24,12 +26,61 @@ export default function BusinessRecommendation() {
   const [existingInsurance, setExistingInsurance] = useState("No");
   const [assetsValue, setAssetsValue] = useState("");
 
+  /* PREMIUM */
+  const [premium, setPremium] = useState(30000);
+
   const toggle = (val, list, setList) => {
     setList(
       list.includes(val)
         ? list.filter((v) => v !== val)
         : [...list, val]
     );
+  };
+
+  const toNumber = (v) => (v !== "" ? Number(v) : null);
+
+  /* ================= LOAD PROGRESS ================= */
+  useEffect(() => {
+    axios
+      .get("/api/business/load-progress")
+      .then((res) => {
+        if (!res.data?.data) return;
+        const d = res.data.data;
+
+        setBusinessType(d.businessType || "Retail");
+        setBusinessSize(d.businessSize || "Small");
+        setRevenue(d.revenue ? d.revenue.toString() : "");
+        setAddress(d.address || "");
+        setCoverage(Array.isArray(d.coverage) ? d.coverage : []);
+        setAssetsValue(d.assetsValue ? d.assetsValue.toString() : "");
+        setExistingInsurance(d.existingInsurance || "No");
+        setPremium(d.premium || 30000);
+      })
+      .catch(() => {
+        // first time user – ignore
+      });
+  }, []);
+
+  /* ================= SAVE PROGRESS ================= */
+  const saveProgress = async () => {
+    try {
+      await axios.post("/api/business/save-progress", {
+        businessType,
+        businessSize,
+        revenue: toNumber(revenue),
+        address: address || null,
+        coverage: coverage || [],
+        assetsValue: toNumber(assetsValue),
+        existingInsurance,
+        premium,
+      });
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("BUSINESS SAVE ERROR:", err);
+      alert("Save failed");
+    }
   };
 
   return (
@@ -40,8 +91,8 @@ export default function BusinessRecommendation() {
         <button
           onClick={() => navigate("/recommendations")}
           className="inline-flex items-center gap-1 px-3 py-1.5 mb-3
-            text-sm font-medium text-gray-500 rounded-lg
-            hover:bg-indigo-50 hover:text-indigo-600 transition"
+          text-sm font-medium text-gray-500 rounded-lg
+          hover:bg-indigo-50 hover:text-indigo-600 transition"
         >
           ← Back
         </button>
@@ -62,12 +113,9 @@ export default function BusinessRecommendation() {
 
           <div className="flex flex-col items-end">
             <button
-              onClick={() => {
-                setSaved(true);
-                setTimeout(() => setSaved(false), 2500);
-              }}
+              onClick={saveProgress}
               className="px-4 py-2 rounded-xl bg-white shadow
-                text-sm font-semibold hover:bg-indigo-50 transition"
+              text-sm font-semibold hover:bg-indigo-50 transition"
             >
               Save Progress
             </button>
@@ -102,12 +150,10 @@ export default function BusinessRecommendation() {
             { label: "Other", icon: Building2 },
           ].map((b) => {
             const Icon = b.icon;
-            const active = businessType === b.label;
-
             return (
               <SelectableCard
                 key={b.label}
-                active={active}
+                active={businessType === b.label}
                 onClick={() => setBusinessType(b.label)}
                 color="red"
               >
@@ -147,17 +193,13 @@ export default function BusinessRecommendation() {
         </div>
       </Section>
 
-      {/* ================= COVERAGE REQUIREMENTS ================= */}
+      {/* ================= COVERAGE ================= */}
       <Section
         title="Coverage Requirements"
         subtitle="Select specific risks and protection needs"
         color="orange"
         icon={<ShieldCheck />}
       >
-        <p className="text-xs font-semibold text-orange-500">
-          COVERAGE REQUIRED FOR
-        </p>
-
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
           {[
             "Property Damage",
@@ -198,11 +240,11 @@ export default function BusinessRecommendation() {
                   key={v}
                   onClick={() => setExistingInsurance(v)}
                   className={`flex-1 py-3 rounded-xl font-semibold border
-                    ${
-                      existingInsurance === v
-                        ? "bg-orange-500 text-white"
-                        : "bg-white hover:bg-orange-50"
-                    }`}
+                  ${
+                    existingInsurance === v
+                      ? "bg-orange-500 text-white"
+                      : "bg-white hover:bg-orange-50"
+                  }`}
                 >
                   {v}
                 </button>
@@ -212,34 +254,66 @@ export default function BusinessRecommendation() {
         </div>
       </Section>
 
+      {/* ================= PREMIUM ================= */}
+      <Section
+        title="Budget & Premium"
+        subtitle="Choose annual premium"
+        color="green"
+        icon={<Wallet />}
+      >
+        <div className="flex justify-between items-center">
+          <p className="text-xs font-semibold text-green-600">TARGET PREMIUM</p>
+          <span className="bg-green-500 text-white px-3 py-1 rounded-full">
+            ₹{premium}
+          </span>
+        </div>
+
+        <input
+          type="range"
+          min="5000"
+          max="200000"
+          step="1000"
+          value={premium}
+          onChange={(e) => setPremium(Number(e.target.value))}
+          className="w-full mt-4 accent-green-500"
+        />
+      </Section>
+
       {/* ================= CTA ================= */}
       <button
+        onClick={() =>
+          navigate("/businessrecresults", {
+            state: {
+              businessType,
+              businessSize,
+              coverage,
+              assetsValue: toNumber(assetsValue),
+              premium,
+            },
+          })
+        }
         className="w-full py-4 rounded-2xl text-white text-lg font-semibold
         bg-gradient-to-r from-indigo-500 to-pink-500 hover:opacity-95"
       >
         Get Personalized Recommendations
       </button>
-
-      <p className="text-center text-xs text-gray-400 mt-3">
-        🔒 Your information is secure and encrypted
-      </p>
     </div>
   );
 }
 
-/* ================= REUSABLE COMPONENTS ================= */
+/* ================= REUSABLE ================= */
 
 function Section({ title, subtitle, color, icon, children }) {
   const map = {
     red: "bg-red-50 border-red-200 before:bg-red-500",
     orange: "bg-orange-50 border-orange-200 before:bg-orange-500",
+    green: "bg-green-50 border-green-200 before:bg-green-500",
   };
 
   return (
-    <div
-      className={`relative border rounded-3xl p-8 ${map[color]}
-      before:absolute before:left-0 before:top-0 before:h-full before:w-1.5 before:rounded-l-3xl`}
-    >
+    <div className={`relative border rounded-3xl p-8 ${map[color]}
+    before:absolute before:left-0 before:top-0 before:h-full
+    before:w-1.5 before:rounded-l-3xl`}>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-11 h-11 rounded-xl bg-white shadow flex items-center justify-center">
           {icon}
@@ -274,8 +348,8 @@ const SelectableCard = ({ children, active, onClick, color }) => {
     <div
       onClick={onClick}
       className={`cursor-pointer rounded-2xl p-4 text-center border
-        transition hover:shadow-md hover:-translate-y-1
-        ${active ? colors[color] : "bg-white"}`}
+      transition hover:shadow-md hover:-translate-y-1
+      ${active ? colors[color] : "bg-white"}`}
     >
       <div className="flex flex-col items-center gap-2 text-sm font-semibold">
         {children}
