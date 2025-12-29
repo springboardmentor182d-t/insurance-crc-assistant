@@ -1,13 +1,31 @@
+# server/app/dashboard/profile.py
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List, Optional
+from datetime import date
 
 from server.app.database import get_db
 from server.app.models.profile import UserProfile
-from server.app.schemas.profile import ProfileCreate
 
+# ================= SCHEMA =================
+class ProfileCreate(BaseModel):
+    dob: Optional[date]
+    address: Optional[str]
+    categories: List[str] = []
+    budget: Optional[int]
+    risk: Optional[str]
+    familySize: Optional[int]
+    goal: Optional[str]
+
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
+# ================= ROUTER =================
 router = APIRouter(prefix="/api/profile", tags=["Profile"])
 
-# ================= GET PROFILE =================
 @router.get("/")
 def get_profile(db: Session = Depends(get_db)):
     profile = db.query(UserProfile).first()
@@ -24,11 +42,9 @@ def get_profile(db: Session = Depends(get_db)):
         "goal": profile.goal,
     }
 
-# ================= SAVE PROFILE =================
 @router.post("/")
 def save_profile(data: ProfileCreate, db: Session = Depends(get_db)):
     profile = db.query(UserProfile).first()
-
     categories_str = ",".join(data.categories)
 
     if not profile:
