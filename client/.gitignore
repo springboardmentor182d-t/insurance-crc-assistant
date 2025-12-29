@@ -1,12 +1,7 @@
-# Ignore everything
-*
+# Node modules
+node_modules/
 
-# Except these folders
-!client/
-!server/
-
-# Ignore node_modules and build folders inside client or server
-client/node_modules/
-client/build/
-server/node_modules/
-server/build/
+# Build and environment files
+/dist
+/build
+.env
