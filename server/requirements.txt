@@ -15,3 +15,6 @@ python-jose[cryptography]
 
 pytest
 httpx
+python-multipart
+fastapi-mail
+authlib
