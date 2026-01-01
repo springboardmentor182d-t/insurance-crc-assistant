@@ -10,23 +10,12 @@ __pycache__/
 env/
 venv/
 
-
 # Packaging
 build/
 dist/
 .eggs/
 lib/
 lib64/
-
-# Environment variables
-.env
-.env.*
-
-# DB files
-# Database files
-*.db
-*.sqlite3
-server\.env
 
 # Logs
 *.log
@@ -40,4 +29,13 @@ htmlcov/
 .vscode/
 .idea/
 
+# Environment variables
+.env
+.env.*
+
+# DB files
+# Database files
+*.db
+*.sqlite3
+server\.env
 

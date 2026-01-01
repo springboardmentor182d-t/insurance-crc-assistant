@@ -10,14 +10,15 @@ import {
   GitCompare,
   LogOut,
   Settings,
-  Calculator, 
-} from "lucide-react";
+  Calculator, } from "lucide-react";
+
 export function SidebarMenu() {
   const navigate = useNavigate();
 
   const underDevelopment = () => {
     alert("🚧 This feature is under development");
   };
+
   return (
     <nav className="bg-blue-500 text-white w-64 min-h-screen p-7 font-bold text-lg">
       <div className="text-2xl mb-8 leading-snug">
@@ -34,8 +35,7 @@ export function SidebarMenu() {
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={() => navigate(-1)}
-         
-      >
+        >
         <FaFileAlt className="text-xl" /> Policies
       </div>
 
@@ -52,14 +52,12 @@ export function SidebarMenu() {
       >
         <FaBalanceScale className="text-xl" /> Compare
       </div>
-
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={underDevelopment}
       >
         <FaStar className="text-xl" /> Saved
       </div>
-
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={underDevelopment}
@@ -69,6 +67,8 @@ export function SidebarMenu() {
     </nav>
   );
 }
+
+
 export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   const [filters, setFilters] = useState({
     providers: [],
@@ -89,16 +89,19 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   const selectDuration = (duration) => {
     const updatedDuration = filters.duration === duration ? null : duration;
     const updated = { ...filters, duration: updatedDuration };
-    
+    setFilters(updated);
+    onFilterChange && onFilterChange(updated);
   };
 
   const selectPremiumRange = (range) => {
      const updatedRange = filters.premiumRange === range ? null : range;
     const updated = { ...filters, premiumRange: updatedRange };
   };
+
   const applyFilters = () => {
     onFilterChange && onFilterChange(filters);
   };
+
   return (
     <div className="w-72 p-6 bg-white rounded-lg shadow-md text-sm">
       <h2 className="text-lg font-bold mb-5">Filters</h2>
@@ -147,6 +150,7 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
           </div>
         ))}
       </div>
+
       <button
         onClick={applyFilters}
         className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
@@ -156,6 +160,8 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
     </div>
   );
 }
+
+
 export function Catalog() {
   const navigate = useNavigate();
 
@@ -191,13 +197,15 @@ export function Catalog() {
     </nav>
   );
 }
+
+
 const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
     { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
     { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
     {
-       name: "Dashboard",
+      name: "Dashboard",
       path: "/dashboard",
       icon: <LayoutDashboard size={18} />,
     },
@@ -227,12 +235,14 @@ const Sidebar = () => {
     { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
     { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
   ];
+
   return (
     <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
       <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
         <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">
-          CRC
-        </span>Insurance
+         CRC
+        </span>
+        Insurance
       </div>
 
       <nav className="flex-1 px-4 py-6 space-y-2">
@@ -254,6 +264,8 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
+
+      
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
         <NavLink
           to="/settings"
