@@ -1,17 +1,15 @@
-# Python
+# Python / FastAPI ignores
 __pycache__/
+*.py[cod]
 *.pyc
 *.pyo
-*.py[cod]
 *.pyd
 
 # Virtual environment
-venv/
 .venv/
 env/
-# Environment files
-.env
-.env.*
+venv/
+
 
 # Packaging
 build/
@@ -19,6 +17,16 @@ dist/
 .eggs/
 lib/
 lib64/
+
+# Environment variables
+.env
+.env.*
+
+# DB files
+# Database files
+*.db
+*.sqlite3
+server\.env
 
 # Logs
 *.log
@@ -32,7 +40,4 @@ htmlcov/
 .vscode/
 .idea/
 
-# Database files
-*.db
-*.sqlite3
-server\.env
+

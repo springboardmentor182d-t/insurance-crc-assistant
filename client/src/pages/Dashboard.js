@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import Sidebar from "../layout/Sidebar";
 import Navbar from "../layout/Navbar";
 import PageContainer from "../layout/PageContainer";
-
-
 import StatCard from "../components/Dashboard/StatCard";
 import PolicyCard from "../components/Dashboard/PolicyCard";
 import RecommendationCard from "../components/Dashboard/RecommendationCard";

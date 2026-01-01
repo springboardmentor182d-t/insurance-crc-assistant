@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaHome, FaFileAlt, FaBalanceScale, FaStar, FaUser } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Home,
   LayoutDashboard,
@@ -9,17 +10,14 @@ import {
   GitCompare,
   LogOut,
   Settings,
-  Calculator, // ✅ added
+  Calculator, 
 } from "lucide-react";
-
-/* ---------------- Sidebar Menu ---------------- */
 export function SidebarMenu() {
   const navigate = useNavigate();
 
   const underDevelopment = () => {
     alert("🚧 This feature is under development");
   };
-
   return (
     <nav className="bg-blue-500 text-white w-64 min-h-screen p-7 font-bold text-lg">
       <div className="text-2xl mb-8 leading-snug">
@@ -35,7 +33,8 @@ export function SidebarMenu() {
 
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
-        onClick={() => navigate("/policies")}  
+        onClick={() => navigate(-1)}
+         
       >
         <FaFileAlt className="text-xl" /> Policies
       </div>
@@ -70,8 +69,6 @@ export function SidebarMenu() {
     </nav>
   );
 }
-
-/* ---------------- Sidebar Filter ---------------- */
 export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   const [filters, setFilters] = useState({
     providers: [],
@@ -90,23 +87,18 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   };
 
   const selectDuration = (duration) => {
-    const updated = {
-      ...filters,
-      duration: filters.duration === duration ? null : duration,
-    };
-    setFilters(updated);
-    onFilterChange && onFilterChange(updated);
+    const updatedDuration = filters.duration === duration ? null : duration;
+    const updated = { ...filters, duration: updatedDuration };
+    
   };
 
   const selectPremiumRange = (range) => {
-    const updated = {
-      ...filters,
-      premiumRange: filters.premiumRange === range ? null : range,
-    };
-    setFilters(updated);
-    onFilterChange && onFilterChange(updated);
+     const updatedRange = filters.premiumRange === range ? null : range;
+    const updated = { ...filters, premiumRange: updatedRange };
   };
-
+  const applyFilters = () => {
+    onFilterChange && onFilterChange(filters);
+  };
   return (
     <div className="w-72 p-6 bg-white rounded-lg shadow-md text-sm">
       <h2 className="text-lg font-bold mb-5">Filters</h2>
@@ -148,41 +140,99 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
             key={range}
             onClick={() => selectPremiumRange(range)}
             className={`cursor-pointer px-2 py-1 rounded mb-2 ${
-              filters.premiumRange === range
-                ? "bg-blue-100 font-semibold"
-                : ""
+              filters.premiumRange === range ? "bg-blue-100 font-semibold" : ""
             }`}
           >
             {range}
           </div>
         ))}
       </div>
+      <button
+        onClick={applyFilters}
+        className="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
+      >
+        Apply Filters
+      </button>
     </div>
   );
 }
+export function Catalog() {
+  const navigate = useNavigate();
 
-/* ---------------- Main Sidebar ---------------- */
+  const underDevelopment = () => {
+    alert("🚧 This feature is under development");
+  };
+  return (
+    <nav className="bg-blue-500 text-white w-64 min-h-screen p-7 font-bold text-lg">
+      <div className="text-2xl mb-8 leading-snug">
+        Insurance <br /> CRC Assistant
+      </div>
+
+      <div
+        className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+        onClick={() => navigate("/")}
+      >
+        <FaHome className="text-xl" /> Home
+      </div>
+
+      <div
+        className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+        onClick={underDevelopment}
+      >
+        <FaStar className="text-xl" /> Saved
+      </div>
+
+      <div
+        className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+        onClick={underDevelopment}
+      >
+        <FaUser className="text-xl" /> Profile
+      </div>
+    </nav>
+  );
+}
 const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
     { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
     { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
     {
-      name: "Premium Calculator",           // ✅ added
+       name: "Dashboard",
+      path: "/dashboard",
+      icon: <LayoutDashboard size={18} />,
+    },
+    {
+      name: "Home",
+      path: "/home",
+      icon: <Home size={18} />,
+    },
+    {
+      name: "My Claims",
+      path: "/claims",
+      icon: <FileText size={18} />,
+    },
+    {
+      name: "Recommendations",
+      path: "/recommendations",
+      icon: <Lightbulb size={18} />,
+    },
+    {
+      name: "Compare Plans",
+      path: "/#",
+      icon: <GitCompare size={18} />,
+      name: "Premium Calculator",           
       path: "/premium-calculator",
       icon: <Calculator size={18} />,
     },
     { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
     { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
   ];
-
   return (
     <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
       <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
         <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">
           CRC
-        </span>
-        Insurance
+        </span>Insurance
       </div>
 
       <nav className="flex-1 px-4 py-6 space-y-2">
@@ -191,11 +241,12 @@ const Sidebar = () => {
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded-lg transition ${
-                isActive
-                  ? "bg-blue-700"
-                  : "hover:bg-blue-600 text-blue-100"
-              }`
+              `flex items-center gap-3 px-4 py-2 rounded-lg transition
+               ${
+                 isActive
+                   ? "bg-blue-700"
+                   : "hover:bg-blue-600 text-blue-100"
+               }`
             }
           >
             {item.icon}
@@ -203,7 +254,6 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
-
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
         <NavLink
           to="/settings"
