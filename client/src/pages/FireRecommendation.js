@@ -1,15 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
-  Home,
-  Factory,
   Building2,
   ShieldCheck,
-  Flame,
-  Zap,
-  CloudRain,
-  Lock,
-  Cpu,
+  Wallet,
 } from "lucide-react";
 
 export default function FirePropertyRecommendation() {
@@ -27,14 +22,77 @@ export default function FirePropertyRecommendation() {
   const [machineryValue, setMachineryValue] = useState("");
   const [totalSum, setTotalSum] = useState("");
 
-  const toggle = (val, list, setList) => {
-    setList(
-      list.includes(val)
-        ? list.filter((v) => v !== val)
-        : [...list, val]
+  /* PREMIUM */
+  const [premium, setPremium] = useState(20000);
+
+  /* ================= LOAD SAVED PROGRESS ================= */
+  useEffect(() => {
+    axios
+      .get("/api/fire/load-progress")
+      .then((res) => {
+        console.log("LOAD RESPONSE:", res.data); // 🔍 ADD THIS
+
+        if (!res.data?.data) return;
+        const d = res.data.data;
+
+        setPropertyType(d.propertyType || "Residential");
+        setConstructionType(d.constructionType || "RCC");
+        setPropertyAge(d.propertyAge ? d.propertyAge.toString() : "");
+        setLocation(d.location || "");
+        setCoverage(Array.isArray(d.coverage) ? d.coverage : []);
+        setStockValue(d.stockValue ? d.stockValue.toString() : "");
+        setMachineryValue(d.machineryValue ? d.machineryValue.toString() : "");
+        setTotalSum(d.totalSum ? d.totalSum.toString() : "");
+        setPremium(d.premium || 20000);
+      })
+      .catch((err) => {
+        console.error("LOAD ERROR:", err);
+      });
+  }, []);
+
+
+  /* ================= SAVE PROGRESS ================= */
+  const toNumber = (v) => (v !== "" && v !== null ? Number(v) : null);
+
+  const saveProgress = async () => {
+    try {
+      const payload = {
+        propertyType,
+        constructionType,
+        propertyAge: toNumber(propertyAge),
+        location: location?.trim() || null,
+
+        // 🔴 GUARANTEE ARRAY
+        coverage: Array.isArray(coverage) ? coverage : [],
+
+        stockValue: toNumber(stockValue),
+        machineryValue: toNumber(machineryValue),
+        totalSum: toNumber(totalSum),
+        premium,
+      };
+
+      console.log("SAVE PAYLOAD:", payload); // 🔍 DEBUG
+
+      await axios.post("/api/fire/save-progress", payload);
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error("SAVE ERROR:", err.response?.data || err);
+      alert("Save failed");
+    }
+  };
+
+  /* ================= HELPERS ================= */
+  const toggleCoverage = (val) => {
+    setCoverage((prev) =>
+      prev.includes(val)
+        ? prev.filter((v) => v !== val)
+        : [...prev, val]
     );
   };
 
+  /* ================= RENDER ================= */
   return (
     <div className="max-w-6xl mx-auto pb-20 space-y-12">
 
@@ -58,17 +116,13 @@ export default function FirePropertyRecommendation() {
               </span>
             </h1>
             <p className="text-gray-500 mt-2 max-w-2xl">
-              Complete the questionnaire below to receive a tailored fire and
-              property insurance quote that keeps your investments safe.
+              Get a personalized fire & property insurance plan.
             </p>
           </div>
 
           <div className="flex flex-col items-end">
             <button
-              onClick={() => {
-                setSaved(true);
-                setTimeout(() => setSaved(false), 2500);
-              }}
+              onClick={saveProgress}
               className="px-4 py-2 rounded-xl bg-white shadow
               text-sm font-semibold hover:bg-indigo-50 transition"
             >
@@ -89,37 +143,23 @@ export default function FirePropertyRecommendation() {
       {/* ================= PROPERTY DETAILS ================= */}
       <Section
         title="Property Details"
-        subtitle="Basic information about the property"
+        subtitle="Basic information"
         color="red"
         icon={<Building2 />}
       >
-        <p className="text-xs font-semibold text-red-500">PROPERTY TYPE</p>
-
         <div className="grid grid-cols-3 gap-4 mt-4">
-          {[
-            { label: "Residential", icon: Home },
-            { label: "Commercial", icon: Building2 },
-            { label: "Industrial", icon: Factory },
-          ].map((p) => {
-            const Icon = p.icon;
-            return (
-              <Selectable
-                key={p.label}
-                label={p.label}
-                icon={Icon}
-                active={propertyType === p.label}
-                onClick={() => setPropertyType(p.label)}
-                color="red"
-              />
-            );
-          })}
+          {["Residential", "Commercial", "Industrial"].map((p) => (
+            <SelectableSimple
+              key={p}
+              label={p}
+              active={propertyType === p}
+              onClick={() => setPropertyType(p)}
+              color="red"
+            />
+          ))}
         </div>
 
-        <p className="text-xs font-semibold text-red-500 mt-6">
-          CONSTRUCTION TYPE
-        </p>
-
-        <div className="grid grid-cols-3 gap-4 mt-3">
+        <div className="grid grid-cols-3 gap-4 mt-4">
           {["RCC", "Mixed", "Wooden"].map((c) => (
             <SelectableSimple
               key={c}
@@ -134,13 +174,11 @@ export default function FirePropertyRecommendation() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
           <Input
             label="Property Age (Years)"
-            placeholder="e.g. 5"
             value={propertyAge}
             onChange={(e) => setPropertyAge(e.target.value)}
           />
           <Input
-            label="Location (City / ZIP)"
-            placeholder="e.g. New York, 10001"
+            label="Location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
@@ -150,73 +188,84 @@ export default function FirePropertyRecommendation() {
       {/* ================= COVERAGE ================= */}
       <Section
         title="Coverage Requirements"
-        subtitle="Select risks and valuation for coverage"
+        subtitle="Select risks"
         color="orange"
         icon={<ShieldCheck />}
       >
-        <p className="text-xs font-semibold text-orange-500">
-          WANT COVERAGE FOR
-        </p>
-
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4">
           {[
-            { label: "Fire", icon: Flame },
-            { label: "Explosion", icon: Zap },
-            { label: "Lightning", icon: Zap },
-            { label: "Natural Disasters", icon: CloudRain },
-            { label: "Burglary", icon: Lock },
-            { label: "Electronic Equip.", icon: Cpu },
-          ].map((c) => {
-            const Icon = c.icon;
-            return (
-              <Selectable
-                key={c.label}
-                label={c.label}
-                icon={Icon}
-                active={coverage.includes(c.label)}
-                onClick={() => toggle(c.label, coverage, setCoverage)}
-                color="orange"
-              />
-            );
-          })}
+            "Fire",
+            "Explosion",
+            "Lightning",
+            "Natural Disasters",
+            "Burglary",
+            "Machinery Breakdown",
+          ].map((c) => (
+            <SelectableSimple
+              key={c}
+              label={c}
+              active={coverage.includes(c)}
+              onClick={() => toggleCoverage(c)}
+              color="orange"
+            />
+          ))}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          <Input
-            label="Stock / Inventory Value"
-            prefix="$"
-            placeholder="If applicable"
-            value={stockValue}
-            onChange={(e) => setStockValue(e.target.value)}
-          />
-          <Input
-            label="Machinery Value"
-            prefix="$"
-            placeholder="If applicable"
-            value={machineryValue}
-            onChange={(e) => setMachineryValue(e.target.value)}
-          />
-          <Input
-            label="Total Sum Insured"
-            prefix="$"
-            placeholder="Total required"
-            value={totalSum}
-            onChange={(e) => setTotalSum(e.target.value)}
-          />
+          <Input label="Stock Value" prefix="₹" value={stockValue}
+            onChange={(e) => setStockValue(e.target.value)} />
+          <Input label="Machinery Value" prefix="₹" value={machineryValue}
+            onChange={(e) => setMachineryValue(e.target.value)} />
+          <Input label="Total Sum Insured" prefix="₹" value={totalSum}
+            onChange={(e) => setTotalSum(e.target.value)} />
         </div>
+      </Section>
+
+      {/* ================= PREMIUM ================= */}
+      <Section
+        title="Budget & Premium"
+        subtitle="Choose annual premium"
+        color="green"
+        icon={<Wallet />}
+      >
+        <div className="flex justify-between items-center">
+          <p className="text-xs font-semibold text-green-600">
+            TARGET PREMIUM
+          </p>
+          <span className="bg-green-500 text-white px-3 py-1 rounded-full">
+            ₹{premium}
+          </span>
+        </div>
+
+        <input
+          type="range"
+          min="5000"
+          max="100000"
+          step="1000"
+          value={premium}
+          onChange={(e) => setPremium(Number(e.target.value))}
+          className="w-full mt-4 accent-green-500"
+        />
       </Section>
 
       {/* ================= CTA ================= */}
       <button
+        onClick={() =>
+          navigate("/firerecresults", {
+            state: {
+              propertyType,
+              constructionType,
+              coverage,
+              totalSum: toNumber(totalSum),
+              premium,
+            },
+          })
+        }
         className="w-full py-4 rounded-2xl text-white text-lg font-semibold
         bg-gradient-to-r from-indigo-500 to-pink-500 hover:opacity-95"
       >
         Get Personalized Recommendations
       </button>
-
-      <p className="text-center text-xs text-gray-400 mt-3">
-        🔒 Your information is secure and encrypted
-      </p>
     </div>
   );
 }
@@ -224,18 +273,21 @@ export default function FirePropertyRecommendation() {
 /* ================= REUSABLE COMPONENTS ================= */
 
 function Section({ title, subtitle, icon, color, children }) {
-  const map = {
+  const styles = {
     red: "bg-red-50 border-red-200 before:bg-red-500",
     orange: "bg-orange-50 border-orange-200 before:bg-orange-500",
+    green: "bg-green-50 border-green-200 before:bg-green-500",
   };
 
   return (
     <div
-      className={`relative border rounded-3xl p-8 ${map[color]}
-      before:absolute before:left-0 before:top-0 before:h-full before:w-1.5 before:rounded-l-3xl`}
+      className={`relative border rounded-3xl p-8 ${styles[color]}
+      before:absolute before:left-0 before:top-0 before:h-full
+      before:w-1.5 before:rounded-l-3xl`}
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-11 h-11 rounded-xl bg-white shadow flex items-center justify-center">
+        <div className="w-11 h-11 rounded-xl bg-white shadow
+        flex items-center justify-center">
           {icon}
         </div>
         <div>
@@ -248,42 +300,21 @@ function Section({ title, subtitle, icon, color, children }) {
   );
 }
 
-function Input({ label, prefix, ...props }) {
-  return (
-    <div>
-      <label className="text-xs font-semibold text-gray-600">{label}</label>
-      <div className="flex items-center border rounded-2xl px-4 py-3 mt-1 bg-white">
-        {prefix && <span className="mr-2 font-semibold">{prefix}</span>}
-        <input className="w-full outline-none" {...props} />
-      </div>
+const Input = ({ label, prefix, ...props }) => (
+  <div>
+    <label className="text-xs font-semibold text-gray-600">{label}</label>
+    <div className="flex items-center border rounded-2xl
+    px-4 py-3 mt-1 bg-white">
+      {prefix && <span className="mr-2 font-semibold">{prefix}</span>}
+      <input className="w-full outline-none" {...props} />
     </div>
-  );
-}
-
-function Selectable({ label, icon: Icon, active, onClick, color }) {
-  const colors = {
-    red: "border-red-500 bg-red-50",
-    orange: "border-orange-500 bg-orange-50",
-  };
-
-  return (
-    <div
-      onClick={onClick}
-      className={`cursor-pointer rounded-2xl p-5 text-center border transition
-      hover:shadow-md hover:-translate-y-1
-      ${active ? colors[color] : "bg-white"}`}
-    >
-      <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-gray-100 flex items-center justify-center">
-        <Icon size={18} />
-      </div>
-      <p className="font-semibold text-sm">{label}</p>
-    </div>
-  );
-}
+  </div>
+);
 
 function SelectableSimple({ label, active, onClick, color }) {
   const colors = {
     red: "border-red-500 bg-red-50",
+    orange: "border-orange-500 bg-orange-50",
   };
 
   return (

@@ -37,6 +37,7 @@ server/venv/
 server/Lib/
 server/Scripts/
 server/pyvenv.cfg
+server/uploads/
 
 # =========================
 # Backend runtime / logs
