@@ -2,6 +2,9 @@ import Header from "../components/Header";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+
 const PolicyDetails = () => {
   const { id } = useParams();
   const [policy, setPolicy] = useState(null);
@@ -9,7 +12,7 @@ const PolicyDetails = () => {
   const [purchased, setPurchased] = useState(false);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:8000/policies/${id}`)
+    fetch(`${BASE_URL}/policies/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Policy not found");
@@ -28,7 +31,7 @@ const PolicyDetails = () => {
     return <p className="p-8">Loading policy details...</p>;
   }
 
-
+  // 🔹 Premium calculation
   const calculatePremium = () => {
     const coverageValue = Number(
       policy.coverage_amount.replace(/,/g, "")
@@ -45,6 +48,7 @@ const PolicyDetails = () => {
     return Math.round(premium);
   };
 
+  // 🔹 Buy plan
   const handleBuyPlan = () => {
     setPurchased(true);
     alert("✅ Policy purchased successfully!");
@@ -61,7 +65,7 @@ const PolicyDetails = () => {
         </p>
 
         <div className="grid grid-cols-2 gap-6">
-         
+          {/* Left Top */}
           <div className="bg-blue-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold">{policy.title}</h2>
 
@@ -77,7 +81,7 @@ const PolicyDetails = () => {
             </p>
           </div>
 
-          
+          {/* Right Top */}
           <div className="bg-blue-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-4">
               Detailed Policy Information
@@ -92,7 +96,7 @@ const PolicyDetails = () => {
             </div>
           </div>
 
-          
+          {/* Left Bottom */}
           <div className="bg-blue-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-4">
               Coverage & Benefits
@@ -111,7 +115,6 @@ const PolicyDetails = () => {
 
             <hr className="my-4" />
 
-           
             <div>
               <div className="flex justify-between font-semibold">
                 <span>Estimated Premium</span>
@@ -133,7 +136,7 @@ const PolicyDetails = () => {
             </div>
           </div>
 
-          
+          {/* Right Bottom */}
           <div className="bg-blue-50 p-6 rounded-xl">
             <h2 className="text-xl font-semibold mb-4">Documents</h2>
 

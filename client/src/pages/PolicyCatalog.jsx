@@ -4,7 +4,7 @@ import PolicyFilter from "../features/policies/components/PolicyFilter";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const baseURL = "http://127.0.0.1:8000";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const PolicyCatalog = () => {
   const [policies, setPolicies] = useState([]);
@@ -18,35 +18,43 @@ const PolicyCatalog = () => {
   });
 
   useEffect(() => {
-    fetch(`${baseURL}/policies`)
-      .then(res => res.json())
-      .then(setPolicies);
+    if (!BASE_URL) {
+      console.error("❌ BASE_URL is undefined. Check .env file");
+      return;
+    }
 
-    fetch(`${baseURL}/policies/filters`)
-      .then(res => res.json())
-      .then(data => {
-        setPolicyTypes(data.types);
-        setRanges(data.ranges);
-      });
+    // Fetch policies
+    fetch(`${BASE_URL}/policies`)
+      .then((res) => res.json())
+      .then(setPolicies)
+      .catch(console.error);
+
+    // Fetch filter data
+    fetch(`${BASE_URL}/policies/filters`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPolicyTypes(data.types || []);
+        setRanges(data.ranges || []);
+      })
+      .catch(console.error);
   }, []);
 
-  
- 
-const filteredPolicies = policies.filter(policy => {
-  const matchesSearch =
-    policy.title.toLowerCase().includes(filters.search.toLowerCase());
+  const filteredPolicies = policies.filter((policy) => {
+    const matchesSearch =
+      policy.title
+        ?.toLowerCase()
+        .includes(filters.search.toLowerCase());
 
-  const matchesType =
-    !filters.type || policy.policy_type === filters.type;
+    const matchesType =
+      !filters.type || policy.policy_type === filters.type;
 
-  const matchesRange =
-    !filters.range ||
-    (policy.premium >= filters.range.min &&
-     policy.premium <= filters.range.max);
+    const matchesRange =
+      !filters.range ||
+      (policy.premium >= filters.range.min &&
+        policy.premium <= filters.range.max);
 
-  return matchesSearch && matchesType && matchesRange;
-});
-
+    return matchesSearch && matchesType && matchesRange;
+  });
 
   return (
     <div className="flex min-h-screen bg-[#0D99FF]">
@@ -54,11 +62,8 @@ const filteredPolicies = policies.filter(policy => {
 
       <div className="flex-1 bg-gray-50">
         <Header />
-        
 
-      
-
-      
+        <div className="p-6">
           <PolicyFilter
             filters={filters}
             setFilters={setFilters}
@@ -66,13 +71,12 @@ const filteredPolicies = policies.filter(policy => {
             ranges={ranges}
           />
 
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {filteredPolicies.length === 0 && (
               <p className="text-gray-500">No policies found</p>
             )}
 
-            {filteredPolicies.map(policy => (
+            {filteredPolicies.map((policy) => (
               <div
                 key={policy.id}
                 className="bg-white p-6 rounded-xl shadow"
@@ -96,6 +100,7 @@ const filteredPolicies = policies.filter(policy => {
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
