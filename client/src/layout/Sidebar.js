@@ -94,8 +94,10 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   };
 
   const selectPremiumRange = (range) => {
-     const updatedRange = filters.premiumRange === range ? null : range;
+    const updatedRange = filters.premiumRange === range ? null : range;
     const updated = { ...filters, premiumRange: updatedRange };
+    setFilters(updated);
+    onFilterChange && onFilterChange(updated);
   };
 
   const applyFilters = () => {
@@ -265,7 +267,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      
+
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
         <NavLink
           to="/settings"
