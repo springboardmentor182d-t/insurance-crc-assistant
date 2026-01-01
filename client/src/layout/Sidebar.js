@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { FaHome, FaFileAlt, FaBalanceScale, FaStar, FaUser } from "react-icons/fa";
-import { Calculator } from "lucide-react";
 import {
-  Home,
   LayoutDashboard,
+  Home,
   FileText,
   Lightbulb,
   GitCompare,
   LogOut,
   Settings,
   Bookmark,
-  User
+  User,
+  Calculator
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-// ---------------------- Sidebar Menu (Simple) ----------------------
+// ---------------------- Sidebar Menu ----------------------
 export function SidebarMenu() {
   const navigate = useNavigate();
 
@@ -66,90 +66,7 @@ export function SidebarMenu() {
   );
 }
 
-
-export function Sidebar() {
-  const navigate = useNavigate();
-
-  const menuItems = [
-    { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
-    { name: "Home", path: "/home", icon: <Home size={18} /> },
-    { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
-    { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
-    { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
-  ];
-
-  const activeClass =
-    "flex items-center gap-3 px-6 py-3 bg-white/20 rounded-lg";
-  const normalClass =
-    "flex items-center gap-3 px-6 py-3 hover:bg-white/10 rounded-lg";
-
-  return (
-    <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
-      <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
-        <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">CRC</span>
-        Insurance
-      </div>
-
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.path}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded-lg transition ${
-                isActive ? "bg-blue-700" : "hover:bg-blue-600 text-blue-100"
-              }`
-            }
-          >
-            {item.icon}
-            <span className="text-sm font-medium">{item.name}</span>
-          </NavLink>
-        ))}
-
-        <NavLink
-          to="/premium-calculator"
-          className="flex items-center gap-3 text-white px-4 py-2 rounded hover:bg-blue-500"
-        >
-          <Calculator size={18} /> Premium Calculator
-        </NavLink>
-
-        <NavLink
-          to="/saved"
-          className={({ isActive }) => (isActive ? activeClass : normalClass)}
-        >
-          <Bookmark size={20} /> Saved
-        </NavLink>
-
-        <NavLink
-          to="/profile"
-          className={({ isActive }) => (isActive ? activeClass : normalClass)}
-        >
-          <User size={20} /> Profile
-        </NavLink>
-
-        <NavLink
-          to="/compare"
-          className={({ isActive }) => (isActive ? activeClass : normalClass)}
-        >
-          <GitCompare size={20} /> Compare
-        </NavLink>
-
-        <NavLink
-          to="/settings"
-          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
-          <Settings size={18} /> Settings
-        </NavLink>
-
-        <button className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600">
-          <LogOut size={18} /> Logout
-        </button>
-      </nav>
-    </aside>
-  );
-}
-
-
+// ---------------------- Sidebar Filter ----------------------
 export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   const [filters, setFilters] = useState({
     providers: [],
@@ -168,15 +85,13 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
   };
 
   const selectDuration = (duration) => {
-    const updatedDuration = filters.duration === duration ? null : duration;
-    const updated = { ...filters, duration: updatedDuration };
+    const updated = { ...filters, duration: filters.duration === duration ? null : duration };
     setFilters(updated);
     onFilterChange && onFilterChange(updated);
   };
 
   const selectPremiumRange = (range) => {
-    const updatedRange = filters.premiumRange === range ? null : range;
-    const updated = { ...filters, premiumRange: updatedRange };
+    const updated = { ...filters, premiumRange: filters.premiumRange === range ? null : range };
     setFilters(updated);
     onFilterChange && onFilterChange(updated);
   };
@@ -243,3 +158,88 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
     </div>
   );
 }
+
+// ---------------------- Sidebar (default export) ----------------------
+const Sidebar = () => {
+  const navigate = useNavigate();
+  const menuItems = [
+    { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
+    { name: "Home", path: "/", icon: <Home size={18} /> },
+    { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
+    // PREMIUM CALCULATOR added here
+    { name: "Premium Calculator", path: "/premium-calculator", icon: <Calculator size={18} /> },
+    { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
+    { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
+  ];
+
+  return (
+    <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
+      {/* Header */}
+      <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
+        <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">CRC</span>
+        Insurance
+      </div>
+
+      {/* Top quick links */}
+      <div className="p-6">
+        <div
+          className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+          onClick={() => navigate("/")}
+        >
+          <FaHome className="text-xl" /> Home
+        </div>
+
+        <div
+          className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+          onClick={() => navigate("/saved")}
+        >
+          <FaStar className="text-xl" /> Saved
+        </div>
+
+        <div
+          className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+          onClick={() => navigate("/profile")}
+        >
+          <FaUser className="text-xl" /> Profile
+        </div>
+      </div>
+
+      {/* Main Menu */}
+      <nav className="flex-1 px-4 py-6 space-y-2">
+        {menuItems.map((item) => (
+          <NavLink
+            key={item.name}
+            to={item.path}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2 rounded-lg transition ${
+                isActive ? "bg-blue-700" : "hover:bg-blue-600 text-blue-100"
+              }`
+            }
+          >
+            {item.icon}
+            <span className="text-sm font-medium">{item.name}</span>
+          </NavLink>
+        ))}
+      </nav>
+
+      {/* Bottom Menu */}
+      <div className="px-4 py-4 border-t border-blue-400 space-y-2">
+        <NavLink
+          to="/settings"
+          className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          <Settings size={18} /> Settings
+        </NavLink>
+
+        <button
+          className="w-full flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600"
+          onClick={() => alert("Logging out...")}
+        >
+          <LogOut size={18} /> Logout
+        </button>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;

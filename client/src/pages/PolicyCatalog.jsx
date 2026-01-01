@@ -1,8 +1,8 @@
-import { Sidebar } from '../layout/Sidebar';
+import { useEffect, useState } from "react";
+import Sidebar from "../layout/Sidebar"; // default export
 import Header from "../components/Header";
 import PolicyFilter from "../features/policies/components/PolicyFilter";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
@@ -23,16 +23,17 @@ const PolicyCatalog = () => {
       return;
     }
 
-    // Fetch policies
     fetch(`${BASE_URL}/policies`)
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) setPolicies(data);
-        else setPolicies([]);
+        if (Array.isArray(data)) {
+          setPolicies(data);
+        } else {
+          console.error("❌ API did not return an array:", data);
+        }
       })
       .catch(console.error);
 
-    // Fetch filter data
     fetch(`${BASE_URL}/policies/filters`)
       .then((res) => res.json())
       .then((data) => {
@@ -42,19 +43,16 @@ const PolicyCatalog = () => {
       .catch(console.error);
   }, []);
 
-  // Safe filtering
-  const filteredPolicies = Array.isArray(policies)
-    ? policies.filter((policy) => {
-        const matchesSearch =
-          policy.title?.toLowerCase().includes(filters.search.toLowerCase());
-        const matchesType = !filters.type || policy.policy_type === filters.type;
-        const matchesRange =
-          !filters.range ||
-          (policy.premium >= filters.range.min && policy.premium <= filters.range.max);
+  const filteredPolicies = policies.filter((policy) => {
+    const matchesSearch =
+      policy.title?.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesType = !filters.type || policy.policy_type === filters.type;
+    const matchesRange =
+      !filters.range ||
+      (policy.premium >= filters.range.min && policy.premium <= filters.range.max);
 
-        return matchesSearch && matchesType && matchesRange;
-      })
-    : [];
+    return matchesSearch && matchesType && matchesRange;
+  });
 
   return (
     <div className="flex min-h-screen bg-[#0D99FF]">

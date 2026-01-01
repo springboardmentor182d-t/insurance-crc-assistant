@@ -2,10 +2,37 @@
 __pycache__/
 *.pyc
 *.pyo
+*.py[cod]
+*.pyd
 
-# Virtual env
+# Virtual environment
 venv/
+.venv/
+env/
+# Environment files
 .env
+.env.*
+
+# Packaging
+build/
+dist/
+.eggs/
+lib/
+lib64/
 
 # Logs
 *.log
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor
+.vscode/
+.idea/
+
+# Database files
+*.db
+*.sqlite3
+server\.env

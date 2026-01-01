@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Sidebar} from "../../layout/Sidebar";
+import Sidebar, { SidebarMenu, SidebarFilter } from "../../layout/Sidebar";
 import Header from "../../components/Header";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;

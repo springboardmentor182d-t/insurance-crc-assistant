@@ -17,7 +17,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Policy Catalog by type */}
         <Route path="/policies/:policyType" element={<PolicyCatalogPage />} />
+
+        {/* Pages */}
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -27,6 +30,8 @@ function App() {
         <Route path="/policy-details/:id" element={<PolicyDetails />} />
         <Route path="/premium-calculator" element={<PremiumCalculator />} />
         <Route path="/policies" element={<Policies />} />
+
+        {/* Catch-all for 404 */}
         <Route
           path="*"
           element={<div style={{ padding: 32 }}>Page Not Found</div>}

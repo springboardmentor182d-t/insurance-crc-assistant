@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {Sidebar} from "../layout/Sidebar";
+import Sidebar from "../layout/Sidebar";
 import Navbar from "../layout/Navbar";
 import PageContainer from "../layout/PageContainer";
 
