@@ -6,15 +6,18 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # Load environment variables from .env
 load_dotenv()
 
-# Database configuration
+# Database configuration (with safe defaults)
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "insurance_db")
 DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "password")  # default password
+DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
 
 # Construct database URL
-DATABASE_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DATABASE_URL = (
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}"
+    f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 
 # SQLAlchemy engine
 engine = create_engine(
@@ -32,10 +35,10 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
-# Base class for models
+# Base class for SQLAlchemy models
 Base = declarative_base()
 
-# Dependency for FastAPI routes
+# FastAPI dependency
 def get_db():
     db = SessionLocal()
     try:
