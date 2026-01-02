@@ -1,4 +1,4 @@
-<<<<<<< Updated upstream
+
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './components/auth/Landing';
@@ -42,7 +42,7 @@ export default function App(){
     </Routes>
   );
 }
-=======
+
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./layout/Navbar";
 import Home from "./pages/Home";
@@ -64,4 +64,4 @@ function App() {
 }
 
 export default App;
->>>>>>> Stashed changes
+
