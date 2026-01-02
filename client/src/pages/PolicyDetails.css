@@ -1,0 +1,186 @@
+/* Page layout */
+.policy-details-page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  padding: 32px;
+  background: #f7faff;
+  font-family: "Inter", sans-serif;
+}
+
+/* Cards */
+.card,
+.policy-header-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* Header card */
+.policy-header-card {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.policy-header-card h1 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.provider {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Icon */
+.icon {
+  width: 56px;
+  height: 56px;
+  background: #ffe4e6;
+  color: #e11d48;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 22px;
+}
+
+/* Premium blocks */
+.amounts {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.amount {
+  padding: 14px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.amount.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.amount.green {
+  background: #ecfdf5;
+  color: #16a34a;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+}
+
+.outline-btn {
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  background: transparent;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Coverage grid */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  font-weight: 600;
+}
+
+/* Lists */
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.list li {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.list.green li::before {
+  content: "●";
+  color: #22c55e;
+  margin-right: 8px;
+}
+
+.list.red li::before {
+  content: "●";
+  color: #ef4444;
+  margin-right: 8px;
+}
+
+/* Right column */
+.center {
+  text-align: center;
+}
+
+.illustration-card {
+  background: #eff6ff;
+  border-radius: 20px;
+  padding: 32px;
+}
+
+/* Score circle */
+.circle {
+  width: 110px;
+  height: 110px;
+  background: #2563eb;
+  color: white;
+  border-radius: 50%;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px auto;
+}
+
+.muted {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* Offer card */
+.offer {
+  background: linear-gradient(135deg, #fde68a, #fef3c7);
+}
+
+.offer h4 {
+  font-weight: 700;
+}
+.icon-wrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #fdecec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.policy-icon {
+  font-size: 30px;
+}
+
+.policy-icon.health { color: #ef4444; }
+.policy-icon.life { color: #2563eb; }
+.policy-icon.auto → { color: #f59e0b; }
+.policy-icon.travel { color: #22c55e; }
+.policy-icon.home { color: #8b5cf6; }
+.policy-icon.default { color: #64748b; }

@@ -1,0 +1,102 @@
+.compare-page {
+  padding: 32px;
+  background: #f8fafc;
+}
+
+/* 🔥 SAME GRID FOR CARDS & TABLE */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 220px repeat(3, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* CARDS */
+.cards {
+  margin-bottom: 24px;
+}
+
+.policy-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.policy-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 12px;
+}
+
+.policy-card p {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 14px;
+}
+
+.icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+}
+
+.buy-btn {
+  padding: 8px 20px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.add {
+  border: 2px dashed #cbd5e1;
+  color: #64748b;
+}
+
+.outline-btn {
+  margin-top: 10px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  font-size: 13px;
+}
+
+/* TABLE */
+.table {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.row {
+  border-top: 1px solid #e2e8f0;
+}
+
+.feature {
+  padding: 16px;
+  font-weight: 600;
+}
+
+.value {
+  padding: 16px;
+  text-align: center;
+}
+
+.highlight {
+  background: #fff7cc;
+  font-weight: 700;
+}
+
+.muted {
+  color: #94a3b8;
+}
