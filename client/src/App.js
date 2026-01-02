@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import React, { useContext } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Landing from './components/auth/Landing';
@@ -41,3 +42,26 @@ export default function App(){
     </Routes>
   );
 }
+=======
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./layout/Navbar";
+import Home from "./pages/Home";
+import ComparePolicies from "./pages/ComparePolicies";
+import PolicyDetails from "./pages/PolicyDetails";
+function App() {
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/compare" element={<ComparePolicies />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/policies/:id" element={<PolicyDetails />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
+>>>>>>> Stashed changes
