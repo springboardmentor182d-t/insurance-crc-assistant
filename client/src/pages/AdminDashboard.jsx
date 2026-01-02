@@ -1,4 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import {
+  FileText,
+  IndianRupee,
+  ShieldCheck,
+  AlertTriangle,
+  AlertOctagon,
+  Users,
+  Clock,
+  CheckCircle,
+} from "lucide-react";
 
 import StatCard from "../components/AdminDashboard/StatCard";
 import ClaimsBarChart from "../components/AdminDashboard/ClaimsBarChart";
@@ -8,10 +20,11 @@ import SmallStatCard from "../components/AdminDashboard/SmallStatCard";
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/admin/dashboard")
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setData)
       .catch(() => alert("Failed to load admin data"));
   }, []);
@@ -21,8 +34,8 @@ export default function AdminDashboard() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-start mb-6">
+      {/* HEADER + FRAUD BUTTON */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <p className="text-sm text-gray-500">
@@ -30,45 +43,89 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <button className="bg-red-500 hover:bg-red-600
-          text-white px-4 py-2 rounded-lg text-sm
-          transition-all duration-300 hover:scale-105">
-          🚨 View Fraud Cases
+        <button
+          onClick={() => navigate("/admin/fraud-cases")}
+          className="mt-4 md:mt-0 inline-flex items-center gap-2
+                     bg-red-500 hover:bg-red-600
+                     text-white text-sm font-medium
+                     px-4 py-2 rounded-lg
+                     shadow-sm transition-all
+                     focus:outline-none focus:ring-2 focus:ring-red-300"
+        >
+          <AlertOctagon size={18} />
+          View Fraud Cases
         </button>
       </div>
 
-      {/* TOP KPI */}
+      {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Total Claims" value={data.total_claims}
-          subText="+12% from last month" icon="📄" iconBg="bg-blue-100" />
-        <StatCard title="Total Payouts" value={`₹${data.total_payouts}M`}
-          subText="+8% from last month" icon="💰" iconBg="bg-green-100" />
-        <StatCard title="Active Policies" value={data.active_policies}
-          subText="+5% from last month" icon="🛡️" iconBg="bg-yellow-100" />
-        <StatCard title="Fraud Cases" value={data.fraud_cases}
-          subText="-3% from last month" icon="⚠️" iconBg="bg-red-100" />
+        <StatCard
+          title="Total Claims"
+          value={data.total_claims}
+          growth={data.claims_growth_pct}
+          icon={FileText}
+          color="bg-blue-500"
+        />
+
+        <StatCard
+          title="Total Payouts"
+          value={`₹${data.total_payouts}M`}
+          growth={data.payout_growth_pct}
+          icon={IndianRupee}
+          color="bg-green-500"
+        />
+
+        <StatCard
+          title="Active Policies"
+          value={data.active_policies}
+          growth={data.policies_growth_pct}
+          icon={ShieldCheck}
+          color="bg-yellow-500"
+        />
+
+        <StatCard
+          title="Fraud Cases"
+          value={data.fraud_cases}
+          growth={data.fraud_growth_pct}
+          icon={AlertTriangle}
+          color="bg-red-500"
+        />
       </div>
 
-      {/* CHARTS */}
+      {/* CLAIMS + FRAUD CHARTS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
           <ClaimsBarChart data={data.claims_overview} />
         </div>
+
         <FraudDonutChart data={data.fraud_stats} />
       </div>
 
+      {/* PAYOUT LINE CHART */}
       <PayoutLineChart data={data.monthly_payouts} />
 
-      {/* BOTTOM SUMMARY */}
+      {/* BOTTOM STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-        <SmallStatCard title="Total Users"
-          value={data.total_users} subText="+24 this month" icon="👥" />
-        <SmallStatCard title="Avg Settlement Time"
+        <SmallStatCard
+          title="Total Users"
+          value={data.total_users}
+          icon={Users}
+          color="bg-blue-500"
+        />
+
+        <SmallStatCard
+          title="Avg Settlement Time"
           value={`${data.avg_settlement_days} days`}
-          subText="0.5 days improvement" icon="⏱️" />
-        <SmallStatCard title="Claim Settlement %"
+          icon={Clock}
+          color="bg-green-500"
+        />
+
+        <SmallStatCard
+          title="Claim Settlement %"
           value={data.settlement_rate}
-          subText="+1.3% from last quarter" icon="✅" />
+          icon={CheckCircle}
+          color="bg-emerald-500"
+        />
       </div>
 
     </div>

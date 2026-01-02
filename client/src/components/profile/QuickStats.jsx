@@ -1,23 +1,6 @@
-import { useEffect, useState } from "react";
 import { ShieldCheck, FileText, Calendar } from "lucide-react";
-import { fetchQuickStats } from "../../api/profileApi";
 
-export default function QuickStats() {
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    fetchQuickStats()
-      .then(setStats)
-      .catch(() => {
-        // fallback (safe)
-        setStats({
-          active_policies: 0,
-          claims_filed: 0,
-          member_since: new Date().getFullYear(),
-        });
-      });
-  }, []);
-
+export default function QuickStats({ stats }) {
   if (!stats) return null;
 
   return (

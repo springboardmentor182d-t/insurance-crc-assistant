@@ -13,18 +13,8 @@ export default function ClaimsBarChart({ data }) {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar
-            dataKey="approved"
-            fill="#10b981"
-            radius={[6, 6, 0, 0]}
-            animationDuration={1200}
-          />
-          <Bar
-            dataKey="rejected"
-            fill="#ef4444"
-            radius={[6, 6, 0, 0]}
-            animationDuration={1200}
-          />
+          <Bar dataKey="approved" fill="#10b981" radius={[6, 6, 0, 0]} />
+          <Bar dataKey="rejected" fill="#ef4444" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

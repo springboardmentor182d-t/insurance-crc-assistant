@@ -14,13 +14,16 @@ class ProfileCreate(ProfileBase):
     pass
 
 
-class ProfileResponse(ProfileBase):
-    user_id: int
-
-    class Config:
-        from_attributes = True
-
 class QuickStatsResponse(BaseModel):
     active_policies: int
     claims_filed: int
     member_since: int
+
+
+class ProfileResponse(ProfileBase):
+    user_id: int
+    quick_stats: QuickStatsResponse
+
+    class Config:
+        from_attributes = True
+

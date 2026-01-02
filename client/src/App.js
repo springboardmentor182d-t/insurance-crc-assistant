@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Routes, Route, Navigate } from "react-router-dom";
 
 /* AUTH PAGES */
 import Landing from "./components/auth/Landing";
@@ -23,38 +23,33 @@ import NotFound from "./pages/NotFound";
 /* ROUTE GUARDS */
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
-
-export default function App() {
+import { AuthContext } from './context/AuthContext';
+export default function App(){
+  const { user } = useContext(AuthContext);
   return (
     <Routes>
-      {/* AUTH */}
       <Route path="/" element={<Landing />} />
-      <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/verify-otp" element={<OTPVerify />} />
-      <Route path="/enter-otp" element={<EnterOtp />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-
+      <Route path="/enter-otp" element={<EnterOtp/>} />
+      <Route path="/reset-password" element={<ResetPassword/>} />
+      <Route path="/landing" element={<Landing/>} />
       <Route path="/claims" element={<ClaimsList />} />
       <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/preferences" element={<Preferences />} />
       <Route path="/recommendations" element={<Recommendations />} />
-      
 
-      {/* USER (PROTECTED) */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
       </Route>
 
-      {/* ADMIN ONLY */}
       <Route element={<RoleBasedRoute roleRequired="admin" />}>
-       <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Route>
 
-      {/* FALLBACK */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

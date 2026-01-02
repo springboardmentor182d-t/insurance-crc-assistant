@@ -2,10 +2,16 @@ from pydantic import BaseModel
 from typing import List
 
 class PreferencesBase(BaseModel):
-    insuranceTypes: List[str]
-    annualBudget: int
-    desiredCoverage: int
-    riskAppetite: str
+    insurance_types: List[str]
+    annual_budget: int
+    desired_coverage: int
+    risk_appetite: str
+
+
+class PreferencesCreate(PreferencesBase):
+    pass
+
 
 class PreferencesResponse(PreferencesBase):
-    pass
+    class Config:
+        from_attributes = True

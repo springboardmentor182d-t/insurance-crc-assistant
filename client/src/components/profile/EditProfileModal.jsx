@@ -1,24 +1,19 @@
 import { X } from "lucide-react";
-import { useState } from "react";
 
-export default function EditProfileModal({ isOpen, onClose }) {
-  const [form, setForm] = useState({
-    name: "Admin User",
-    email: "admin@insurehub.com",
-    phone: "+91 98765 43210",
-    dob: "1990-05-15",
-    address: "Mumbai, Maharashtra, India",
-  });
-
-  if (!isOpen) return null;
+export default function EditProfileModal({
+  isOpen,
+  onClose,
+  profile,
+  setProfile,
+  onSave,
+}) {
+  if (!isOpen || !profile) return null;
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSave = () => {
-    console.log("Updated Profile:", form);
-    onClose();
+    setProfile({
+      ...profile,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -34,11 +29,41 @@ export default function EditProfileModal({ isOpen, onClose }) {
 
         {/* Form */}
         <div className="space-y-4">
-          <Input label="Full Name" name="name" value={form.name} onChange={handleChange} />
-          <Input label="Email" name="email" value={form.email} onChange={handleChange} />
-          <Input label="Phone Number" name="phone" value={form.phone} onChange={handleChange} />
-          <Input label="Date of Birth" name="dob" type="date" value={form.dob} onChange={handleChange} />
-          <Input label="Address" name="address" value={form.address} onChange={handleChange} />
+          <Input
+            label="Full Name"
+            name="full_name"
+            value={profile.full_name || ""}
+            onChange={handleChange}
+          />
+
+          <Input
+            label="Email"
+            name="email"
+            value={profile.email || ""}
+            onChange={handleChange}
+          />
+
+          <Input
+            label="Phone Number"
+            name="phone"
+            value={profile.phone || ""}
+            onChange={handleChange}
+          />
+
+          <Input
+            label="Date of Birth"
+            name="dob"
+            type="date"
+            value={profile.dob || ""}
+            onChange={handleChange}
+          />
+
+          <Input
+            label="Address"
+            name="address"
+            value={profile.address || ""}
+            onChange={handleChange}
+          />
         </div>
 
         {/* Actions */}
@@ -50,7 +75,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
             Cancel
           </button>
           <button
-            onClick={handleSave}
+            onClick={onSave}
             className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
           >
             Save Changes
