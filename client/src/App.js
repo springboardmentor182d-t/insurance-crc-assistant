@@ -1,7 +1,14 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProfileProvider } from "./context/ProfileContext";
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PageContainer from "./layout/PageContainer";
+
+/* AUTH PAGES */
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import Otp from "./pages/Otp";
+import ResetPassword from "./pages/ResetPassword";
+
+/* MAIN APP PAGES */
 import Home from "./pages/Home";
 import Recommendations from "./pages/Recommendations";
 import HealthRecommendation from "./pages/HealthRecommendation";
@@ -14,24 +21,30 @@ import FireRecommendation from "./pages/FireRecommendation";
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 
-import HealthRecResults from "./pages/HealthRecResults";
-import LifeRecResults from "./pages/LifeRecResults";
-import MotorRecResults from "./pages/MotorRecResults";
-import HomeRecResults from "./pages/HomeRecResults";
-import TravelRecResults from "./pages/TravelRecResults";
-import FireRecResults from "./pages/FireRecResults";
-import BusinessRecResults from "./pages/BusinessRecResults";
+/* ADMIN */
+import AdminDashboard from "./pages/AdminDashboard";
+
+/* ROUTE GUARD */
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
-    <ProfileProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Pages WITH sidebar & navbar */}
-          <Route element={<PageContainer />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/recommendations" element={<Recommendations />} />
+    <BrowserRouter>
+      <Routes>
+        {/* ================= AUTH ROUTES ================= */}
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/otp" element={<Otp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
+        {/* ================= PROTECTED USER ROUTES ================= */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<PageContainer />}>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/recommendations" element={<Recommendations />} />
             <Route
               path="/health_insurance_rec"
               element={<HealthRecommendation />}
@@ -40,10 +53,7 @@ export default function App() {
               path="/motor_insurance_rec"
               element={<MotorRecommendation />}
             />
-            <Route
-              path="/life_insurance_rec"
-              element={<LifeRecommendation />}
-            />
+            <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
             <Route
               path="/travel_insurance_rec"
               element={<TravelRecommendation />}
@@ -60,29 +70,21 @@ export default function App() {
               path="/fire_property_insurance_rec"
               element={<FireRecommendation />}
             />
-
-            <Route path="/profile" element={<ProfilePage />} />
             <Route
               path="/recommendedPolicies"
               element={<RecommendedPolicies />}
             />
-
-            <Route path="/healthrecresults" element={<HealthRecResults />} />
-            <Route path="/liferecresults" element={<LifeRecResults />} />
-            <Route path="/motorrecresults" element={<MotorRecResults />} />
-            <Route path="/homerecresults" element={<HomeRecResults />} />
-            <Route path="/travelrecresults" element={<TravelRecResults />} />
-            <Route path="/firerecresults" element={<FireRecResults />} />
-            <Route
-              path="/businessrecresults"
-              element={<BusinessRecResults />}
-            />
           </Route>
+        </Route>
 
-          {/* Fallback */}
-          <Route path="*" element={<h1>Page Not Found</h1>} />
-        </Routes>
-      </BrowserRouter>
-    </ProfileProvider>
+        {/* ================= ADMIN ROUTES ================= */}
+        <Route element={<ProtectedRoute role="ADMIN" />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Route>
+
+        {/* ================= FALLBACK ================= */}
+        <Route path="*" element={<h1>Page Not Found</h1>} />
+      </Routes>
+    </BrowserRouter>
   );
 }

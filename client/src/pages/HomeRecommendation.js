@@ -1,100 +1,44 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Home,
   Building2,
   Key,
   Landmark,
   ShieldCheck,
+  Flame,
+  Camera,
+  UserCheck,
+  Ban,
   Check,
-  Wallet,
 } from "lucide-react";
 
-export default function HomeRecommendation() {
+export default function PropertyRecommendation() {
   const navigate = useNavigate();
-  const [saved, setSaved] = useState(false);
 
   /* ================= STATE ================= */
+  const [saved, setSaved] = useState(false);
+
   const [propertyType, setPropertyType] = useState("Apartment");
   const [age, setAge] = useState("");
   const [area, setArea] = useState("");
   const [city, setCity] = useState("");
 
-  const [ownership, setOwnership] = useState("Owned");
-  const [occupancy, setOccupancy] = useState("Self Occupied");
-  const [construction, setConstruction] = useState("Concrete");
-  const [riskZone, setRiskZone] = useState("Low");
-  const [previousClaims, setPreviousClaims] = useState("No");
-
   const [coverage, setCoverage] = useState("Structure");
   const [sumInsured, setSumInsured] = useState("");
-
-  // ✅ REQUIRED BY BACKEND (THIS WAS MISSING)
   const [security, setSecurity] = useState("Fire Alarm");
 
-  const [premium, setPremium] = useState(12000);
-
-  /* ================= LOAD SAVED PROGRESS ================= */
-  useEffect(() => {
-    axios.get("/api/property/load-progress").then((res) => {
-      if (!res.data?.data) return;
-      const d = res.data.data;
-
-      setPropertyType(d.propertyType);
-      setAge(d.age?.toString());
-      setArea(d.area?.toString());
-      setCity(d.city);
-
-      setOwnership(d.ownership);
-      setOccupancy(d.occupancy);
-      setConstruction(d.construction);
-      setRiskZone(d.riskZone);
-      setPreviousClaims(d.previousClaims);
-
-      setCoverage(d.coverage);
-      setSumInsured(d.sumInsured?.toString());
-      setSecurity(d.security); // ✅ LOAD
-      setPremium(d.premium);
-    });
-  }, []);
-
-  /* ================= SAVE PROGRESS ================= */
-  const saveProgress = async () => {
-    try {
-      const res = await axios.post("/api/property/save-progress", {
-        propertyType,
-        age: Number(age),
-        area: Number(area),
-        city,
-        ownership,
-        occupancy,
-        construction,
-        riskZone,
-        previousClaims,
-        coverage,
-        sumInsured: Number(sumInsured),
-        security, // ✅ REQUIRED
-        premium,
-      });
-
-      if (res.data?.success) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2500);
-      }
-    } catch {
-      alert("Failed to save progress");
-    }
-  };
-
+  /* ================= UI ================= */
   return (
-    <div className="max-w-6xl mx-auto pb-24 space-y-14">
+    <div className="max-w-6xl mx-auto pb-20 space-y-12">
 
       {/* ================= HEADER ================= */}
       <div>
         <button
           onClick={() => navigate("/recommendations")}
-          className="px-3 py-1.5 mb-3 text-sm text-gray-500 rounded-lg hover:bg-indigo-50"
+          className="inline-flex items-center gap-1 px-3 py-1.5 mb-3
+            text-sm font-medium text-gray-500 rounded-lg
+            hover:bg-indigo-50 hover:text-indigo-600 transition"
         >
           ← Back
         </button>
@@ -108,21 +52,26 @@ export default function HomeRecommendation() {
               </span>
             </h1>
             <p className="text-gray-500 mt-2 max-w-2xl">
-              Answer a few questions and we’ll recommend the best home insurance for you.
+              Complete the questionnaire below to receive a tailored property
+              insurance quote that keeps your assets safe.
             </p>
           </div>
 
-          <div className="flex flex-col items-end">
+          <div className="relative">
             <button
-              onClick={saveProgress}
-              className="px-4 py-2 rounded-xl bg-white shadow text-sm font-semibold hover:bg-indigo-50"
+              onClick={() => {
+                setSaved(true);
+                setTimeout(() => setSaved(false), 2500);
+              }}
+              className="px-4 py-2 rounded-xl bg-white shadow
+                text-sm font-semibold hover:bg-indigo-50 transition"
             >
               Save Progress
             </button>
 
-            <div className="h-5 mt-1">
+            <div className="absolute left-0 right-0 mt-1 text-center">
               {saved && (
-                <p className="text-sm text-green-600 font-medium">
+                <p className="text-xs text-green-600 font-medium">
                   ✓ Progress saved
                 </p>
               )}
@@ -134,18 +83,20 @@ export default function HomeRecommendation() {
       {/* ================= PROPERTY DETAILS ================= */}
       <Section
         title="Property Details"
-        subtitle="Basic information about your home"
+        subtitle="Basic information about the property"
         color="red"
         icon={<Home />}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <p className="text-xs font-semibold text-red-500">PROPERTY TYPE</p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4">
           {[
             { label: "Apartment", icon: Building2 },
             { label: "Independent House", icon: Home },
             { label: "Rented Home", icon: Key },
             { label: "Owned Home", icon: Landmark },
           ].map(({ label, icon: Icon }) => (
-            <Selectable
+            <SelectableCard
               key={label}
               label={label}
               icon={<Icon size={18} />}
@@ -157,97 +108,95 @@ export default function HomeRecommendation() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-          <Input label="Property Age (Years)" value={age} onChange={setAge} />
-          <Input label="Built-up Area (sq ft)" value={area} onChange={setArea} />
-          <Input label="City / ZIP" value={city} onChange={setCity} />
+          <Input
+            label="Property Age (Years)"
+            placeholder="e.g. 5"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+          />
+          <Input
+            label="Built-up Area (sq ft)"
+            placeholder="e.g. 1500"
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+          />
+          <Input
+            label="City / ZIP"
+            placeholder="e.g. New York, 10001"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
         </div>
       </Section>
 
-      {/* ================= RISK ================= */}
-      <Section
-        title="Ownership & Risk Profile"
-        subtitle="Helps calculate accurate premium"
-        color="orange"
-        icon={<ShieldCheck />}
-      >
-        <Toggle label="Ownership" value={ownership} options={["Owned", "Rented"]} onChange={setOwnership} />
-        <Toggle label="Occupancy" value={occupancy} options={["Self Occupied", "Tenant", "Vacant"]} onChange={setOccupancy} />
-        <Toggle label="Construction Type" value={construction} options={["Concrete", "Mixed", "Wooden"]} onChange={setConstruction} />
-        <Toggle label="Risk Zone" value={riskZone} options={["Low", "Medium", "High"]} onChange={setRiskZone} />
-        <Toggle label="Previous Claims" value={previousClaims} options={["No", "Yes"]} onChange={setPreviousClaims} />
-      </Section>
-
-      {/* ================= COVERAGE ================= */}
+      {/* ================= COVERAGE NEEDS ================= */}
       <Section
         title="Coverage Needs"
-        subtitle="What do you want to protect?"
+        subtitle="Customize features for your property"
         color="orange"
         icon={<ShieldCheck />}
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {["Structure", "Contents", "Valuables", "Electronics", "Loss of Rent"].map((c) => (
-            <Selectable
-              key={c}
-              label={c}
-              icon={<Home size={18} />}
-              active={coverage === c}
-              onClick={() => setCoverage(c)}
+        <p className="text-xs font-semibold text-orange-500">
+          COVERAGE FOR
+        </p>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-3">
+          {[
+            { label: "Structure", icon: Home },
+            { label: "Household Contents", icon: Building2 },
+            { label: "Jewelry & Valuables", icon: Landmark },
+            { label: "Electronics", icon: Camera },
+            { label: "Rent / Accommodation", icon: Key },
+          ].map(({ label, icon: Icon }) => (
+            <SelectableCard
+              key={label}
+              label={label}
+              icon={<Icon size={18} />}
+              active={coverage === label}
+              onClick={() => setCoverage(label)}
               color="orange"
             />
           ))}
         </div>
 
-        <Input label="Preferred Sum Insured" prefix="₹" value={sumInsured} onChange={setSumInsured} />
-      </Section>
-
-      {/* ================= PREMIUM ================= */}
-      <Section
-        title="Budget & Premium"
-        subtitle="Choose a comfortable annual premium"
-        color="green"
-        icon={<Wallet />}
-      >
-        <div className="flex justify-between items-center">
-          <p className="text-xs font-semibold text-green-600">
-            TARGET ANNUAL PREMIUM
-          </p>
-          <span className="bg-green-500 text-white px-3 py-1 rounded-full">
-            ₹{premium}
-          </span>
-        </div>
-
-        <input
-          type="range"
-          min="3000"
-          max="50000"
-          step="500"
-          value={premium}
-          onChange={(e) => setPremium(Number(e.target.value))}
-          className="w-full mt-4 accent-green-500"
+        <Input
+          label="Preferred Sum Insured"
+          prefix="₹"
+          placeholder="Enter amount"
+          value={sumInsured}
+          onChange={(e) => setSumInsured(e.target.value)}
         />
+
+        <p className="text-xs font-semibold text-orange-500 mt-6">
+          SECURITY FEATURES
+        </p>
+
+        <div className="flex flex-wrap gap-3 mt-2">
+          {[
+            { label: "Fire Alarm", icon: Flame },
+            { label: "CCTV", icon: Camera },
+            { label: "Guard", icon: UserCheck },
+            { label: "No Security Measures", icon: Ban },
+          ].map(({ label, icon: Icon }) => (
+            <button
+              key={label}
+              onClick={() => setSecurity(label)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold border transition
+                ${
+                  security === label
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "bg-white hover:bg-orange-50"
+                }`}
+            >
+              <Icon size={16} />
+              {label}
+            </button>
+          ))}
+        </div>
       </Section>
 
       {/* ================= CTA ================= */}
       <button
-        onClick={() =>
-          navigate("/homerecresults", {
-            state: {
-              propertyType,
-              age: Number(age),
-              area: Number(area),
-              city,
-              ownership,
-              occupancy,
-              construction,
-              riskZone,
-              previousClaims,
-              coverage,
-              sumInsured: Number(sumInsured),
-              security, // ✅ PASSED
-              premium,
-            },
-          })
-        }
         className="w-full py-4 rounded-2xl text-white text-lg font-semibold
         bg-gradient-to-r from-indigo-500 to-pink-500 hover:opacity-95"
       >
@@ -257,68 +206,44 @@ export default function HomeRecommendation() {
   );
 }
 
-/* ================= REUSABLE UI ================= */
+/* ================= REUSABLE COMPONENTS ================= */
 
-function Section({ title, subtitle, icon, color, children }) {
-  const colors = {
+function Section({ title, subtitle, color, icon, children }) {
+  const styles = {
     red: "bg-red-50 border-red-200 before:bg-red-500",
     orange: "bg-orange-50 border-orange-200 before:bg-orange-500",
-    green: "bg-green-50 border-green-200 before:bg-green-500",
   };
 
   return (
-    <div className={`relative border rounded-3xl p-8 ${colors[color]}
-      before:absolute before:left-0 before:top-0 before:h-full before:w-1.5 before:rounded-l-3xl`}>
+    <div
+      className={`relative border rounded-3xl p-8 ${styles[color]}
+      before:absolute before:left-0 before:top-0 before:h-full before:w-1.5 before:rounded-l-3xl`}
+    >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-11 h-11 bg-white rounded-xl shadow flex items-center justify-center">
+        <div className="w-11 h-11 rounded-xl bg-white shadow flex items-center justify-center">
           {icon}
         </div>
         <div>
-          <h2 className="font-semibold">{title}</h2>
+          <h2 className="font-semibold text-lg">{title}</h2>
           <p className="text-sm text-gray-500">{subtitle}</p>
         </div>
       </div>
-      <div className="space-y-6">{children}</div>
+      {children}
     </div>
   );
 }
 
-const Input = ({ label, prefix, value, onChange }) => (
+const Input = ({ label, prefix, ...props }) => (
   <div>
-    <label className="text-sm font-semibold">{label}</label>
+    <label className="text-xs font-semibold text-gray-600">{label}</label>
     <div className="flex items-center border rounded-2xl px-4 py-3 mt-1 bg-white">
       {prefix && <span className="mr-2 font-semibold">{prefix}</span>}
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full outline-none"
-      />
+      <input className="w-full outline-none" {...props} />
     </div>
   </div>
 );
 
-function Toggle({ label, options, value, onChange }) {
-  return (
-    <div>
-      <p className="text-xs font-semibold mb-2">{label}</p>
-      <div className="flex bg-white rounded-2xl p-1 shadow-inner">
-        {options.map((o) => (
-          <button
-            key={o}
-            onClick={() => onChange(o)}
-            className={`flex-1 py-3 rounded-xl font-semibold ${
-              value === o ? "bg-orange-500 text-white" : "hover:bg-gray-50"
-            }`}
-          >
-            {o}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Selectable({ label, icon, active, onClick, color }) {
+const SelectableCard = ({ label, icon, active, onClick, color }) => {
   const colors = {
     red: "border-red-500 bg-red-50",
     orange: "border-orange-500 bg-orange-50",
@@ -327,8 +252,9 @@ function Selectable({ label, icon, active, onClick, color }) {
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer rounded-2xl p-4 text-center border transition
-      ${active ? colors[color] : "bg-white hover:bg-gray-50"}`}
+      className={`relative cursor-pointer rounded-2xl p-4 text-center border transition
+        hover:shadow-md hover:-translate-y-1
+        ${active ? colors[color] : "bg-white"}`}
     >
       {active && (
         <span className="absolute -top-2 -right-2 bg-current text-white rounded-full p-1">
@@ -341,4 +267,4 @@ function Selectable({ label, icon, active, onClick, color }) {
       <p className="font-semibold text-sm">{label}</p>
     </div>
   );
-}
+};

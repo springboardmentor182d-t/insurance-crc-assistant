@@ -1,108 +1,59 @@
 import { useState, useEffect } from "react";
-import { Camera } from "lucide-react";
+import { Calendar, MapPin, Camera } from "lucide-react";
 import axios from "axios";
-import { useProfile } from "../context/ProfileContext";
 
 export default function ProfilePage() {
-  const { setProfile: setGlobalProfile } = useProfile();
-
   const [profile, setProfile] = useState({
-    name: "",
     avatar: null,
-    avatarFile: null,
-
     dob: "",
     address: "",
-
     categories: [],
-    monthlyBudget: 15000,
+    budget: 15000,
+    risk: "Medium",
     familySize: 1,
     goal: "Family Protection",
-
-    riskLevel: "Medium",
   });
+
+  /* ================= SAVE PROFILE ================= */
+  const saveProfile = async () => {
+    try {
+      await axios.post("/api/profile/", {
+        dob: profile.dob,
+        address: profile.address,
+        categories: profile.categories,
+        budget: profile.budget,
+        risk: profile.risk,
+        familySize: profile.familySize,
+        goal: profile.goal,
+      });
+
+      alert("Profile saved successfully ✅");
+    } catch (err) {
+      console.error("Save error:", err.response?.data || err.message);
+      alert("Error saving profile ❌");
+    }
+  };
 
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/profile/1")
+      .get("/api/profile/")
       .then((res) => {
-        if (!res.data) return;
-
-        const avatarUrl = res.data.avatar
-          ? "http://127.0.0.1:8000" + res.data.avatar
-          : null;
+        if (!res.data || Object.keys(res.data).length === 0) return;
 
         setProfile((prev) => ({
           ...prev,
-          name: res.data.name || "",
           dob: res.data.dob || "",
           address: res.data.address || "",
-          familySize: res.data.familySize || 1,
           categories: res.data.categories || [],
-          monthlyBudget: res.data.monthlyBudget || 15000,
-          goal: res.data.goal || "Family Protection",
-          riskLevel: res.data.riskLevel || "Medium",
-          avatar: avatarUrl,
+          budget: res.data.budget ?? prev.budget,
+          risk: res.data.risk || prev.risk,
+          familySize: res.data.familySize ?? prev.familySize,
+          goal: res.data.goal || prev.goal,
         }));
-
-        // 🔴 sync sidebar immediately
-        setGlobalProfile({
-          name: res.data.name || "John Doe",
-          avatar: avatarUrl,
-        });
       })
-      .catch((err) => {
-        console.error("Profile load error:", err);
-      });
-  }, [setGlobalProfile]);
-
-  /* ================= SAVE PROFILE ================= */
-  const saveProfile = async () => {
-    console.log("saveProfile STARTED", profile);
-
-    try {
-      const fd = new FormData();
-
-      fd.append("name", profile.name || "");
-      fd.append("dob", profile.dob || "");
-      fd.append("address", profile.address || "");
-      fd.append("family_size", profile.familySize || 1);
-
-      fd.append(
-        "preferences",
-        JSON.stringify({
-          categories: profile.categories || [],
-          monthly_budget: profile.monthlyBudget || 15000,
-          goal: profile.goal || "Family Protection",
-        })
-      );
-
-      if (profile.avatarFile) {
-        fd.append("avatar", profile.avatarFile);
-      }
-
-      const res = await axios.post(
-        "http://127.0.0.1:8000/api/profile/1",
-        fd
-      );
-
-      console.log("SAVE RESPONSE:", res.data);
-
-      alert("Profile saved successfully ✅");
-    } catch (err) {
-      console.error("SAVE PROFILE ERROR FULL:", err);
-
-      if (err.response) {
-        alert(
-          `Save failed (${err.response.status}):\n` +
-          JSON.stringify(err.response.data)
-        );
-      } else {
-        alert("Save failed: Network / CORS error");
-      }
-    }
-  };
+      .catch(() => console.log("No saved profile yet"));
+  }, []);
 
   /* ================= AVATAR ================= */
   const handleAvatarChange = (e) => {
@@ -112,11 +63,10 @@ export default function ProfilePage() {
     setProfile((prev) => ({
       ...prev,
       avatar: URL.createObjectURL(file),
-      avatarFile: file,
     }));
   };
 
-  /* ================= CATEGORY TOGGLE ================= */
+  /* ================= CATEGORIES ================= */
   const toggleCategory = (cat) => {
     setProfile((prev) => ({
       ...prev,
@@ -127,10 +77,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="px-6 py-6 max-w-7xl space-y-6">
+    <div className="px-6 py-6 max-w-7xl">
       <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
       <p className="text-sm text-gray-500 mb-8">
-        These details help us recommend the best insurance plans for you.
+        Manage your personal information and insurance preferences.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -138,8 +88,8 @@ export default function ProfilePage() {
         <div className="lg:col-span-2 space-y-6">
           {/* PERSONAL INFO */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-semibold text-sm mb-6">
-              👤 Personal Information
+            <h3 className="font-semibold text-sm mb-4">
+              Personal Information
             </h3>
 
             <div className="flex items-center gap-4 mb-6">
@@ -150,12 +100,12 @@ export default function ProfilePage() {
                   className="hidden"
                   onChange={handleAvatarChange}
                 />
-                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
                   {profile.avatar ? (
                     <img
                       src={profile.avatar}
-                      alt={`${profile.name || "User"} profile`}
-                      className="w-full h-full object-cover"
+                      alt="Profile"
+                      className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     <Camera className="text-gray-400" />
@@ -164,58 +114,34 @@ export default function ProfilePage() {
               </label>
 
               <div>
-                <p className="font-medium">
-                  {profile.name || "Primary Profile"}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Used for recommendations
-                </p>
+                <p className="font-medium">John Doe</p>
+                <p className="text-sm text-gray-500">john@example.com</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* NAME */}
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  👤 Full Name
-                </label>
-                <input
-                  type="text"
-                  value={profile.name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, name: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
-
-              {/* DOB */}
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  📅 Date of Birth
-                </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar size={16} />
                 <input
                   type="date"
                   value={profile.dob}
                   onChange={(e) =>
                     setProfile({ ...profile, dob: e.target.value })
                   }
-                  className="border rounded-md px-3 py-2 w-full"
+                  className="border rounded-md px-2 py-1"
                 />
               </div>
 
-              {/* ADDRESS */}
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  📍 Address
-                </label>
+              <div className="flex items-center gap-2">
+                <MapPin size={16} />
                 <input
                   type="text"
+                  placeholder="Residential Address"
                   value={profile.address}
                   onChange={(e) =>
                     setProfile({ ...profile, address: e.target.value })
                   }
-                  className="border rounded-md px-3 py-2 w-full"
+                  className="border rounded-md px-2 py-1 w-full"
                 />
               </div>
             </div>
@@ -223,28 +149,15 @@ export default function ProfilePage() {
 
           {/* PREFERENCES */}
           <div className="bg-white rounded-xl border p-6">
-            <h3 className="font-semibold text-sm mb-6">
-              🛡 Insurance Preferences
+            <h3 className="font-semibold text-sm mb-4">
+              Insurance Preferences
             </h3>
 
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700 mb-3 block">
-                🛡 Coverage Interests
-              </label>
-
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Health",
-                  "Life",
-                  "Auto",
-                  "Home",
-                  "Travel",
-                  "Fire",
-                  "Business",
-                ].map((cat) => (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {["Health", "Auto", "Home", "Travel", "Life", "Fire", "Business"].map(
+                (cat) => (
                   <button
                     key={cat}
-                    type="button"
                     onClick={() => toggleCategory(cat)}
                     className={`px-4 py-1.5 rounded-lg text-sm border
                       ${
@@ -255,91 +168,69 @@ export default function ProfilePage() {
                   >
                     {cat}
                   </button>
-                ))}
-              </div>
+                )
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  💰 Annual Budget
-                </label>
-                <input
-                  type="number"
-                  value={profile.monthlyBudget}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      monthlyBudget: Number(e.target.value),
-                    })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              <input
+                type="number"
+                value={profile.budget}
+                onChange={(e) =>
+                  setProfile({ ...profile, budget: Number(e.target.value) })
+                }
+                className="border rounded-md px-3 py-2"
+              />
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  👨‍👩‍👧 Family Members
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  value={profile.familySize}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      familySize: Number(e.target.value),
-                    })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+              <select
+                value={profile.risk}
+                onChange={(e) =>
+                  setProfile({ ...profile, risk: e.target.value })
+                }
+                className="border rounded-md px-3 py-2"
+              >
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  🎯 Insurance Goal
-                </label>
-                <select
-                  value={profile.goal}
-                  onChange={(e) =>
-                    setProfile({ ...profile, goal: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                >
-                  <option>Family Protection</option>
-                  <option>Tax Saving</option>
-                  <option>Lowest Premium</option>
-                </select>
-              </div>
+              <input
+                type="number"
+                min={1}
+                value={profile.familySize}
+                onChange={(e) =>
+                  setProfile({
+                    ...profile,
+                    familySize: Number(e.target.value),
+                  })
+                }
+                className="border rounded-md px-3 py-2"
+              />
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  ⚠️ Risk Level
-                </label>
-                <div className="border rounded-md px-3 py-2 bg-gray-50 text-indigo-600 font-semibold">
-                  {profile.riskLevel}
-                </div>
-              </div>
+              <select
+                value={profile.goal}
+                onChange={(e) =>
+                  setProfile({ ...profile, goal: e.target.value })
+                }
+                className="border rounded-md px-3 py-2"
+              >
+                <option>Family Protection</option>
+                <option>Tax Saving</option>
+                <option>Lowest Premium</option>
+              </select>
             </div>
           </div>
         </div>
 
         {/* RIGHT */}
         <div>
-          <div className="bg-white rounded-xl border p-6 space-y-4">
+          <div className="bg-white rounded-xl border p-6">
             <button
-              type="button"
-              onClick={() => {
-                saveProfile();
-              }}
+              onClick={saveProfile}
               className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700"
             >
-              Save Profile
+              Save Changes
             </button>
-
-            <p className="text-xs text-gray-500 text-center">
-              Your recommendations update automatically after saving.
-            </p>
           </div>
         </div>
       </div>
