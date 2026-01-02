@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date
-from src.database import Base
+from ...database import Base
 
-class Profile(Base):
+class UserProfile(Base):
     __tablename__ = "user_profile"
 
     id = Column(Integer, primary_key=True, index=True)

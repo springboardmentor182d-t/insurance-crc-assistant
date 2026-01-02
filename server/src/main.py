@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
 from fastapi.staticfiles import StaticFiles
 
-from src.recommendations_profile_preferences.routers import (
+from .database import engine, Base
+
+from .recommendations_profile_preferences.routers import (
     profile,
     recommendations,
 
@@ -17,7 +18,7 @@ from src.recommendations_profile_preferences.routers import (
     MotorRecommendation,
 
     property_progress,
-    PropertyRecommendation,   # ✅ ONLY progress for now
+    PropertyRecommendation,
 
     travel_progress,
     TravelRecommendation,
@@ -27,7 +28,6 @@ from src.recommendations_profile_preferences.routers import (
 
     business_progress,
     BusinessRecommendation,
-
 )
 
 app = FastAPI(title="Insurance CRC Assistant")
@@ -41,17 +41,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ✅ Static uploads
 app.mount(
     "/uploads",
     StaticFiles(directory="uploads"),
-    name="uploads"
+    name="uploads",
 )
 
-
-# ✅ CREATE TABLES
+# ✅ Create DB tables
 Base.metadata.create_all(bind=engine)
 
-# ✅ REGISTER ROUTERS
+# ✅ Register routers
 app.include_router(profile.router)
 app.include_router(recommendations.router)
 
@@ -64,13 +64,15 @@ app.include_router(LifeRecommendation.router)
 app.include_router(motor_progress.router)
 app.include_router(MotorRecommendation.router)
 
-app.include_router(property_progress.router)  # ✅ CORRECT
-app.include_router(PropertyRecommendation.router)  # ✅ CORRECT
+app.include_router(property_progress.router)
+app.include_router(PropertyRecommendation.router)
 
 app.include_router(travel_progress.router)
 app.include_router(TravelRecommendation.router)
+
 app.include_router(fire_progress.router)
 app.include_router(FireRecommendation.router)
+
 app.include_router(business_progress.router)
 app.include_router(BusinessRecommendation.router)
 

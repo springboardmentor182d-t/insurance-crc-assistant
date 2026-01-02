@@ -4,6 +4,7 @@ import { ProfileProvider } from "./context/ProfileContext";
 import PageContainer from "./layout/PageContainer";
 import Home from "./pages/Home";
 import Recommendations from "./pages/Recommendations";
+
 import HealthRecommendation from "./pages/HealthRecommendation";
 import MotorRecommendation from "./pages/MotorRecommendation";
 import LifeRecommendation from "./pages/LifeRecommendation";
@@ -11,9 +12,12 @@ import TravelRecommendation from "./pages/TravelRecommendation";
 import HomeRecommendation from "./pages/HomeRecommendation";
 import BusinessRecommendation from "./pages/BusinessRecommendation";
 import FireRecommendation from "./pages/FireRecommendation";
+
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
+import TestFetch from "./pages/TestFetch";
 
+// Result pages
 import HealthRecResults from "./pages/HealthRecResults";
 import LifeRecResults from "./pages/LifeRecResults";
 import MotorRecResults from "./pages/MotorRecResults";
@@ -67,6 +71,7 @@ export default function App() {
               element={<RecommendedPolicies />}
             />
 
+            {/* Result pages */}
             <Route path="/healthrecresults" element={<HealthRecResults />} />
             <Route path="/liferecresults" element={<LifeRecResults />} />
             <Route path="/motorrecresults" element={<MotorRecResults />} />
@@ -77,6 +82,9 @@ export default function App() {
               path="/businessrecresults"
               element={<BusinessRecResults />}
             />
+
+            {/* Testing */}
+            <Route path="/test" element={<TestFetch />} />
           </Route>
 
           {/* Fallback */}
