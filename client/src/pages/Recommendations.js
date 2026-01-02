@@ -90,7 +90,7 @@ export default function Recommendations() {
   return (
     <div className="p-2">
       {/* Header */}
-      <div className="text-center mb-10">
+      <div className="text-center mb-14">
         <h1 className="text-4xl font-bold">
           Choose Your{" "}
           <span className="bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
@@ -101,27 +101,6 @@ export default function Recommendations() {
           Select a category below to receive personalized insurance
           recommendations tailored just for you.
         </p>
-      </div>
-
-      {/* CTA BUTTON MOVED UP */}
-      <div className="mb-14 flex justify-center">
-        <button
-          onClick={() => navigate("/recommendedPolicies")}
-          className="
-            flex items-center gap-3
-            px-10 py-4
-            rounded-2xl
-            text-lg font-semibold text-white
-            bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-            shadow-lg
-            transition-all duration-300
-            hover:scale-105 hover:shadow-xl
-            focus:outline-none focus:ring-4 focus:ring-indigo-300
-          "
-        >
-          <Sparkles size={22} />
-          Show Recommended Policies Based on Your Profile
-        </button>
       </div>
 
       {/* Cards Grid */}
@@ -136,6 +115,7 @@ export default function Recommendations() {
                 transition-all duration-300
                 hover:-translate-y-2 hover:shadow-xl`}
             >
+              {/* Icon */}
               <div
                 className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5
                   bg-white shadow-sm ${item.accent}`}
@@ -143,12 +123,17 @@ export default function Recommendations() {
                 <Icon size={24} />
               </div>
 
+              {/* Title */}
               <h3 className="text-lg font-semibold mb-2 text-gray-900">
                 {item.title}
               </h3>
 
-              <p className="text-sm text-gray-600 mb-8">{item.desc}</p>
+              {/* Description */}
+              <p className="text-sm text-gray-600 mb-8">
+                {item.desc}
+              </p>
 
+              {/* Button */}
               <button
                 onClick={() => navigate(item.route)}
                 className={`w-full flex items-center justify-center gap-2 py-2.5
@@ -167,6 +152,27 @@ export default function Recommendations() {
             </div>
           );
         })}
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="mt-20 flex justify-center">
+        <button
+          onClick={() => navigate("/recommendedPolicies")}
+          className="
+            flex items-center gap-3
+            px-10 py-4
+            rounded-2xl
+            text-lg font-semibold text-white
+            bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+            shadow-lg
+            transition-all duration-300
+            hover:scale-105 hover:shadow-xl
+            focus:outline-none focus:ring-4 focus:ring-indigo-300
+          "
+        >
+          <Sparkles size={22} />
+          Show Recommended Policies Based on Your Profile
+        </button>
       </div>
     </div>
   );

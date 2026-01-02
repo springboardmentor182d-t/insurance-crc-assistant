@@ -37,7 +37,6 @@ server/venv/
 server/Lib/
 server/Scripts/
 server/pyvenv.cfg
-server/uploads/
 
 # =========================
 # Backend runtime / logs
@@ -52,3 +51,10 @@ logs/
 .DS_Store
 .vscode/
 .idea/
+# Python cache
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
