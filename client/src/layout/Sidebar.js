@@ -10,7 +10,7 @@ import {
   GitCompare,
   LogOut,
   Settings,
-} from "lucide-react";
+  Calculator, } from "lucide-react";
 
 export function SidebarMenu() {
   const navigate = useNavigate();
@@ -35,8 +35,15 @@ export function SidebarMenu() {
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={() => navigate(-1)}
-      >
+        >
         <FaFileAlt className="text-xl" /> Policies
+      </div>
+
+      <div
+        className="flex items-center gap-3 cursor-pointer mb-6 text-base"
+        onClick={() => navigate("/premium-calculator")}
+      >
+        <Calculator size={18} /> Premium Calculator
       </div>
 
       <div
@@ -45,14 +52,12 @@ export function SidebarMenu() {
       >
         <FaBalanceScale className="text-xl" /> Compare
       </div>
-
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={underDevelopment}
       >
         <FaStar className="text-xl" /> Saved
       </div>
-
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={underDevelopment}
@@ -103,7 +108,6 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
     <div className="w-72 p-6 bg-white rounded-lg shadow-md text-sm">
       <h2 className="text-lg font-bold mb-5">Filters</h2>
 
-     
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2">Provider</h3>
         {options.providers.map((provider) => (
@@ -119,7 +123,6 @@ export function SidebarFilter({ options = { providers: [] }, onFilterChange }) {
         ))}
       </div>
 
-      {/* Duration Filter */}
       <div className="mb-6">
         <h3 className="text-sm font-semibold mb-2">Policy Duration</h3>
         {[1, 2, 3].map((year) => (
@@ -167,7 +170,6 @@ export function Catalog() {
   const underDevelopment = () => {
     alert("🚧 This feature is under development");
   };
-
   return (
     <nav className="bg-blue-500 text-white w-64 min-h-screen p-7 font-bold text-lg">
       <div className="text-2xl mb-8 leading-snug">
@@ -201,6 +203,9 @@ export function Catalog() {
 
 const Sidebar = () => {
   const menuItems = [
+    { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
+    { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
+    { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
     {
       name: "Dashboard",
       path: "/dashboard",
@@ -225,19 +230,23 @@ const Sidebar = () => {
       name: "Compare Plans",
       path: "/#",
       icon: <GitCompare size={18} />,
+      name: "Premium Calculator",           
+      path: "/premium-calculator",
+      icon: <Calculator size={18} />,
     },
+    { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
+    { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
   ];
 
   return (
     <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
       <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
         <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">
-          CRC
+         CRC
         </span>
-        Insurance 
+        Insurance
       </div>
 
-      
       <nav className="flex-1 px-4 py-6 space-y-2">
         {menuItems.map((item) => (
           <NavLink
@@ -258,7 +267,7 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      
+
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
         <NavLink
           to="/settings"

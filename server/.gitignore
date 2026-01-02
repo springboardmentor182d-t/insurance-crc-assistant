@@ -1,6 +1,7 @@
 # Python / FastAPI ignores
 __pycache__/
 *.py[cod]
+*.pyc
 *.pyo
 *.pyd
 
@@ -33,6 +34,8 @@ htmlcov/
 .env.*
 
 # DB files
+# Database files
 *.db
 *.sqlite3
 server\.env
+
