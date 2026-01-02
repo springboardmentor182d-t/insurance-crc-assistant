@@ -28,5 +28,5 @@ root.render(
   <BrowserRouter>
     <App />
   </BrowserRouter>
->>>>>>> Stashed changes
+
 );
