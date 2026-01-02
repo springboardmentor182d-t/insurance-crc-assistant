@@ -1,3 +1,9 @@
+# Insurance CRC Assistant
+
+This repository contains the Insurance Claim Recommendation & Companion (CRC) Assistant project developed as part of a collaborative internship.
+
+The application aims to assist users with insurance-related workflows such as policy discovery, recommendations, claims assistance, and user dashboards.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
