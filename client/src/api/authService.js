@@ -63,3 +63,5 @@ export const resetPassword = async (email, password) => {
 export const logout = () => {
   localStorage.removeItem("access_token");
 };
+
+ 
