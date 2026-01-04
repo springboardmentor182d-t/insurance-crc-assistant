@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, JSON, DateTime
 from datetime import datetime
-from src.database.core import Base
+from src.database.database import Base
 
 
 class Policy(Base):

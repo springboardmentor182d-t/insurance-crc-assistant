@@ -15,6 +15,9 @@ import ResetPassword from "./components/auth/ResetPassword";
 import { AuthContext } from './context/AuthContext';
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+import Dummy from "./components/auth/Dummy";
+import FraudDetection from "./pages/admin/FraudDetection";
+import FraudInvestigation from "./pages/admin/FraudInvestigation";
 export default function App(){
   const { user } = useContext(AuthContext);
   return (
@@ -29,6 +32,9 @@ export default function App(){
       <Route path="/landing" element={<Landing/>} />
       <Route path="/claims" element={<ClaimsList />} />
       <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+      <Route path="/dummy" element={<Dummy />} />
+      <Route path="/admin/fraud" element={<FraudDetection />} />
+      <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
       </Route>
