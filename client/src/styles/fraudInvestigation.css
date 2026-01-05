@@ -1,0 +1,450 @@
+/* ================= PAGE ================= */
+.fi-page {
+  padding: 28px;
+  background: #f5f7fb;
+  font-family: "Inter", sans-serif;
+}
+
+/* ================= HEADER ================= */
+.fi-header {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-radius: 22px;
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 18px 40px rgba(239, 68, 68, 0.35);
+}
+
+.fi-header-left {
+  display: flex;
+  gap: 18px;
+}
+
+.fi-icon-box {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 16px;
+}
+
+.fi-small {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.fi-meta {
+  display: flex;
+  gap: 36px;
+  margin-top: 14px;
+}
+
+.fi-meta span {
+  display: block;
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.fi-meta b {
+  font-size: 16px;
+}
+
+.fi-header-right {
+  text-align: right;
+}
+
+.fi-header-right span {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.fi-header-right h2 {
+  margin: 6px 0;
+  font-size: 24px;
+}
+
+.fi-white-pill {
+  width: 56px;
+  height: 32px;
+  background: white;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+/* ================= GRID ================= */
+.fi-grid {
+  display: grid;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 24px;
+  margin-top: 30px;
+}
+
+/* ================= CARDS ================= */
+.fi-card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+.fi-card h2 {
+  margin-bottom: 18px;
+  font-size: 22px;
+}
+
+/* ================= FACTORS ================= */
+.factor-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  border-radius: 16px;
+  margin-bottom: 14px;
+}
+
+.factor-left {
+  display: flex;
+  gap: 14px;
+}
+
+.factor-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.factor-card h4 {
+  margin-bottom: 6px;
+}
+
+/* COLORS */
+.factor-card.high {
+  background: #fee2e2;
+  border-left: 6px solid #ef4444;
+}
+.factor-card.medium {
+  background: #fef3c7;
+  border-left: 6px solid #f59e0b;
+}
+.factor-card.low {
+  background: #e0ecff;
+  border-left: 6px solid #2563eb;
+}
+
+.factor-icon {
+  background: rgba(255,255,255,0.6);
+}
+
+/* ================= BADGES ================= */
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.badge.high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.badge.medium {
+  background: #fef3c7;
+  color: #b45309;
+}
+.badge.low {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+
+/* ================= INFO GRID ================= */
+.fi-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.fi-info-grid span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ================= RELATED CLAIMS ================= */
+.related-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 12px;
+}
+
+.related-row span {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.approved {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.pattern-alert {
+  margin-top: 12px;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* ================= AI CARD ================= */
+.ai-card {
+  background: linear-gradient(135deg, #eef5ff, #e0edff);
+}
+
+.progress-wrap {
+  margin-top: 16px;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  margin-top: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #ef4444;
+  border-radius: 999px;
+}
+
+.percent {
+  float: right;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.btn-blue {
+  width: 100%;
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.btn-red {
+  width: 100%;
+  padding: 14px;
+  background: #ef4444;
+  color: white;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.btn-outline {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  color: #2563eb;
+  border-radius: 14px;
+  border: 2px solid #2563eb;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.assign {
+  text-align: center;
+  margin-top: 14px;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+/* ================= PROFILE ================= */
+.profile-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+/* ================= LOG ================= */
+.log {
+  list-style: none;
+  padding-left: 0;
+}
+
+.log li {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+
+.log .muted {
+  color: #94a3b8;
+}
+/* Investigation Log */
+.log-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.log-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+}
+
+.log-dot.blue {
+  background: #2563eb;
+}
+
+.log-dot.orange {
+  background: #f59e0b;
+}
+
+.log-dot.gray {
+  background: #cbd5e1;
+}
+
+.log-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.log-date {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.log-item.muted .log-text {
+  color: #94a3b8;
+}
+
+
+/* ================= SYSTEM ALERT ================= */
+.system-alert {
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #991b1b;
+}
+/* ===== CLAIM INFO GRID FIX ===== */
+.fi-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 40px;
+}
+
+.fi-info-grid span {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.fi-info-grid b {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+}
+/* ===== PROFILE CARD FIX ===== */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+  margin-top: 14px;
+}
+
+.profile-stats span {
+  display: block;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.profile-stats b {
+  font-size: 15px;
+  font-weight: 600;
+}
+/* ========================================= */
+/* FIX: Hide duplicate Claim Information in RIGHT column */
+/* (Without removing JSX as requested)       */
+/* ========================================= */
+
+.fi-grid > div:last-child .fi-card:first-child h2 {
+  display: none;
+}
+
+.fi-grid > div:last-child .fi-card:first-child .fi-info-grid {
+  display: none;
+}
+
+/* ========================================= */
+/* Investigation Log – reference style polish */
+/* ========================================= */
+
+.log-item {
+  padding-left: 6px;
+}
+
+.log-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 16px;
+  height: 100%;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+.log-item {
+  position: relative;
+}
+
+/* Improve spacing consistency */
+.log-text {
+  margin-bottom: 2px;
+}
+
+/* ========================================= */
+/* System Recommendation spacing fix */
+/* ========================================= */
+
+.system-alert p {
+  margin-top: 8px;
+  line-height: 1.5;
+}

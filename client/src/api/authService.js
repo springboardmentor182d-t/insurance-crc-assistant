@@ -2,10 +2,7 @@
 import axios from "axios";
 
 /* ================= API INSTANCE ================= */
-const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-  withCredentials: true
-});
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 /* Automatically attach token */
 API.interceptors.request.use((req) => {

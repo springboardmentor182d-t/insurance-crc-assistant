@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.auth.routes import router as auth_router
 from src.auth.protected_routes import router as protected_router
 from src.claims.routes import router as claims_router
+from src.fraud.routes import router as fraud_router
 from src.recommendations.controller import router as recommendations_router
 from src.admin.controller import router as admin_router
 from src.profile.controller import router as profile_router
@@ -37,3 +38,4 @@ app.include_router(recommendations_router)
 async def root():
     return {"message": "InsureHub backend is up"}
 app.include_router(claims_router)
+app.include_router(fraud_router)

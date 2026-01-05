@@ -15,6 +15,9 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+import Dummy from "./components/auth/Dummy";
+import FraudDetection from "./pages/admin/FraudDetection";
+import FraudInvestigation from "./pages/admin/FraudInvestigation";
 import Profile from "./pages/Profile";
 import Preferences from "./pages/Preferences";
 import Recommendations from "./pages/Recommendations";
@@ -41,6 +44,18 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/verify-otp" element={<OTPVerify />} />
+      <Route path="/enter-otp" element={<EnterOtp/>} />
+      <Route path="/reset-password" element={<ResetPassword/>} />
+      <Route path="/landing" element={<Landing/>} />
+      <Route path="/claims" element={<ClaimsList />} />
+      <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+      <Route path="/dummy" element={<Dummy />} />
+      <Route path="/admin/fraud" element={<FraudDetection />} />
+      <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/preferences" element={<Preferences />} />
+      <Route path="/recommendations" element={<Recommendations />} />
+
       <Route path="/enter-otp" element={<EnterOtp />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       
