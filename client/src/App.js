@@ -1,4 +1,4 @@
- import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 
 import { ComparePage } from "./pages/Comparsion";
@@ -13,8 +13,6 @@ import PolicyCatalog from "./pages/PolicyCatalog";
 import PolicyDetails from "./pages/PolicyDetails";
 import PremiumCalculator from "./pages/PremiumCalculator";
 import Policies from "./features/policies/Policies";
-import "./index.css";
-
 
 function App() {
   return (
@@ -23,7 +21,7 @@ function App() {
 
 
         <Route path="/" element={<PolicyCatalog />} />
-        
+       
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/policy-details/:id" element={<PolicyDetails />} />
@@ -36,7 +34,7 @@ function App() {
           path="/premium-calculator"
           element={<PremiumCalculator />}
         />
-       
+        <Route path="/compare" element={<ComparePage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
