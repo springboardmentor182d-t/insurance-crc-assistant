@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import PolicyInfoBox from "./PolicyInfoBox";
 import ScoreRing from "./ScoreRing";
 import { getPolicyIcon } from "./icons";
@@ -21,6 +23,8 @@ function getStyle(type) {
 }
 
 export default function PolicyCard({ policy }) {
+  const navigate = useNavigate();
+
   const type = policy.policy_type?.toLowerCase();
   const { bg, ring } = getStyle(type);
 
@@ -79,7 +83,9 @@ export default function PolicyCard({ policy }) {
       {/* ACTIONS */}
       <div className="w-52 p-6 flex flex-col gap-3 justify-center">
         <button
-          onClick={() => alert("View Details coming soon 🚧")}
+          onClick={() =>
+            navigate(`/recommendations/view/${policy.id}`)
+          }
           className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
           View Details
