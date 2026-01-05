@@ -1,6 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProfileProvider } from "./context/ProfileContext";
 
+/* ===== Auth pages ===== */
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import Otp from "./pages/Otp";
+import ResetPassword from "./pages/ResetPassword";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+/* ===== Layout & Main pages ===== */
 import PageContainer from "./layout/PageContainer";
 import Home from "./pages/Home";
 import Recommendations from "./pages/Recommendations";
@@ -17,7 +27,7 @@ import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 import TestFetch from "./pages/TestFetch";
 
-// Result pages
+/* ===== Result pages ===== */
 import HealthRecResults from "./pages/HealthRecResults";
 import LifeRecResults from "./pages/LifeRecResults";
 import MotorRecResults from "./pages/MotorRecResults";
@@ -31,45 +41,38 @@ export default function App() {
     <ProfileProvider>
       <BrowserRouter>
         <Routes>
-          {/* Pages WITH sidebar & navbar */}
+          {/* ================= PUBLIC AUTH ROUTES ================= */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/otp" element={<Otp />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* ================= ADMIN PROTECTED ROUTE ================= */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="ADMIN">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ================= MAIN APP ROUTES (WITH LAYOUT) ================= */}
           <Route element={<PageContainer />}>
             <Route path="/" element={<Home />} />
             <Route path="/recommendations" element={<Recommendations />} />
 
-            <Route
-              path="/health_insurance_rec"
-              element={<HealthRecommendation />}
-            />
-            <Route
-              path="/motor_insurance_rec"
-              element={<MotorRecommendation />}
-            />
-            <Route
-              path="/life_insurance_rec"
-              element={<LifeRecommendation />}
-            />
-            <Route
-              path="/travel_insurance_rec"
-              element={<TravelRecommendation />}
-            />
-            <Route
-              path="/home_insurance_rec"
-              element={<HomeRecommendation />}
-            />
-            <Route
-              path="/business_insurance_rec"
-              element={<BusinessRecommendation />}
-            />
-            <Route
-              path="/fire_property_insurance_rec"
-              element={<FireRecommendation />}
-            />
+            <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
+            <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
+            <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
+            <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
+            <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
+            <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
+            <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
 
             <Route path="/profile" element={<ProfilePage />} />
-            <Route
-              path="/recommendedPolicies"
-              element={<RecommendedPolicies />}
-            />
+            <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
 
             {/* Result pages */}
             <Route path="/healthrecresults" element={<HealthRecResults />} />
@@ -78,16 +81,13 @@ export default function App() {
             <Route path="/homerecresults" element={<HomeRecResults />} />
             <Route path="/travelrecresults" element={<TravelRecResults />} />
             <Route path="/firerecresults" element={<FireRecResults />} />
-            <Route
-              path="/businessrecresults"
-              element={<BusinessRecResults />}
-            />
+            <Route path="/businessrecresults" element={<BusinessRecResults />} />
 
             {/* Testing */}
             <Route path="/test" element={<TestFetch />} />
           </Route>
 
-          {/* Fallback */}
+          {/* ================= FALLBACK ================= */}
           <Route path="*" element={<h1>Page Not Found</h1>} />
         </Routes>
       </BrowserRouter>
