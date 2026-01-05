@@ -55,7 +55,7 @@ const PolicyFilter = ({
   }
   className="border px-4 py-2 rounded"
 >
-  <option value="">Premium Range</option>
+  <option value="">coverage_amount</option>
 
   {Array.isArray(ranges) &&
     ranges.map((range, index) => (

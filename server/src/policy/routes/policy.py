@@ -26,15 +26,15 @@ def get_policy_filters(db: Session = Depends(get_db)):
     types = db.query(Policy.policy_type).distinct().all()
     policy_types = [t[0] for t in types]
 
-    premium_ranges = [
-        {"label": "Below ₹500", "min": 0, "max": 500},
-        {"label": "₹500 - ₹700", "min": 500, "max": 700},
-        {"label": "Above ₹700", "min": 700, "max": 100000},
+    coverage_ranges = [
+        {"label": "Below ₹5L", "min": 0, "max": 500000},
+        {"label": "₹5L - ₹10L", "min": 500001, "max": 1000000},
+        {"label": "Above ₹10L", "min": 1000001, "max": 2000000},
     ]
 
     return {
         "types": policy_types,
-        "ranges": premium_ranges
+        "ranges": coverage_ranges
     }
 
 @router.get("/{policy_id}")
