@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from src.database.database import get_db
+from src.entities.insurance_type import InsuranceType
 from src.preferences.preferences_model import UserPreference
 from src.preferences.preferences_schema import (
     PreferencesCreate,
@@ -18,9 +19,11 @@ USER_ID = 1
 # -------------------------------------------------
 # INSURANCE TYPES (STATIC MASTER DATA)
 # -------------------------------------------------
-@router.get("/insurance-types")
-async def get_insurance_types():
-    return ["Health", "Life", "Auto", "Travel", "Home"]
+@router.get("/insurance-types", response_model=list[str])
+async def get_insurance_types(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(InsuranceType))
+    types = result.scalars().all()
+    return [t.name for t in types]
 
 
 # -------------------------------------------------
@@ -72,7 +75,7 @@ async def save_preferences(
         db.add(pref)
 
     # ✅ SAVE DATA
-    pref.insurance_types = ",".join(data.insurance_types)
+    pref.insurance_types = [t.lower() for t in data.insurance_types]
     pref.annual_budget = data.annual_budget
     pref.desired_coverage = data.desired_coverage
     pref.risk_appetite = data.risk_appetite

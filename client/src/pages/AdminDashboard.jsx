@@ -17,14 +17,21 @@ import ClaimsBarChart from "../components/AdminDashboard/ClaimsBarChart";
 import FraudDonutChart from "../components/AdminDashboard/FraudDonutChart";
 import PayoutLineChart from "../components/AdminDashboard/PayoutLineChart";
 import SmallStatCard from "../components/AdminDashboard/SmallStatCard";
+import ExportDropdown from "../components/AdminDashboard/ExportDropdown";
+
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
+  /* ---------------- FETCH DASHBOARD DATA ---------------- */
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/admin/dashboard")
-      .then((res) => res.json())
+    fetch(`${BASE_URL}/admin/dashboard`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed");
+        return res.json();
+      })
       .then(setData)
       .catch(() => alert("Failed to load admin data"));
   }, []);
@@ -34,8 +41,8 @@ export default function AdminDashboard() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
 
-      {/* HEADER + FRAUD BUTTON */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+      {/* HEADER + ACTIONS */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
         <div>
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <p className="text-sm text-gray-500">
@@ -43,22 +50,25 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        <button
-          onClick={() => navigate("/admin/fraud-cases")}
-          className="mt-4 md:mt-0 inline-flex items-center gap-2
-                     bg-red-500 hover:bg-red-600
-                     text-white text-sm font-medium
-                     px-4 py-2 rounded-lg
-                     shadow-sm transition-all
-                     focus:outline-none focus:ring-2 focus:ring-red-300"
-        >
-          <AlertOctagon size={18} />
-          View Fraud Cases
-        </button>
+        <div className="flex gap-2">
+          {/* EXPORT DROPDOWN COMPONENT */}
+          <ExportDropdown />
+
+          {/* FRAUD CASES BUTTON */}
+          <button
+            onClick={() => navigate("/admin/fraud-cases")}
+            className="inline-flex items-center gap-2
+                       bg-red-500 hover:bg-red-600
+                       text-white text-sm px-4 py-2 rounded-lg shadow-sm"
+          >
+            <AlertOctagon size={16} />
+            View Fraud Cases
+          </button>
+        </div>
       </div>
 
       {/* KPI CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Claims"
           value={data.total_claims}
@@ -92,17 +102,20 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* CLAIMS + FRAUD CHARTS */}
+      {/* CHARTS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-2">
+        <div id="claims-chart" className="md:col-span-2 bg-white p-4 rounded-xl shadow-sm">
           <ClaimsBarChart data={data.claims_overview} />
         </div>
 
-        <FraudDonutChart data={data.fraud_stats} />
+        <div id="fraud-chart" className="bg-white p-4 rounded-xl shadow-sm">
+          <FraudDonutChart data={data.fraud_stats} />
+        </div>
       </div>
 
-      {/* PAYOUT LINE CHART */}
-      <PayoutLineChart data={data.monthly_payouts} />
+      <div id="payout-chart" className="mt-6 bg-white p-4 rounded-xl shadow-sm">
+        <PayoutLineChart data={data.monthly_payouts} />
+      </div>
 
       {/* BOTTOM STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">

@@ -16,7 +16,7 @@ import {
   savePreferences,
 } from "../services/preferencesService";
 
-/* ICON MAP FROM BACKEND TYPE */
+/* ICON MAP — MUST MATCH BACKEND (lowercase) */
 const ICON_MAP = {
   Health: <Heart />,
   Life: <Shield />,
@@ -36,15 +36,16 @@ export default function Preferences() {
 
   /* ---------------- LOAD FROM BACKEND ---------------- */
   useEffect(() => {
-    // Insurance Types
+    // Load insurance types
     getInsuranceTypes()
-      .then(setAvailableTypes)
+      .then((types) => setAvailableTypes(types || []))
       .catch(() => setAvailableTypes([]));
 
-    // Saved Preferences
+    // Load saved preferences
     getPreferences()
       .then((data) => {
         if (!data) return;
+
         setInsuranceTypes(data.insuranceTypes || []);
         setBudget(data.annualBudget || 25000);
         setCoverage(data.desiredCoverage || 500000);
@@ -109,11 +110,11 @@ export default function Preferences() {
         <Section title="Annual Budget" value={`₹ ${budget.toLocaleString()}`}>
           <input
             type="range"
-            min="5000"
-            max="100000"
-            step="5000"
+            min={5000}
+            max={30000}
+            step={1000}
             value={budget}
-            onChange={(e) => setBudget(+e.target.value)}
+            onChange={(e) => setBudget(Number(e.target.value))}
             className="w-full accent-blue-600"
           />
         </Section>
@@ -125,11 +126,11 @@ export default function Preferences() {
         >
           <input
             type="range"
-            min="100000"
-            max="10000000"
-            step="100000"
+            min={100000}
+            max={1000000}
+            step={100000}
             value={coverage}
-            onChange={(e) => setCoverage(+e.target.value)}
+            onChange={(e) => setCoverage(Number(e.target.value))}
             className="w-full accent-blue-600"
           />
         </Section>
@@ -205,7 +206,7 @@ function TypeCard({ icon, label, active, onClick }) {
         }`}
     >
       {icon}
-      <span className="text-sm">{label}</span>
+      <span className="text-sm capitalize">{label}</span>
     </button>
   );
 }

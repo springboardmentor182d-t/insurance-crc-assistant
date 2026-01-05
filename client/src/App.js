@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 /* AUTH PAGES */
 import Landing from "./components/auth/Landing";
@@ -23,15 +23,23 @@ import Preferences from "./pages/Preferences";
 import Recommendations from "./pages/Recommendations";
 import NotFound from "./pages/NotFound";
 
+/* LAYOUT */
+import PageContainer from "./layout/PageContainer";
+
 /* ROUTE GUARDS */
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import { AuthContext } from './context/AuthContext';
-export default function App(){
+
+export default function App() {
   const { user } = useContext(AuthContext);
+
   return (
     <Routes>
+
+      {/* ---------- AUTH (NO NAVBAR) ---------- */}
       <Route path="/" element={<Landing />} />
+      <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -48,15 +56,31 @@ export default function App(){
       <Route path="/preferences" element={<Preferences />} />
       <Route path="/recommendations" element={<Recommendations />} />
 
+      <Route path="/enter-otp" element={<EnterOtp />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      
+      {/* ---------- PROTECTED (WITH NAVBAR) ---------- */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<PageContainer />}>
+
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/claims" element={<ClaimsList />} />
+          <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/preferences" element={<Preferences />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+
+          {/* ---------- ADMIN ONLY ---------- */}
+          <Route element={<RoleBasedRoute roleRequired="admin" />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+
+        </Route>
       </Route>
 
-      <Route element={<RoleBasedRoute roleRequired="admin" />}>
-        <Route path="/admin" element={<AdminDashboard />} />
-      </Route>
-
+      {/* ---------- FALLBACK ---------- */}
       <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 }
