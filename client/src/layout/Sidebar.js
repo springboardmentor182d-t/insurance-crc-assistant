@@ -10,6 +10,7 @@ import {
   LogOut,
   Settings,
   Calculator, } from "lucide-react";
+  
 
 export function SidebarMenu() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export function SidebarMenu() {
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
         onClick={() => navigate(-1)}
         >
+        
         <FaFileAlt className="text-xl" /> Policies
       </div>
 
@@ -74,6 +76,9 @@ export function SidebarMenu() {
 
 const Sidebar = () => {
   const menuItems = [
+    { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
+    { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
+    { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
     { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
     { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
     { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
@@ -118,9 +123,12 @@ const Sidebar = () => {
       <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
         <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">
          CRC
+         CRC
         </span>
         Insurance
+        Insurance
       </div>
+
 
       <nav className="flex-1 px-4 py-6 space-y-2">
         {menuItems.map((item) => (
@@ -141,6 +149,7 @@ const Sidebar = () => {
           </NavLink>
         ))}
       </nav>
+
 
 
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
