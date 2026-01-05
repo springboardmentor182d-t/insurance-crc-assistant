@@ -1,10 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# 👉 Change ONLY this line when needed
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/insurance_db"
-# Example for your friend:
-# DATABASE_URL = "postgresql://postgres:Nandini%40163@localhost:5432/insurance_crc"
+DATABASE_URL = "postgresql://postgres:Nandini%40163@localhost:5432/insurance_crc"
+
 
 engine = create_engine(DATABASE_URL)
 
@@ -15,6 +13,7 @@ SessionLocal = sessionmaker(
 )
 
 Base = declarative_base()
+from sqlalchemy.orm import Session
 
 def get_db():
     db = SessionLocal()
@@ -22,3 +21,4 @@ def get_db():
         yield db
     finally:
         db.close()
+
