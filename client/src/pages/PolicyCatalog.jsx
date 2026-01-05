@@ -18,7 +18,6 @@ const PolicyCatalog = () => {
   const [compareOpen, setCompareOpen] = useState(false);
   const [messages, setMessages] = useState({});
 
-  // Fetch policies and filters
   useEffect(() => {
     if (!BASE_URL) return console.error("❌ BASE_URL is undefined.");
 
@@ -36,12 +35,12 @@ const PolicyCatalog = () => {
       .catch(console.error);
   }, []);
 
-  // Filter policies using coverage_amount
+ 
   const filteredPolicies = policies.filter((policy) => {
     const matchesSearch = policy.title?.toLowerCase().includes(filters.search.toLowerCase());
     const matchesType = !filters.type || policy.policy_type === filters.type;
 
-    // Convert coverage_amount like "5,00,000" to number
+    
     const coverageAmount = Number(policy.coverage_amount.replace(/,/g, ""));
 
     let matchesRange = true;
@@ -54,7 +53,7 @@ const PolicyCatalog = () => {
     return matchesSearch && matchesType && matchesRange;
   });
 
-  // Compare list handlers
+  
   const handleCompareClick = (policy) => {
     const exists = compareList.find((p) => p.id === policy.id);
     if (exists) {
@@ -186,4 +185,3 @@ const PolicyCatalog = () => {
 };
 
 export default PolicyCatalog;
-

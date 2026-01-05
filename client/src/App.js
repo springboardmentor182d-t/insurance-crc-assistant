@@ -36,7 +36,7 @@ function App() {
           path="/premium-calculator"
           element={<PremiumCalculator />}
         />
-        <Route path="/compare" element={<ComparePage />} />
+       
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
