@@ -1,77 +1,99 @@
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse, FileResponse
+import csv, io, tempfile, os
+
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+
+from src.admin.service import get_admin_dashboard_data
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
 
-def percent_change(current: float, previous: float) -> float:
-    if previous == 0:
-        return 0.0
-    return round(((current - previous) / previous) * 100, 2)
-
-
+# -----------------------------
+# DASHBOARD API
+# -----------------------------
 @router.get("/dashboard")
 def get_admin_dashboard():
+    return get_admin_dashboard_data()
 
-    previous = {
-        "total_claims": 300,
-        "total_payouts": 170,
-        "active_policies": 1200,
-        "fraud_cases": 16,
-    }
 
-    current = {
-        "total_claims": 320,
-        "total_payouts": 180,
-        "active_policies": 1250,
-        "fraud_cases": 14,
-        "total_users": 1500,
-        "avg_settlement_days": 7.2,
-        "settlement_rate": "94.2%",
-    }
+# -----------------------------
+# CSV EXPORT
+# -----------------------------
+@router.get("/export/csv")
+def export_admin_csv():
+    output = io.StringIO()
+    writer = csv.writer(output)
 
-    def percent_change(curr, prev):
-        return round(((curr - prev) / prev) * 100, 2) if prev else 0
+    data = get_admin_dashboard_data()
 
-    return {
-        # KPI
-        **current,
+    writer.writerow(["Metric", "Value"])
+    writer.writerow(["Total Claims", data["total_claims"]])
+    writer.writerow(["Total Payouts", data["total_payouts"]])
+    writer.writerow(["Active Policies", data["active_policies"]])
+    writer.writerow(["Fraud Cases", data["fraud_cases"]])
+    writer.writerow(["Total Users", data["total_users"]])
+    writer.writerow(["Avg Settlement Days", data["avg_settlement_days"]])
+    writer.writerow(["Settlement Rate", data["settlement_rate"]])
 
-        # Growth
-        "claims_growth_pct": percent_change(
-            current["total_claims"], previous["total_claims"]
-        ),
-        "payout_growth_pct": percent_change(
-            current["total_payouts"], previous["total_payouts"]
-        ),
-        "policies_growth_pct": percent_change(
-            current["active_policies"], previous["active_policies"]
-        ),
-        "fraud_growth_pct": percent_change(
-            current["fraud_cases"], previous["fraud_cases"]
-        ),
+    output.seek(0)
 
-        # Charts
-        "claims_overview": [
-            {"month": "Jan", "approved": 40, "rejected": 6},
-            {"month": "Feb", "approved": 48, "rejected": 7},
-            {"month": "Mar", "approved": 45, "rejected": 5},
-            {"month": "Apr", "approved": 52, "rejected": 8},
-            {"month": "May", "approved": 55, "rejected": 6},
-            {"month": "Jun", "approved": 60, "rejected": 9},
-        ],
+    return StreamingResponse(
+        output,
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=admin_dashboard_report.csv"
+        },
+    )
 
-        "fraud_stats": [
-            {"name": "Legitimate", "value": 82},
-            {"name": "Suspicious", "value": 12},
-            {"name": "Flagged", "value": 6},
-        ],
 
-        "monthly_payouts": [
-            {"month": "Jan", "amount": 2.4},
-            {"month": "Feb", "amount": 2.6},
-            {"month": "Mar", "amount": 2.8},
-            {"month": "Apr", "amount": 3.0},
-            {"month": "May", "amount": 3.2},
-            {"month": "Jun", "amount": 3.5},
-        ],
-    }
+# -----------------------------
+# PDF EXPORT
+# -----------------------------
+@router.get("/export/pdf")
+def export_admin_pdf():
+
+    data = get_admin_dashboard_data()
+
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
+    file_path = temp_file.name
+
+    doc = SimpleDocTemplate(file_path, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    elements.append(Paragraph("Admin Dashboard Report", styles["Title"]))
+    elements.append(Paragraph(" ", styles["Normal"]))
+
+    table_data = [
+        ["Metric", "Value"],
+        ["Total Claims", data["total_claims"]],
+        ["Total Payouts", data["total_payouts"]],
+        ["Active Policies", data["active_policies"]],
+        ["Fraud Cases", data["fraud_cases"]],
+        ["Total Users", data["total_users"]],
+        ["Avg Settlement Days", data["avg_settlement_days"]],
+        ["Settlement Rate", data["settlement_rate"]],
+    ]
+
+    table = Table(table_data)
+    table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.red),
+            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+            ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.whitesmoke),
+        ])
+    )
+
+    elements.append(table)
+    doc.build(elements)
+
+    return FileResponse(
+        file_path,
+        media_type="application/pdf",
+        filename="admin_dashboard_report.pdf",
+    )

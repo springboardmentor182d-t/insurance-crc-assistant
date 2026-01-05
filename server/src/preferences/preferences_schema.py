@@ -15,3 +15,10 @@ class PreferencesCreate(PreferencesBase):
 class PreferencesResponse(PreferencesBase):
     class Config:
         from_attributes = True
+
+class InsuranceTypeResponse(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
