@@ -97,14 +97,18 @@ const Sidebar = () => {
       path: "/recommendations",
       icon: <Lightbulb size={18} />,
     },
-    {
-      name: "Compare Plans",
-      path: "/#",
-      icon: <GitCompare size={18} />,
-      name: "Premium Calculator",           
-      path: "/premium-calculator",
-      icon: <Calculator size={18} />,
-    },
+   
+  {
+    name: "Compare Plans",
+    path: "/#",
+    icon: <GitCompare size={18} />,
+  },
+  {
+    name: "Premium Calculator",           
+    path: "/premium-calculator",
+    icon: <Calculator size={18} />,
+  },
+
     { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
     { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
   ];
