@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+import RecommendationView from "./pages/RecommendationView";
 import Profile from "./pages/Profile";
 import Preferences from "./pages/Preferences";
 import Recommendations from "./pages/Recommendations";
@@ -54,6 +55,8 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/recommendations" element={<Recommendations />} />
+          <Route path="/recommendations/view/:id"element={<RecommendationView />}
+          />
 
           {/* ---------- ADMIN ONLY ---------- */}
           <Route element={<RoleBasedRoute roleRequired="admin" />}>
