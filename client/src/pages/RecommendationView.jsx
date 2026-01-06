@@ -1,5 +1,7 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+
 import { getRecommendationById } from "../services/recommendationsService";
 
 import RecommendationHeader from "../components/RecommendationView/RecommendationHeader";
@@ -12,6 +14,8 @@ import RecommendationFeatures from "../components/RecommendationView/Recommendat
 
 export default function RecommendationView() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -22,40 +26,48 @@ export default function RecommendationView() {
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-gray-500">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 grid grid-cols-3 gap-6">
-      
-      {/* LEFT */}
-      <div className="col-span-2 space-y-6">
-        <RecommendationHeader data={data} />
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="grid grid-cols-3 gap-6 max-w-7xl mx-auto">
 
-        {/* ✅ FIX 1 */}
-        <RecommendationReason reasons={data.reasons} />
+        {/* ================= LEFT COLUMN ================= */}
+        <div className="col-span-2 space-y-6">
 
-        <PremiumCoverageAnalysis data={data} />
+          {/* 🔙 Back to Recommendations */}
+          <button
+            onClick={() => navigate("/recommendations")}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Recommendations</span>
+          </button>
 
-        {/* ✅ FIX 2 */}
-        {data.features && (
+          {/* Header */}
+          <RecommendationHeader data={data} />
+
+          {/* Reasons */}
+          <RecommendationReason reasons={data.reasons} />
+
+          {/* Premium vs Coverage */}
+          <PremiumCoverageAnalysis data={data} />
+
+          {/* Key Features */}
           <RecommendationFeatures features={data.features} />
-        )}
-      </div>
+        </div>
 
-      {/* RIGHT */}
-      <div className="space-y-6">
-        {/* ✅ FIX 3 */}
-        <RecommendationActions data={data} />
-
-        {data.market && (
+        {/* ================= RIGHT COLUMN ================= */}
+        <div className="space-y-6">
+          <RecommendationActions />
           <MarketComparison market={data.market} />
-        )}
+          <ExpertRecommendation note={data.expert_note} />
+        </div>
 
-        <ExpertRecommendation note={data.expert_note} />
       </div>
     </div>
   );

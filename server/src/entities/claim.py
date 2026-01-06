@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, Date, Enum, Numeric, Text
 from src.database.database import Base
 import enum
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+from src.entities.policy import Policy
 
 
 class ClaimStatus(enum.Enum):
@@ -20,6 +23,9 @@ class Claim(Base):
     policy_name = Column(String(100), nullable=False)
     policy_type = Column(String(50), nullable=False)
     policy_number = Column(String(50), nullable=False)
+
+    policy_id = Column(Integer, ForeignKey("policies.id"), nullable=True)
+    policy = relationship("Policy")
 
     filed_date = Column(Date, nullable=False)
 

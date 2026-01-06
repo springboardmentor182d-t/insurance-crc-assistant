@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import { Shield, User, LogOut } from "lucide-react";
 
 export default function Navbar() {
-
   /* NORMAL LINKS (BLUE) */
   const linkClass = ({ isActive }) =>
     `relative text-sm font-medium pb-0.5 transition-colors duration-200
@@ -14,20 +13,17 @@ export default function Navbar() {
     `;
 
   /* ADMIN / FRAUD (RED) */
-  const adminLinkClass =
-    "relative text-sm font-semibold pb-0.5 transition-colors duration-200 \
-     text-red-500 hover:text-red-600 \
-     after:absolute after:left-0 after:-bottom-1 \
-     after:h-[2px] after:bg-red-500 \
-     after:transition-all after:duration-300 \
-     after:w-0 hover:after:w-full";
-
-  /* Disable navigation (coming soon links) */
-  const preventNav = (e) => e.preventDefault();
+  const adminLinkClass = ({ isActive }) =>
+    `relative text-sm font-semibold pb-0.5 transition-colors duration-200
+     ${isActive ? "text-red-600" : "text-red-500 hover:text-red-600"}
+     after:absolute after:left-0 after:-bottom-1
+     after:h-[2px] after:bg-red-500
+     after:transition-all after:duration-300
+     after:w-0 hover:after:w-full
+    `;
 
   return (
     <nav className="w-full bg-white border-b shadow-sm px-6 py-3 flex items-center">
-
       {/* LEFT – LOGO */}
       <div className="flex items-center gap-2">
         <div className="bg-blue-600 p-1.5 rounded-lg">
@@ -38,17 +34,15 @@ export default function Navbar() {
         </span>
       </div>
 
-      {/* RIGHT SIDE (NAV + PROFILE) */}
+      {/* RIGHT SIDE */}
       <div className="ml-auto flex items-center gap-10">
-
         {/* NAV LINKS */}
         <div className="flex items-center gap-8">
-
-          <NavLink to="#" onClick={preventNav} className={linkClass}>
+          <NavLink to="/policies" className={linkClass}>
             Policies
           </NavLink>
 
-          <NavLink to="#" onClick={preventNav} className={linkClass}>
+          <NavLink to="/compare" className={linkClass}>
             Compare
           </NavLink>
 
@@ -64,7 +58,7 @@ export default function Navbar() {
             Admin
           </NavLink>
 
-          <NavLink to="#" onClick={preventNav} className={adminLinkClass}>
+          <NavLink to="/admin/fraud" className={adminLinkClass}>
             Fraud Detection
           </NavLink>
 
@@ -75,8 +69,6 @@ export default function Navbar() {
 
         {/* PROFILE + LOGOUT */}
         <div className="flex items-center gap-3 text-slate-600">
-
-          {/* PROFILE ICON WITH CIRCLE + TOOLTIP */}
           <div className="relative group">
             <NavLink
               to="/profile"
@@ -88,7 +80,6 @@ export default function Navbar() {
               <User size={22} />
             </NavLink>
 
-            {/* TOOLTIP */}
             <span
               className="absolute -top-8 left-1/2 -translate-x-1/2
                          bg-slate-800 text-white text-xs
@@ -100,14 +91,12 @@ export default function Navbar() {
             </span>
           </div>
 
-          {/* LOGOUT ICON */}
           <LogOut
             size={22}
             className="cursor-pointer hover:text-red-500"
             title="Logout"
           />
         </div>
-
       </div>
     </nav>
   );

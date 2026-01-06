@@ -12,36 +12,40 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-import StatCard from "../components/AdminDashboard/StatCard";
-import ClaimsBarChart from "../components/AdminDashboard/ClaimsBarChart";
-import FraudDonutChart from "../components/AdminDashboard/FraudDonutChart";
-import PayoutLineChart from "../components/AdminDashboard/PayoutLineChart";
-import SmallStatCard from "../components/AdminDashboard/SmallStatCard";
-import ExportDropdown from "../components/AdminDashboard/ExportDropdown";
+/* DASHBOARD COMPONENTS */
+import StatCard from "../../components/AdminDashboard/StatCard";
+import ClaimsBarChart from "../../components/AdminDashboard/ClaimsBarChart";
+import FraudDonutChart from "../../components/AdminDashboard/FraudDonutChart";
+import PayoutLineChart from "../../components/AdminDashboard/PayoutLineChart";
+import SmallStatCard from "../../components/AdminDashboard/SmallStatCard";
+import ExportDropdown from "../../components/AdminDashboard/ExportDropdown";
 
+/* API BASE */
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
   const navigate = useNavigate();
 
-  /* ---------------- FETCH DASHBOARD DATA ---------------- */
+  /* ================= FETCH ADMIN DASHBOARD ================= */
   useEffect(() => {
     fetch(`${BASE_URL}/admin/dashboard`)
       .then((res) => {
-        if (!res.ok) throw new Error("Failed");
+        if (!res.ok) throw new Error("Failed to load");
         return res.json();
       })
       .then(setData)
-      .catch(() => alert("Failed to load admin data"));
+      .catch(() => alert("Failed to load admin dashboard"));
   }, []);
 
-  if (!data) return <p className="p-6">Loading dashboard...</p>;
+  if (!data) {
+    return <p className="p-6">Loading dashboard...</p>;
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
 
-      {/* HEADER + ACTIONS */}
+      {/* ================= HEADER ================= */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-3">
         <div>
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
@@ -51,12 +55,11 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex gap-2">
-          {/* EXPORT DROPDOWN COMPONENT */}
           <ExportDropdown />
 
           {/* FRAUD CASES BUTTON */}
           <button
-            onClick={() => navigate("/admin/fraud-cases")}
+            onClick={() => navigate("/admin/fraud")}
             className="inline-flex items-center gap-2
                        bg-red-500 hover:bg-red-600
                        text-white text-sm px-4 py-2 rounded-lg shadow-sm"
@@ -67,7 +70,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* KPI CARDS */}
+      {/* ================= KPI CARDS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Total Claims"
@@ -102,22 +105,22 @@ export default function AdminDashboard() {
         />
       </div>
 
-      {/* CHARTS */}
+      {/* ================= CHARTS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div id="claims-chart" className="md:col-span-2 bg-white p-4 rounded-xl shadow-sm">
+        <div className="md:col-span-2 bg-white p-4 rounded-xl shadow-sm">
           <ClaimsBarChart data={data.claims_overview} />
         </div>
 
-        <div id="fraud-chart" className="bg-white p-4 rounded-xl shadow-sm">
+        <div className="bg-white p-4 rounded-xl shadow-sm">
           <FraudDonutChart data={data.fraud_stats} />
         </div>
       </div>
 
-      <div id="payout-chart" className="mt-6 bg-white p-4 rounded-xl shadow-sm">
+      <div className="mt-6 bg-white p-4 rounded-xl shadow-sm">
         <PayoutLineChart data={data.monthly_payouts} />
       </div>
 
-      {/* BOTTOM STATS */}
+      {/* ================= BOTTOM STATS ================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
         <SmallStatCard
           title="Total Users"

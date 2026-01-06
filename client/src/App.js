@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 /* AUTH PAGES */
@@ -12,13 +12,18 @@ import ResetPassword from "./components/auth/ResetPassword";
 
 /* MAIN PAGES */
 import Dashboard from "./pages/Dashboard";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+import FraudDetection from "./pages/admin/FraudDetection";
+import FraudInvestigation from "./pages/admin/FraudInvestigation";
 import RecommendationView from "./pages/RecommendationView";
 import Profile from "./pages/Profile";
 import Preferences from "./pages/Preferences";
 import Recommendations from "./pages/Recommendations";
+import PolicyCatalog from "./pages/policies/PolicyCatalog";
+import PolicyDetails from "./pages/policies/PolicyDetails";
+import ComparePolicies from "./pages/ComparePolicies";
 import NotFound from "./pages/NotFound";
 
 /* LAYOUT */
@@ -27,15 +32,12 @@ import PageContainer from "./layout/PageContainer";
 /* ROUTE GUARDS */
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
-import { AuthContext } from './context/AuthContext';
 
 export default function App() {
-  const { user } = useContext(AuthContext);
-
   return (
     <Routes>
 
-      {/* ---------- AUTH (NO NAVBAR) ---------- */}
+      {/* ---------- PUBLIC / AUTH ---------- */}
       <Route path="/" element={<Landing />} />
       <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
@@ -44,23 +46,26 @@ export default function App() {
       <Route path="/verify-otp" element={<OTPVerify />} />
       <Route path="/enter-otp" element={<EnterOtp />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      
-      {/* ---------- PROTECTED (WITH NAVBAR) ---------- */}
+
+      {/* ---------- PROTECTED USER ROUTES ---------- */}
       <Route element={<ProtectedRoute />}>
         <Route element={<PageContainer />}>
-
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/claims" element={<ClaimsList />} />
           <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/recommendations" element={<Recommendations />} />
-          <Route path="/recommendations/view/:id"element={<RecommendationView />}
-          />
+          <Route path="/recommendations/view/:id" element={<RecommendationView />} />
+          <Route path="/policies" element={<PolicyCatalog />} />
+          <Route path="/policies/:id" element={<PolicyDetails />} />
+          <Route path="/compare" element={<ComparePolicies />} />
 
           {/* ---------- ADMIN ONLY ---------- */}
           <Route element={<RoleBasedRoute roleRequired="admin" />}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/fraud" element={<FraudDetection />} />
+            <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
           </Route>
 
         </Route>

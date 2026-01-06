@@ -1,0 +1,273 @@
+/* PAGE */
+.fraud-page {
+  padding: 28px 36px;
+  background: #f8fafc;
+  font-family: Inter, sans-serif;
+}
+
+/* HEADER */
+.fraud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;   /* 🔥 KEY */
+  margin-bottom: 24px;
+}
+
+
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* BACK BUTTON */
+.back-btn-primary {
+  background: #2563eb;
+  color: #fff;
+
+  padding: 12px 28px;      /* ✅ increase ONLY vertical */
+  line-height: 1.2;        /* ✅ natural text height */
+  font-size: 15px;
+  font-weight: 600;
+
+  border-radius: 14px;
+  border: none;
+
+  display: inline-flex;    /* ✅ keeps height controlled */
+  align-items: center;     /* ✅ vertical centering */
+  justify-content: center;
+
+  white-space: nowrap;
+
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+  cursor: pointer;
+}
+/* =============================
+   DOWNLOAD REPORT BUTTON
+============================= */
+.download-btn {
+  padding: 10px 16px;              /* balanced height */
+  height: 44px;                    /* SAME as filter button */
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  background: white;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #f8fafc;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+
+
+
+
+
+/* SUMMARY */
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.04);
+}
+
+.summary-card h3 {
+  margin: 6px 0;
+}
+
+.summary-card.danger h3 { color: #dc2626; }
+.summary-card.warning h3 { color: #d97706; }
+
+/* SEARCH */
+.search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.search-row input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.filter-btn {
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: white;
+}
+
+/* CARD */
+.fraud-card {
+  display: grid;
+  grid-template-columns: 120px 1fr 210px;
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+/* LEFT */
+.risk-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.fraud-card.high .risk-strip { background: #fee2e2; }
+.fraud-card.medium .risk-strip { background: #fff7ed; }
+.fraud-card.low .risk-strip { background: #eff6ff; }
+
+/* RING */
+.risk-ring {
+  margin-bottom: 6px;
+}
+
+.ring-progress {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.risk-ring.high .ring-progress { stroke: #ef4444; }
+.risk-ring.medium .ring-progress { stroke: #f59e0b; }
+.risk-ring.low .ring-progress { stroke: #3b82f6; }
+
+.ring-text {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #111827;
+}
+
+.risk-badge {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.risk-badge.high {
+  background: #fecaca;
+  color: #b91c1c;
+}
+
+.risk-badge.medium {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.risk-badge.low {
+  background: #bfdbfe;
+  color: #1e40af;
+}
+
+/* CENTER */
+.claim-center {
+  padding: 18px;
+}
+
+.policy-holder {
+  font-size: 14px;
+}
+
+.warn {
+  color: #f59e0b;
+}
+
+.muted {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* INDICATORS */
+.fraud-indicators {
+  background: #fef3c7;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.fraud-indicators .chips span {
+  background: #fde68a;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  margin: 6px 6px 0 0;
+  display: inline-block;
+}
+
+/* RIGHT */
+.claim-right {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.amount {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.btn-investigate {
+  width: 160px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-safe {
+  width: 160px;
+  background: white;
+  color: #2563eb;
+  border: 1.5px solid #2563eb;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.btn-escalate {
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.filed {
+  margin-top: auto;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* FOOTER */
+.ai-footer {
+  margin-top: 26px;
+  background: white;
+  padding: 18px;
+  border-radius: 14px;
+}

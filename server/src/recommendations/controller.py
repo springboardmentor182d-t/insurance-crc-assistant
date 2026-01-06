@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from src.database.database import get_db
+from src.entities.policy import Policy
 from src.preferences.preferences_model import UserPreference
 from .service import score_policy, passes_type_filter
 
@@ -11,146 +12,22 @@ router = APIRouter(prefix="/recommendations", tags=["Recommendations"])
 USER_ID = 1  # TEMP until auth is added
 
 
-# -------------------------------------------------
-# MASTER POLICIES (TEMP – DB LATER)
-# -------------------------------------------------
-POLICIES = [
-    {
-        "id": 1,
-        "name": "Health Shield Pro",
-        "provider": "SecureLife Insurance",
-        "category": "Health",
-        "premium": 15000,
-        "coverage": 500000,
-        "term": "1 Year (Renewable)",
-        "deductible": 25000,
-        "waitingPeriod": "30 Days",
-        "roomRent": "No Limit",
-        "benefits": [
-            "Cashless hospitalization at 5000+ hospitals",
-            "Coverage for pre-existing diseases after 3 years",
-            "Annual health check-up included",
-            "No claim bonus up to 50%",
-            "Ambulance charges covered",
-        ],
-        "exclusions": [
-            "Cosmetic procedures",
-            "Self-inflicted injuries",
-            "Experimental treatments",
-        ],
-    },
-    {
-        "id": 2,
-        "name": "Health Care Essential",
-        "provider": "MediSure",
-        "category": "Health",
-        "premium": 10000,
-        "coverage": 300000,
-        "term": "1 Year",
-        "deductible": 20000,
-        "waitingPeriod": "45 Days",
-        "roomRent": "Shared Room",
-        "benefits": [
-            "Cashless hospitalization",
-            "Day-care procedures covered",
-            "Pre & post hospitalization",
-        ],
-        "exclusions": [
-            "Cosmetic surgery",
-            "Non-prescribed treatments",
-        ],
-    },
-    {
-        "id": 3,
-        "name": "Life Secure Plan",
-        "provider": "LifeGuard",
-        "category": "Life",
-        "premium": 15000,
-        "coverage": 500000,
-        "term": "20 Years",
-        "deductible": None,
-        "waitingPeriod": "None",
-        "roomRent": None,
-        "benefits": [
-            "Death benefit",
-            "Tax benefits under 80C",
-            "Accidental death cover",
-        ],
-        "exclusions": [
-            "Suicide within 1 year",
-        ],
-    },
-    {
-        "id": 4,
-        "name": "Auto Shield",
-        "provider": "DriveSafe",
-        "category": "Auto",
-        "premium": 12000,
-        "coverage": 200000,
-        "term": "1 Year",
-        "deductible": 5000,
-        "waitingPeriod": "None",
-        "roomRent": None,
-        "benefits": [
-            "Own damage cover",
-            "Third-party liability",
-            "Roadside assistance",
-        ],
-        "exclusions": [
-            "Drunk driving",
-            "Illegal racing",
-        ],
-    },
-    {
-        "id": 5,
-        "name": "Travel Safe",
-        "provider": "GlobeCare",
-        "category": "Travel",
-        "premium": 8000,
-        "coverage": 100000,
-        "term": "30 Days",
-        "deductible": 3000,
-        "waitingPeriod": "None",
-        "roomRent": None,
-        "benefits": [
-            "Medical emergencies",
-            "Trip cancellation",
-            "Lost baggage",
-        ],
-        "exclusions": [
-            "Adventure sports",
-            "Pre-existing illness",
-        ],
-    },
-    {
-        "id": 6,
-        "name": "Home Protect",
-        "provider": "SafeNest",
-        "category": "Home",
-        "premium": 18000,
-        "coverage": 600000,
-        "term": "1 Year",
-        "deductible": 10000,
-        "waitingPeriod": "None",
-        "roomRent": None,
-        "benefits": [
-            "Fire damage cover",
-            "Theft protection",
-            "Natural disaster cover",
-        ],
-        "exclusions": [
-            "Intentional damage",
-            "War & nuclear risks",
-        ],
-    },
-]
+# -------------------------
+# MARKET COMPARISON (TEMP STATIC)
+# -------------------------
+market = {
+    "premium": 17,    # % lower than market
+    "coverage": 25,   # % higher than market
+    "benefits": 15,   # % more benefits
+}
 
 
 # -------------------------------------------------
-# GET RECOMMENDATIONS (LIST)
+# GET RECOMMENDATIONS (LIST) – FROM DB
 # -------------------------------------------------
-@router.get("")
+@router.get("/")
 async def get_recommendations(db: AsyncSession = Depends(get_db)):
+    # 1️⃣ Load user preferences
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == USER_ID)
     )
@@ -162,7 +39,6 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
     insurance_types = pref.insurance_types or []
     if isinstance(insurance_types, str):
         insurance_types = [insurance_types]
-
     insurance_types = [t.lower() for t in insurance_types]
 
     prefs = {
@@ -172,11 +48,16 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
         "riskAppetite": pref.risk_appetite or "Medium",
     }
 
+    # 2️⃣ Fetch policies from DB
+    result = await db.execute(select(Policy))
+    policies = result.scalars().all()
+
     items = []
     total_score = 0
 
-    for policy in POLICIES:
-        policy_type = policy["category"].lower()
+    # 3️⃣ Score & filter
+    for policy in policies:
+        policy_type = policy.category.lower()
 
         if not passes_type_filter({"type": policy_type}, prefs):
             continue
@@ -184,8 +65,8 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
         score, reason = score_policy(
             {
                 "type": policy_type,
-                "premium": policy["premium"],
-                "coverage": policy["coverage"],
+                "premium": float(policy.premium),
+                "coverage": float(policy.coverage),
             },
             prefs,
         )
@@ -196,15 +77,15 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
         total_score += score
 
         items.append({
-            "id": policy["id"],
-            "title": policy["name"],
-            "provider": policy["provider"],
+            "id": policy.id,
+            "title": policy.name,
+            "provider": policy.provider,
             "type": policy_type,
-            "premium": policy["premium"],
-            "coverage": policy["coverage"],
+            "premium": float(policy.premium),
+            "coverage": float(policy.coverage),
             "score": score,
             "reason": reason,
-            "savings": max(0, prefs["annualBudget"] - policy["premium"]),
+            "savings": max(0, prefs["annualBudget"] - float(policy.premium)),
         })
 
     return {
@@ -215,58 +96,60 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
 
 
 # -------------------------------------------------
-# GET RECOMMENDATION VIEW (DETAIL)
+# GET RECOMMENDATION VIEW (DETAIL) – FROM DB
 # -------------------------------------------------
 @router.get("/{policy_id}/view")
 async def get_recommendation_view(
     policy_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    policy = next((p for p in POLICIES if p["id"] == policy_id), None)
+    # 1️⃣ Fetch policy
+    result = await db.execute(
+        select(Policy).where(Policy.id == policy_id)
+    )
+    policy = result.scalar_one_or_none()
+
     if not policy:
         return {"error": "Policy not found"}
 
-    policy_type = policy["category"].lower()
+    policy_type = policy.category.lower()
 
+    # 2️⃣ Load preferences
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == USER_ID)
     )
     pref = result.scalar_one_or_none()
 
-    insurance_types = []
-    annual_budget = None
-    desired_coverage = None
-    risk_appetite = "Medium"
+    prefs = {
+        "insuranceTypes": [],
+        "annualBudget": 0,
+        "desiredCoverage": 0,
+        "riskAppetite": "Medium",
+    }
 
     if pref:
         insurance_types = pref.insurance_types or []
         if isinstance(insurance_types, str):
             insurance_types = [insurance_types]
-        insurance_types = [t.lower() for t in insurance_types]
+        prefs["insuranceTypes"] = [t.lower() for t in insurance_types]
+        prefs["annualBudget"] = pref.annual_budget or 0
+        prefs["desiredCoverage"] = pref.desired_coverage or 0
+        prefs["riskAppetite"] = pref.risk_appetite or "Medium"
 
-        annual_budget = pref.annual_budget
-        desired_coverage = pref.desired_coverage
-        risk_appetite = pref.risk_appetite or "Medium"
-
-    prefs = {
-        "insuranceTypes": insurance_types,
-        "annualBudget": annual_budget,
-        "desiredCoverage": desired_coverage,
-        "riskAppetite": risk_appetite,
-    }
-
+    # 3️⃣ Score
     score, _ = score_policy(
         {
             "type": policy_type,
-            "premium": policy["premium"],
-            "coverage": policy["coverage"],
+            "premium": float(policy.premium),
+            "coverage": float(policy.coverage),
         },
         prefs,
     )
 
+    # 4️⃣ Reasons
     reasons = []
 
-    if policy_type in insurance_types:
+    if policy_type in prefs["insuranceTypes"]:
         reasons.append({
             "key": "type",
             "title": "Preferred Insurance Type",
@@ -274,7 +157,7 @@ async def get_recommendation_view(
             "icon": "shield",
         })
 
-    if annual_budget and policy["premium"] <= annual_budget:
+    if prefs["annualBudget"] and policy.premium <= prefs["annualBudget"]:
         reasons.append({
             "key": "budget",
             "title": "Within Budget",
@@ -282,7 +165,7 @@ async def get_recommendation_view(
             "icon": "wallet",
         })
 
-    if desired_coverage and policy["coverage"] >= desired_coverage:
+    if prefs["desiredCoverage"] and policy.coverage >= prefs["desiredCoverage"]:
         reasons.append({
             "key": "coverage",
             "title": "Adequate Coverage",
@@ -298,39 +181,27 @@ async def get_recommendation_view(
     })
 
     expert_note = (
-    f"{policy['name']} offers exceptional value with comprehensive "
-    f"{policy['category'].lower()} coverage at a competitive premium. "
-    f"The provider has an excellent claim settlement track record."
+        f"{policy.name} offers strong value with comprehensive "
+        f"{policy.category.lower()} coverage at a competitive premium."
     )
 
     return {
-        "id": policy["id"],
-        "title": policy["name"],
-        "provider": policy["provider"],
+        "id": policy.id,
+        "title": policy.name,
+        "provider": policy.provider,
         "type": policy_type,
-        "premium": policy["premium"],
-        "coverage": policy["coverage"],
+        "premium": float(policy.premium),
+        "coverage": float(policy.coverage),
         "match": score,
-        "valueScore": round(policy["coverage"] / policy["premium"], 1),
-        "savings": max(0, (annual_budget or 0) - policy["premium"]),
+        "valueScore": round(float(policy.coverage) / float(policy.premium), 1),
+        "savings": max(0, prefs["annualBudget"] - float(policy.premium)),
         "reasons": reasons,
         "market": market,
-        "features": policy.get("benefits", []),
+        "features": policy.benefits or [],
         "expert_note": expert_note,
-        "exclusions": policy.get("exclusions", []),
-        "term": policy.get("term"),
-        "deductible": policy.get("deductible"),
-        "waitingPeriod": policy.get("waitingPeriod"),
-        "roomRent": policy.get("roomRent"),
+        "exclusions": policy.exclusions or [],
+        "term": policy.term,
+        "deductible": policy.deductible,
+        "waitingPeriod": policy.waitingPeriod,
+        "roomRent": policy.roomRent,
     }
-
-
-# -------------------------
-# MARKET COMPARISON (TEMP STATIC)
-# -------------------------
-market = {
-    "premium": 17,    # % lower than market
-    "coverage": 25,   # % higher than market
-    "benefits": 15,   # % more benefits
-}
-

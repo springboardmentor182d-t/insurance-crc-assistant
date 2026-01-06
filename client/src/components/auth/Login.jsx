@@ -22,7 +22,7 @@ export default function Login() {
       const res = await login(email, password);
       localStorage.setItem("access_token", res.data.access_token);
       localStorage.setItem("refresh_token", res.data.refresh_token);
-      nav("/dashboard");
+      nav("/profile");
     } catch (err) {
       setMsg(err?.response?.data?.detail || "Invalid email or password");
     } finally {

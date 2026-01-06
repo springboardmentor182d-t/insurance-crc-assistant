@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useCompare } from "../../context/CompareContext";
 
 import PolicyInfoBox from "./PolicyInfoBox";
 import ScoreRing from "./ScoreRing";
@@ -24,9 +25,12 @@ function getStyle(type) {
 
 export default function PolicyCard({ policy }) {
   const navigate = useNavigate();
+  const { selected, toggleCompare } = useCompare();
 
   const type = policy.policy_type?.toLowerCase();
   const { bg, ring } = getStyle(type);
+
+  const isSelected = selected.some((p) => p.id === policy.id);
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm overflow-hidden flex">
@@ -92,10 +96,16 @@ export default function PolicyCard({ policy }) {
         </button>
 
         <button
-          onClick={() => alert("Compare feature coming soon 🚧")}
-          className="border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-50"
+          onClick={() => toggleCompare(policy)}
+          className={`py-2 rounded-lg border transition
+            ${
+              isSelected
+                ? "bg-red-50 border-red-400 text-red-600 hover:bg-red-100"
+                : "border-blue-600 text-blue-600 hover:bg-blue-50"
+            }
+          `}
         >
-          Compare
+          {isSelected ? "Remove" : "Compare"}
         </button>
 
         <button
