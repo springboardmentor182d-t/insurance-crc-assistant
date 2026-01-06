@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SidebarMenu } from "../layout/Sidebar";
+
 
 export function ComparePage() {
   const location = useLocation();
@@ -60,9 +60,7 @@ export function ComparePage() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="w-[260px]">
-        <SidebarMenu />
-      </div>
+      
 
       <main className="flex-1 p-6 bg-gray-100">
         <h2 className="text-2xl font-bold mb-6 text-center">
