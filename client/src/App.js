@@ -15,6 +15,10 @@ import ResetPassword from "./components/auth/ResetPassword";
 import { AuthContext } from './context/AuthContext';
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+import FileClaim from "./pages/claims/FileClaim"; 
+import IncidentDetails from "./pages/claims/IncidentDetails";
+import UploadDocuments from "./pages/claims/UploadDocuments";
+
 export default function App(){
   const { user } = useContext(AuthContext);
   return (
@@ -29,6 +33,9 @@ export default function App(){
       <Route path="/landing" element={<Landing/>} />
       <Route path="/claims" element={<ClaimsList />} />
       <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+      <Route path="/file-claim" element={<FileClaim />} />
+      <Route path="/claims/incident" element={<IncidentDetails />} />
+      <Route path="/claims/upload" element={<UploadDocuments/>}/>
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
       </Route>

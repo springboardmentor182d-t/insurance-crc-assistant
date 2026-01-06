@@ -1,123 +1,138 @@
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getClaims } from "../../api/claimsApi";
-import "../../styles/claims.css";
+import { useEffect, useState } from "react";
+import "./claims.css";
 
-const ClaimsList = () => {
-  const [claims, setClaims] = useState([]);
+function ClaimsList() {
   const navigate = useNavigate();
+  const [claims, setClaims] = useState([]);
+
+  // 🔹 BACKEND-IRUNDHU CLAIMS FETCH
   useEffect(() => {
-    getClaims().then(setClaims);
-  }, []);
+    fetch("http://127.0.0.1:8000/claims/list")
+      .then((res) => res.json())
+      .then((data) => {
+        // backend data -> UI format
+          const formatted = data.map((c, index) => ({
+  id:c.id ?? index + 1,
+  number: c.claim_number,
+  policy: c.policy_name,
+  date: new Date(c.filed_date).toLocaleDateString(),
+  amount: c.amount,
+  status: "review",
+  label: c.status,
+}));
 
-  const totalAmount = claims.reduce((sum, c) => sum + c.amount, 0);
 
-  const countByStatus = (status) =>
-    claims.filter((c) => c.status === status).length;
-  useEffect(() => {
-    fetchClaims();
-  }, []);
+        setClaims(formatted);
+      })
+      .catch((err) => {
+      console.error("Error loading claims:", err);
+      setClaims([]); // 👈 UI crash avoid
+    });
+}, []);
 
-  const fetchClaims = async () => {
-    try {
-      const data = await getClaims();
-      setClaims(data);
-    } catch (err) {
-      console.error("Failed to fetch claims", err);
-    }
-  };
   return (
-    <div className="claims-page">
+    <div className="claims-container">
+
       {/* HEADER */}
-      <div className="claims-header">
+      <div className="header">
         <div>
           <h1>Track Claims</h1>
           <p>Monitor the status of your insurance claims</p>
         </div>
         <button
-  className="file-new-claim-btn"
-  onClick={() => navigate("/claims/new")}
->
-  File New Claim
-</button>
+          className="btn primary"
+          onClick={() => navigate("/file-claim")}
+        >
+          File New Claim
+        </button>
       </div>
 
-      {/* SUMMARY CARDS */}
+      {/* SUMMARY */}
       <div className="summary-grid">
-        <div className="summary-card">
+        <div className="card">
           <p>Total Claims</p>
           <h2>{claims.length}</h2>
         </div>
-        <div className="summary-card approved">
+        <div className="card">
           <p>Approved</p>
-          <h2>{countByStatus("Approved")}</h2>
+          <h2 className="green">
+            {claims.filter((c) => c.status === "approved").length}
+          </h2>
         </div>
-        <div className="summary-card review">
+        <div className="card">
           <p>Under Review</p>
-          <h2>{countByStatus("Under Review")}</h2>
+          <h2 className="orange">
+            {claims.filter((c) => c.status === "review").length}
+          </h2>
         </div>
-        <div className="summary-card amount">
+        <div className="card">
           <p>Total Amount</p>
-          <h2>₹ {totalAmount.toLocaleString()}</h2>
+          <h2>
+  ₹
+  {claims.length === 0
+    ? 0
+    : claims.reduce((sum, c) => sum + Number(c.amount || 0), 0)
+  }
+</h2>
+
         </div>
       </div>
 
-      {/* SEARCH BAR */}
+      {/* SEARCH */}
       <div className="search-bar">
         <input placeholder="Search by claim number or policy..." />
-        <button className="filter-btn">Filter</button>
+        <button className="btn outline">Filter</button>
       </div>
 
       {/* TABLE */}
-      <div className="claims-table-wrapper">
-        <table className="claims-table">
-          <thead>
+      <table>
+        <thead>
+          <tr>
+            <th>Claim Number</th>
+            <th>Policy</th>
+            <th>Filed Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {claims.length === 0 ? (
             <tr>
-              <th>Claim Number</th>
-              <th>Policy</th>
-              <th>Filed Date</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <td colSpan="6" style={{ textAlign: "center" }}>
+                No claims found
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {claims.map((c) => (
-              <tr key={c.claim_number}>
-                <td>{c.claim_number}</td>
-                <td>{c.policy_name}</td>
-                <td>{c.filed_date}</td>
-                <td>₹ {c.amount.toLocaleString()}</td>
+          ) : (
+            claims.map((claim) => (
+              <tr key={claim.id}>
+                <td>{claim.number}</td>
+                <td>{claim.policy}</td>
+                <td>{claim.date}</td>
+                <td>{claim.amount}</td>
                 <td>
-                  <span
-                    className={`status-pill ${
-                      c.status === "Approved"
-                        ? "status-approved"
-                        : c.status === "Under Review"
-                        ? "status-review"
-                        : c.status === "Pending Documents"
-                        ? "status-pending"
-                        : "status-rejected"
-                    }`}
-                  >
-                    {c.status}
+                  <span className={`badge ${claim.status}`}>
+                    {claim.label}
                   </span>
                 </td>
                 <td>
                   <button
-                    className="btn-outline"
-                    onClick={() => navigate(`/claims/${c.claim_number}`)}
+                    className="btn outline"
+                    onClick={() => navigate(`/claims/${claim.id}`)}
                   >
                     View Details
                   </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
+
     </div>
   );
-};
+}
 
 export default ClaimsList;
