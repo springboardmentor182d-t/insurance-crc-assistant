@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./login.css";
-import { baseURL } from "../config"; // ✅ ADD THIS
+import { baseURL } from "../config";
 
 function Login() {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ function Login() {
     try {
       setLoading(true);
 
-      const response = await fetch(`${baseURL}/auth/login`, { // ✅ CHANGED
+      const response = await fetch(`${baseURL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -47,7 +47,6 @@ function Login() {
       });
 
       const data = await response.json();
-
       console.log("LOGIN RESPONSE FROM BACKEND 👉", data);
 
       if (!response.ok) {
@@ -55,11 +54,17 @@ function Login() {
         return;
       }
 
-      // ✅ Save JWT token
-      localStorage.setItem("access_token", data.access_token);
+      // ✅ STORE TOKEN (important for ProtectedRoute)
+      localStorage.setItem("token", data.access_token);
 
       alert("Login successful!");
-      navigate("/home"); // ✅ better redirect
+
+      // ✅ ROLE-BASED REDIRECT
+      if (data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       console.error("LOGIN ERROR 👉", error);
       alert("Server error. Please try again later.");

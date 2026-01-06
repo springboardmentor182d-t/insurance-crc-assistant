@@ -36,8 +36,13 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${baseURL}/auth/resetpassword`,
-        { method: "POST" }
+      const response = await fetch(
+        `${baseURL}/auth/reset-password?email=${encodeURIComponent(
+          email
+        )}&password=${encodeURIComponent(password)}`,
+        {
+          method: "POST",
+        }
       );
 
       const data = await response.json();
@@ -51,6 +56,7 @@ const ResetPassword = () => {
       localStorage.removeItem("reset_email");
       navigate("/login");
     } catch (error) {
+      console.error("RESET PASSWORD ERROR 👉", error);
       alert("Server error. Try again.");
     } finally {
       setLoading(false);
@@ -63,8 +69,7 @@ const ResetPassword = () => {
 
       <div className="reset-container">
         <div className="reset-card">
-
-          {/* LEFT – VIOLET IMAGE SECTION */}
+          {/* LEFT IMAGE */}
           <div className="reset-left">
             <img
               src="https://res.cloudinary.com/ds66aym8t/image/upload/v1766555411/signup_hdeoj9.png"
@@ -73,7 +78,7 @@ const ResetPassword = () => {
             />
           </div>
 
-          {/* RIGHT – FORM SECTION */}
+          {/* RIGHT FORM */}
           <div className="reset-right">
             <h2>Reset Password</h2>
             <p>Please enter your new password below to secure your account.</p>
@@ -86,6 +91,7 @@ const ResetPassword = () => {
                   placeholder="Enter new password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 <span onClick={() => setShowPassword(!showPassword)}>👁</span>
               </div>
@@ -98,13 +104,23 @@ const ResetPassword = () => {
                   placeholder="Confirm new password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
                 />
-                <span onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <span
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
+                >
                   👁
                 </span>
               </div>
 
-              <button type="submit" disabled={loading}>
+              {/* ✅ Purple full-width button like first image */}
+              <button
+                type="submit"
+                className="reset-btn"
+                disabled={loading}
+              >
                 {loading ? "Resetting..." : "Reset Password"}
               </button>
             </form>

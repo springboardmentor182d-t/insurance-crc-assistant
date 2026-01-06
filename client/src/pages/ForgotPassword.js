@@ -17,10 +17,12 @@ const ForgotPassword = () => {
       return;
     }
 
-    try { 1
+    try {
       setLoading(true);
 
-      const response = await fetch(`${baseURL}/auth/forgotpassword`, {
+      const response = await fetch(
+        `${baseURL}/auth/forgot-password?email=${encodeURIComponent(email)}`,
+        {
           method: "POST",
         }
       );
@@ -34,7 +36,8 @@ const ForgotPassword = () => {
       }
 
       alert("OTP sent successfully!");
-      navigate("/otp", { state: { email } }); // ✅ move to OTP page
+      // ✅ Move to OTP page and pass email
+      navigate("/otp", { state: { email } });
     } catch (error) {
       console.error("FORGOT PASSWORD ERROR 👉", error);
       alert("Server error. Try again later.");

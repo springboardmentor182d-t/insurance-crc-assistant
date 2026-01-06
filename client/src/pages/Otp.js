@@ -15,7 +15,7 @@ const Otp = () => {
   const [loading, setLoading] = useState(false);
   const inputsRef = useRef([]);
 
-  // 🔐 Prevent direct access
+  // 🔐 Prevent direct access to OTP page
   useEffect(() => {
     if (!email) {
       navigate("/forgot-password");
@@ -40,8 +40,10 @@ const Otp = () => {
     }
   };
 
+  // ✅ VERIFY OTP (FIXED)
   const handleVerify = async () => {
     const otpCode = otp.join("");
+
     if (otpCode.length !== 6) {
       alert("Please enter complete OTP");
       return;
@@ -49,7 +51,10 @@ const Otp = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${baseURL}/auth/login`,
+      const response = await fetch(
+        `${baseURL}/auth/verify-otp?email=${encodeURIComponent(
+          email
+        )}&otp=${otpCode}`,
         { method: "POST" }
       );
 
@@ -61,10 +66,10 @@ const Otp = () => {
         return;
       }
 
-      // ✅ Persist email for reset step
+      // ✅ Save email for reset password step
       localStorage.setItem("reset_email", email);
 
-      // ✅ Redirect to reset password
+      // ✅ Go to reset password page
       navigate("/reset-password");
     } catch (error) {
       console.error("OTP VERIFY ERROR 👉", error);
@@ -74,12 +79,11 @@ const Otp = () => {
     }
   };
 
+  // ✅ RESEND OTP
   const handleResend = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/auth/forgot-password?email=${encodeURIComponent(
-          email
-        )}`,
+        `${baseURL}/auth/forgot-password?email=${encodeURIComponent(email)}`,
         { method: "POST" }
       );
 
@@ -151,4 +155,3 @@ const Otp = () => {
 };
 
 export default Otp;
-
