@@ -1,9 +1,15 @@
 from fastapi import FastAPI
+from src.auth.routes import router as auth_router
+from src.claims.routes import router as claims_router
 from fastapi.middleware.cors import CORSMiddleware
+from src.claims import models
 
-from src.claims.controller import router as claims_router
+app = FastAPI(
+    title="Insurance CRC Assistant API"
+)
 
-app = FastAPI(title="Insurance CRC Assistant API")
+
+
 
 # CORS
 app.add_middleware(
@@ -12,19 +18,27 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
 
+) 
+# -------------------------
+# Health check
+# -------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-@app.get("/api/test")
-def test():
-    return {"message": "Hello from FastAPI"}
+# -------------------------
+# Routers
+# -------------------------
+app.include_router(auth_router)
+app.include_router(claims_router)
 
-@app.get("/")
-def root():
-    return {"message": "Backend running"}
 
-# Claims routes
-app.include_router(claims_router, prefix="/claims", tags=["Claims"])
+from src.database.database import engine
+from src.database.base import Base
+
+@app.on_event("startup")
+async def on_startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+

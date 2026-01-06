@@ -1,25 +1,50 @@
-import { Routes, Route } from "react-router-dom";
-import ClaimsList from "./pages/ClaimsList";
-import ClaimDetails from "./pages/ClaimDetails";
-import FileClaim from "./pages/FileClaim"; 
-import IncidentDetails from "./pages/IncidentDetails";
-import UploadDocuments from "./pages/UploadDocuments";
+import React, { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './components/auth/Landing';
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
+import ForgotPassword from './components/auth/ForgotPassword';
+import OTPVerify from './components/auth/OTPVerify';
+import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRoute';
+import RoleBasedRoute from './components/RoleBasedRoute';
+import EnterOtp from "./components/auth/EnterOtp";
+import ResetPassword from "./components/auth/ResetPassword";
+import { AuthContext } from './context/AuthContext';
+import ClaimsList from "./pages/claims/ClaimsList";
+import ClaimDetails from "./pages/claims/ClaimDetails";
+import FileClaim from "./pages/claims/FileClaim"; 
+import IncidentDetails from "./pages/claims/IncidentDetails";
+import UploadDocuments from "./pages/claims/UploadDocuments";
 
-function App() {
+export default function App(){
+  const { user } = useContext(AuthContext);
   return (
-    <div>
     <Routes>
-      <Route path="/" element={<ClaimsList />} />
-      <Route path="/claims/:id" element={<ClaimDetails />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/verify-otp" element={<OTPVerify />} />
+      <Route path="/enter-otp" element={<EnterOtp/>} />
+      <Route path="/reset-password" element={<ResetPassword/>} />
+      <Route path="/landing" element={<Landing/>} />
+      <Route path="/claims" element={<ClaimsList />} />
+      <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
       <Route path="/file-claim" element={<FileClaim />} />
       <Route path="/claims/incident" element={<IncidentDetails />} />
       <Route path="/claims/upload" element={<UploadDocuments/>}/>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Route>
 
-      
+      <Route element={<RoleBasedRoute roleRequired="admin" />}>
+        <Route path="/admin" element={<AdminDashboard />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
-     
-     </div>
   );
 }
-
-export default App;

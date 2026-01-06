@@ -1,0 +1,141 @@
+/* Header */
+.header-no-border {
+  border-bottom: none;
+}
+
+/* Container */
+.otp-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 72px 80px;
+  min-height: calc(100vh - 72px);
+}
+
+/* Layout */
+.otp-layout {
+  display: grid;
+  grid-template-columns: 60% 40%;
+  width: 100%;
+  max-width: 1180px;
+  border-radius: 18px;
+  box-shadow: 0 30px 60px rgba(16,24,40,0.08);
+  border: 1px solid rgba(2,6,23,0.04);
+}
+
+@media (max-width: 1000px) {
+  .otp-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Illustration */
+.otp-illustration {
+  background: #eef8ff;
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.otp-illustration-inner {
+  width: 520px;
+  height: 520px;
+  max-width: 100%;
+}
+
+/* Form */
+.otp-form {
+  padding: 0 46px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.otp-form-inner {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* Back */
+.otp-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.back-arrow {
+  transform: rotate(180deg);
+}
+
+/* Text */
+.otp-title {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 44px;
+  line-height: 1.02;
+  color: #071043;
+}
+
+.otp-subtitle {
+  margin-bottom: 18px;
+}
+
+.otp-error {
+  margin-bottom: 12px;
+}
+
+/* OTP inputs */
+.otp-input-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  margin-bottom: 22px;
+}
+
+.otp-input {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  border: 2px solid #d6dfee;
+  text-align: center;
+  font-size: 22px;
+  outline: none;
+  background: #fff;
+}
+
+/* Button */
+.otp-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.otp-btn {
+  margin-top: 4px;
+  width: 420px;
+  height: 48px;
+  font-size: 16px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(37,99,235,0.18);
+}
+
+/* Resend */
+.otp-resend {
+  margin-top: 16px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.otp-resend a {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+/* Features */
+.otp-features {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
