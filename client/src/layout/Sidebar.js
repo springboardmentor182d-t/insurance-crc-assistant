@@ -22,7 +22,7 @@ export function SidebarMenu() {
   return (
     <nav className="bg-blue-500 text-white w-64 min-h-screen p-7 font-bold text-lg">
       <div className="text-2xl mb-8 leading-snug">
-        Insurance <br /> CRC Assistant
+        Insurance CRC Assistant
       </div>
 
       <div
@@ -34,7 +34,7 @@ export function SidebarMenu() {
 
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
         >
         
         <FaFileAlt className="text-xl" /> Policies
@@ -49,7 +49,7 @@ export function SidebarMenu() {
 
       <div
         className="flex items-center gap-3 cursor-pointer mb-6 text-base"
-        onClick={() => navigate("/compare")}
+        onClick={() => navigate("/#")}
       >
         <FaBalanceScale className="text-xl" /> Compare
       </div>
@@ -80,23 +80,11 @@ const Sidebar = () => {
     { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
     { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
     { name: "Dashboard", path: "/dashboard", icon: <LayoutDashboard size={18} /> },
-    { name: "Home", path: "/", icon: <Home size={18} /> }, // ✅ fixed
-    { name: "My Claims", path: "/claims", icon: <FileText size={18} /> },
-    {
-      name: "Dashboard",
-      path: "/dashboard",
-      icon: <LayoutDashboard size={18} />,
-    },
-    {
-      name: "Home",
-      path: "/home",
-      icon: <Home size={18} />,
-    },
-    {
-      name: "My Claims",
-      path: "/claims",
-      icon: <FileText size={18} />,
-    },
+
+  
+    
+   
+    
     {
       name: "Recommendations",
       path: "/recommendations",
@@ -104,7 +92,7 @@ const Sidebar = () => {
     },
    
   {
-    name: "Compare Plans",
+    name: "Plans",
     path: "/#",
     icon: <GitCompare size={18} />,
   },
@@ -114,19 +102,19 @@ const Sidebar = () => {
     icon: <Calculator size={18} />,
   },
 
-    { name: "Recommendations", path: "/recommendations", icon: <Lightbulb size={18} /> },
-    { name: "Compare Plans", path: "/compare", icon: <GitCompare size={18} /> },
+    
+   
   ];
 
   return (
     <aside className="w-64 min-h-screen bg-blue-500 text-white flex flex-col">
       <div className="h-16 flex items-center px-6 font-bold text-lg border-b border-blue-400">
         <span className="bg-white text-blue-500 px-2 py-1 rounded mr-2">
-         CRC
-         CRC
+           Insurance CRC
+         
         </span>
-        Insurance
-        Insurance
+        
+       
       </div>
 
 
