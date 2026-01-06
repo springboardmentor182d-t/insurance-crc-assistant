@@ -7,10 +7,18 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+class UserOut(BaseModel):
+    id: int
+    email: str
+    role: str | None
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
-    refresh_token: Optional[str] = None
+    refresh_token: str
+    user: UserOut
+
 
 class ForgotPasswordRequest(BaseModel):
     email: str

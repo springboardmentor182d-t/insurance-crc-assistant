@@ -1,8 +1,11 @@
-// src/api/authService.js
 import axios from "axios";
 
 /* ================= API INSTANCE ================= */
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+
+const API = axios.create({
+  baseURL: API_BASE,
+});
 
 /* Automatically attach token */
 API.interceptors.request.use((req) => {
@@ -31,34 +34,26 @@ export const login = (email, password) =>
     }
   );
 
-export const getMe = async () => {
-  return API.get("/api/auth/me");
-};
+export const getMe = () => API.get("/api/auth/me");
 
 /* ================= OTP ================= */
 
-// src/api/authService.js
+export const forgotPassword = (email) =>
+  API.post("/api/auth/forgot-password", { email });
 
-export const forgotPassword = async (email) => {
-  return API.post("/api/auth/forgot-password", { email });
-};
+export const verifyOtp = (email, code) =>
+  API.post("/api/auth/verify-otp", { email, code });
 
-export const verifyOtp = async (email, code) => {
-  return API.post("/api/auth/verify-otp", { email, code });
-};
-
-export const resetPassword = async (email, password) => {
-  return API.post("/api/auth/reset-password", {
+export const resetPassword = (email, password) =>
+  API.post("/api/auth/reset-password", {
     email,
     new_password: password,
   });
-};
-
 
 /* ================= LOGOUT ================= */
 
 export const logout = () => {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("role");
 };
-
- 
