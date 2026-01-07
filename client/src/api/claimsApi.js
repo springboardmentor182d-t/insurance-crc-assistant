@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const API_BASE = "http:////127.0.0.1:8000";
+const API_BASE = "http://127.0.0.1:8000";
 
 /* ======================
-   GET ALL CLAIMS (LIST)
+   GET ALL CLAIMS
 ====================== */
 export const getClaims = async () => {
-  const res = await axios.get(`${API_BASE}/claims/`);
+  const res = await axios.get(`${API_BASE}/claims/list`);
   return res.data;
 };
 
@@ -19,13 +19,15 @@ export const getClaimDetails = async (claimNumber) => {
     return res.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      return null; // important for UI
+      return null;
     }
     throw error;
   }
 };
 
-// 🔹 Submit incident details (future use)
+/* ======================
+   SUBMIT CLAIM
+====================== */
 export const submitClaim = async (data) => {
   const res = await fetch(`${API_BASE}/claims/create`, {
     method: "POST",
@@ -39,14 +41,13 @@ export const submitClaim = async (data) => {
   return res.json();
 };
 
-// 🔹 Upload documents
-export const uploadDocuments = async ({ claimId, files }) => {
+/* ======================
+   UPLOAD DOCUMENT (FIXED)
+====================== */
+export const uploadDocuments = async (claimId, file) => {
   const formData = new FormData();
-  formData.append("claim_id", claimId);
-
-  files.forEach((file) => {
-    formData.append("files", file);
-  });
+  formData.append("claim_id",String(claimId));
+  formData.append("file", file); // ✅ correct key
 
   const res = await fetch(`${API_BASE}/claims/upload`, {
     method: "POST",

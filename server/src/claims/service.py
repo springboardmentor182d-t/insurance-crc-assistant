@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-
-from src.entities.claim import Claim
+from src.claims.models import Claim
+from datetime import datetime
+import uuid
 
 
 async def get_all_claims(db: AsyncSession):
@@ -15,9 +16,7 @@ async def get_claim_by_number(db: AsyncSession, claim_number: str):
     result = await db.execute(stmt)
     return result.scalars().first()
 
-from src.claims.models import Claim
-from datetime import datetime
-import uuid
+
 
 async def create_claim(db, payload):
     claim = Claim(

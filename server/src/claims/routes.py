@@ -14,6 +14,7 @@ from src.claims.service import (
 import uuid
 from datetime import date
 import os,shutil
+from src.claims.models import ClaimDocument,Claim
 
 
 
@@ -79,14 +80,19 @@ async def create_claim_api(
 
 
 
-# # -------------------------
-# # UPLOAD DOCUMENTS 
-# # -------------------------
+# # # -------------------------
+# # # UPLOAD DOCUMENTS 
+# # # -------------------------
 @router.post("/upload")
 async def upload_document(
     claim_id: int = Form(...),
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db)
 ):
+    claim = await db.get(Claim, claim_id)
+    if not claim:
+        raise HTTPException(status_code=400, detail="Invalid claim_id")
+
     UPLOAD_DIR = "uploads"
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -103,8 +109,9 @@ async def upload_document(
 
     db.add(document)
     await db.commit()
+    await db.refresh(document)
 
     return {
-        "message": "File uploaded successfully",
-        "filename": file.filename
+        "message": "File uploaded successfully"
+        
     }

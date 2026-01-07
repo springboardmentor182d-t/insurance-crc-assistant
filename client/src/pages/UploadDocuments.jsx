@@ -21,29 +21,41 @@ function UploadDocuments() {
   };
 
   // 🚀 SUBMIT CLAIM + UPLOAD
-  const handleSubmit = async () => {
-    if (files.length === 0) {
-      alert("Please upload at least one document");
-      return;
+const handleSubmit = async () => {
+  
+
+  if (!state || !state.claimId) {
+    alert("Claim ID missing. Please create claim again.");
+    return;
+  }
+  
+  if (files.length === 0) {
+    alert("Please upload at least one document");
+    return;
+  } 
+
+  console.log("Location state:", state);
+  console.log("Claim ID:", state?.claimId);
+
+  try {
+    setLoading(true);
+
+    const claimId = state.claimId; // ✅ FORCE INT
+
+    for (let file of files) {
+      await uploadDocuments(claimId, file);
     }
 
-    try {
-      setLoading(true);
+    alert("✅ Claim submitted successfully!");
+    navigate("/");
+  } catch (error) {
+    console.error(error);
+    alert("❌ Failed to upload documents");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      await uploadDocuments({
-        claimId: state?.claimId || 1, // temp id
-        files,
-      });
-
-      alert("✅ Claim submitted successfully!");
-      navigate("/"); // back to Track Claims
-    } catch (error) {
-      alert("❌ Failed to upload documents");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="upload-page">

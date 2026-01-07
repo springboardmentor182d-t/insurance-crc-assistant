@@ -38,4 +38,4 @@ class ClaimDocument(Base):
     file_name = Column(String)
     file_path = Column(String)
 
-    claim = relationship("Claim", back_populates="documents")
+   
