@@ -23,5 +23,5 @@ Thumbs.db
 server/.env
 
 **/__pycache__/
-**/*.pyc
+
 
