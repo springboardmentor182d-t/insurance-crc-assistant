@@ -10,6 +10,7 @@ import {
   GitCompare,
   LogOut,
   Settings,
+  SlidersHorizontal,
 } from "lucide-react";
 
 export function SidebarMenu() {
@@ -226,6 +227,11 @@ const Sidebar = () => {
       path: "/#",
       icon: <GitCompare size={18} />,
     },
+    {
+      name: "Preferences",
+      path: "/preferences",
+      icon: <SlidersHorizontal size={18} />,
+    },
   ];
 
   return (
@@ -261,7 +267,7 @@ const Sidebar = () => {
       
       <div className="px-4 py-4 border-t border-blue-400 space-y-2">
         <NavLink
-          to="/settings"
+          to="/profile"
           className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-blue-600"
         >
           <Settings size={18} />

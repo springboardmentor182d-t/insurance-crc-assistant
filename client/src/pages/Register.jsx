@@ -25,9 +25,10 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/auth/register/send-otp", null, {
-        params: { email },
-      });
+      // await api.post("/auth/register/send-otp", null, {
+      //   params: { email },
+      // });
+      await api.post("/auth/register/send-otp", { email });
       setOtpSent(true);
       alert("OTP sent to your email");
     } catch (err) {
@@ -46,9 +47,10 @@ export default function Register() {
 
     try {
       setLoading(true);
-      await api.post("/auth/register/verify-otp", null, {
-        params: { email, otp },
-      });
+      // await api.post("/auth/register/verify-otp", null, {
+      //   params: { email, otp },
+      // });
+      await api.post("/auth/register/verify-otp", { email, otp });
       setOtpVerified(true);
       alert("OTP verified successfully");
     } catch (err) {

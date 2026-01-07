@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from urllib.parse import quote_plus
 
 load_dotenv()
 
@@ -10,9 +11,9 @@ DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "insurance_db")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
-
+DB_PASSWORD_ENCODED = quote_plus(DB_PASSWORD)
 DATABASE_URL = (
-    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}"
+    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD_ENCODED}"
     f"@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 

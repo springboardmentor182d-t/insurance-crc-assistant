@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { PolicyCatalogPage } from "./pages/PolicyCatalogPage";
 import { ComparePage } from "./pages/Comparsion";
-
+import Profile from "./pages/Profile";
+import Preferences from "./pages/Preferences";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -35,6 +36,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route path="/profile" element={<Profile />} />
+           <Route path="/preferences" element={<Preferences />} />
       </Routes>
     </Router>
   );

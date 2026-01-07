@@ -2,9 +2,18 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.api import api_router 
 
+
+from src.database.core import Base, engine
+# from src.profile.models import UserPreferences
+
+Base.metadata.create_all(bind=engine)
+
+
+
 from src.auth.routes.auth_routes import router as auth_router
 from src.auth.routes.auth_otp_routes import router as register_otp_router
 from src.auth.routes.forgot_password import router as forgot_password_router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -22,3 +31,6 @@ app.include_router(api_router)
 app.include_router(auth_router)
 app.include_router(register_otp_router)
 app.include_router(forgot_password_router)
+
+app.include_router(api_router, prefix="/api")
+

@@ -72,7 +72,7 @@ const Navbar = () => {
             className="w-9 h-9 rounded-full object-cover"
           />
           <span className="text-sm font-medium text-gray-700">
-            User Name
+            <a href="/profile">User Name</a>
           </span>
         </div>
       </div>
