@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SidebarMenu } from "../layout/Sidebar";
+
 
 export function ComparePage() {
   const location = useLocation();
@@ -9,6 +9,7 @@ export function ComparePage() {
   const initialPolicies = location.state?.selectedPolicies || [];
   const [selectedPolicies, setSelectedPolicies] = useState(initialPolicies);
 
+  // Redirect if accessed directly or less than 2 policies
   useEffect(() => {
     if (!initialPolicies || initialPolicies.length < 2) {
       navigate("/", {

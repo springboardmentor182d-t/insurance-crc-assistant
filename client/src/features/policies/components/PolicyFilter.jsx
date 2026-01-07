@@ -28,24 +28,34 @@ const PolicyFilter = ({
           ))}
       </select>
       <select
-        value={
-          filters.range
-            ? ranges.findIndex(
-                (r) =>
-                  r.min === filters.range.min && r.max === filters.range.max
-              )
-            : ""
-        }
-        onChange={(e) =>
-          setFilters({
-            ...filters,
-            range:
-              e.target.value !== "" ? ranges[Number(e.target.value)] : null,
-          })
-        }
-        className="border px-4 py-2 rounded"
-      >
-        <option value="">coverage_amount</option>
+  value={
+    filters.range
+      ? ranges.findIndex(
+          r =>
+            r.min === filters.range.min &&
+            r.max === filters.range.max
+        )
+      : ""
+  }
+  onChange={(e) =>
+    setFilters({
+      ...filters,
+      range: e.target.value !== ""
+        ? ranges[Number(e.target.value)]
+        : null,
+    })
+  }
+  className="border px-4 py-2 rounded"
+>
+  <option value="">coverage_amount</option>
+
+  {Array.isArray(ranges) &&
+    ranges.map((range, index) => (
+      <option key={index} value={index}>
+        {range.label}
+      </option>
+    ))}
+</select>
 
         {Array.isArray(ranges) &&
           ranges.map((range, index) => (

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import Sidebar from "../layout/Sidebar"; // default export
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Sidebar from "../layout/Sidebar";
 import Header from "../components/Header";
 import PolicyFilter from "../features/policies/components/PolicyFilter";
 import { useNavigate, Link } from "react-router-dom";
@@ -34,6 +35,7 @@ const PolicyCatalog = () => {
       .catch(console.error);
   }, []);
 
+ 
   const filteredPolicies = policies.filter((policy) => {
     const matchesSearch = policy.title
       ?.toLowerCase()
@@ -85,7 +87,6 @@ const PolicyCatalog = () => {
   return (
     <div className="flex min-h-screen bg-[#0D99FF]">
       <Sidebar />
-
       <div className="flex-1 bg-gray-50">
         <Header />
 

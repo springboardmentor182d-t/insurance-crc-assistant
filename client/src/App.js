@@ -25,7 +25,10 @@ function App() {
           path="*"
           element={<div style={{ padding: 32 }}>Page Not Found</div>}
         />
-        <Route path="/premium-calculator" element={<PremiumCalculator />} />
+        <Route
+          path="/premium-calculator"
+          element={<PremiumCalculator />}
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />

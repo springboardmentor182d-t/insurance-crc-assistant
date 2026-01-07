@@ -113,6 +113,7 @@ const Sidebar = () => {
         </span>
       </div>
 
+
       <nav className="flex-1 px-4 py-6 space-y-2">
         {menuItems.map((item) => (
           <NavLink
