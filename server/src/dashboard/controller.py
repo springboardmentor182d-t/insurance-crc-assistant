@@ -7,25 +7,21 @@ from .service import (
 )
 
 router = APIRouter(
-    prefix="/api/dashboard",
+    prefix="/dashboard",
     tags=["Dashboard"]
 )
-
 
 @router.get("/summary")
 def dashboard_summary():
     return get_dashboard_summary()
 
-
 @router.get("/policies")
 def user_policies():
     return get_policies()
 
-
 @router.get("/recommendations")
 def recommendations():
     return get_recommendations()
-
 
 @router.get("/claims")
 def claims_overview():

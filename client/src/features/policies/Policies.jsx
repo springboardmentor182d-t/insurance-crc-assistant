@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar, { SidebarMenu, SidebarFilter } from "../../layout/Sidebar";
+import Sidebar from "../../layout/Sidebar";
 import Header from "../../components/Header";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -31,17 +31,10 @@ const Policies = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {policies.map((policy) => (
-                <div
-                  key={policy.id}
-                  className="bg-white p-6 rounded-xl shadow"
-                >
-                  <h3 className="text-lg font-semibold">
-                    {policy.title}
-                  </h3>
+                <div key={policy.id} className="bg-white p-6 rounded-xl shadow">
+                  <h3 className="text-lg font-semibold">{policy.title}</h3>
 
-                  <p className="text-gray-500 mt-2">
-                    {policy.policy_type}
-                  </p>
+                  <p className="text-gray-500 mt-2">{policy.policy_type}</p>
 
                   <p className="text-sm text-gray-600 mt-1">
                     Policy No: {policy.policy_number}
