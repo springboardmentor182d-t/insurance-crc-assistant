@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import random
 from pydantic import BaseModel, EmailStr
 
-from src.auth.db import get_db
+from src.database.core import get_db
 from src.auth.models import User
 from src.auth.auth import hash_password
 from src.auth.utils.email import send_otp_email

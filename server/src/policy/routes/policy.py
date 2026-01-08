@@ -1,16 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database.core import SessionLocal
+from src.database.core import get_db
 from src.users.models import Policy, UserPolicy
 
 router = APIRouter()
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.get("/")
 def get_policies(db: Session = Depends(get_db)):
@@ -37,9 +30,16 @@ def get_policy_filters(db: Session = Depends(get_db)):
         "ranges": coverage_ranges
     }
 
-@router.get("/{policy_id}")
+@router.get("/details/{policy_id}")
 def get_policy_by_id(policy_id: int, db: Session = Depends(get_db)):
-    policy = db.query(Policy).filter(Policy.id == policy_id).first()
+    policy = (
+        db.query(Policy)
+        .join(UserPolicy, UserPolicy.policy_id == Policy.id)
+        .filter(Policy.id == policy_id)
+        .first()
+    )
+
     if not policy:
-        return {"detail": "Policy not found"}
+        raise HTTPException(status_code=404, detail="Policy not found")
+
     return policy
