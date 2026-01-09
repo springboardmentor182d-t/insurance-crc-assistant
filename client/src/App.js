@@ -1,29 +1,51 @@
 import React, { useContext } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Landing from './components/auth/Landing';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
-import ForgotPassword from './components/auth/ForgotPassword';
-import OTPVerify from './components/auth/OTPVerify';
-import Dashboard from './pages/Dashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import NotFound from './pages/NotFound';
-import ProtectedRoute from './components/ProtectedRoute';
-import RoleBasedRoute from './components/RoleBasedRoute';
+import { Routes, Route } from "react-router-dom";
+
+/* AUTH PAGES */
+import Landing from "./components/auth/Landing";
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import ForgotPassword from "./components/auth/ForgotPassword";
+import OTPVerify from "./components/auth/OTPVerify";
 import EnterOtp from "./components/auth/EnterOtp";
 import ResetPassword from "./components/auth/ResetPassword";
-import { AuthContext } from './context/AuthContext';
+
+/* MAIN PAGES */
+import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+
 import FileClaim from "./pages/claims/FileClaim"; 
 import IncidentDetails from "./pages/claims/IncidentDetails";
 import UploadDocuments from "./pages/claims/UploadDocuments";
 
-export default function App(){
+
+import Dummy from "./components/auth/Dummy";
+import FraudDetection from "./pages/admin/FraudDetection";
+import FraudInvestigation from "./pages/admin/FraudInvestigation";
+import Profile from "./pages/Profile";
+import Preferences from "./pages/Preferences";
+import Recommendations from "./pages/Recommendations";
+import NotFound from "./pages/NotFound";
+
+/* LAYOUT */
+import PageContainer from "./layout/PageContainer";
+
+/* ROUTE GUARDS */
+import ProtectedRoute from "./components/ProtectedRoute";
+import RoleBasedRoute from "./components/RoleBasedRoute";
+import { AuthContext } from './context/AuthContext';
+
+export default function App() {
   const { user } = useContext(AuthContext);
+
   return (
     <Routes>
+
+      {/* ---------- AUTH (NO NAVBAR) ---------- */}
       <Route path="/" element={<Landing />} />
+      <Route path="/landing" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -36,15 +58,38 @@ export default function App(){
       <Route path="/file-claim" element={<FileClaim />} />
       <Route path="/claims/incident" element={<IncidentDetails />} />
       <Route path="/claims/upload" element={<UploadDocuments/>}/>
+      <Route path="/dummy" element={<Dummy />} />
+      <Route path="/admin/fraud" element={<FraudDetection />} />
+      <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/preferences" element={<Preferences />} />
+      <Route path="/recommendations" element={<Recommendations />} />
+
+      <Route path="/enter-otp" element={<EnterOtp />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      
+      {/* ---------- PROTECTED (WITH NAVBAR) ---------- */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route element={<PageContainer />}>
+
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/claims" element={<ClaimsList />} />
+          <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/preferences" element={<Preferences />} />
+          <Route path="/recommendations" element={<Recommendations />} />
+
+          {/* ---------- ADMIN ONLY ---------- */}
+          <Route element={<RoleBasedRoute roleRequired="admin" />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+
+        </Route>
       </Route>
 
-      <Route element={<RoleBasedRoute roleRequired="admin" />}>
-        <Route path="/admin" element={<AdminDashboard />} />
-      </Route>
-
+      {/* ---------- FALLBACK ---------- */}
       <Route path="*" element={<NotFound />} />
+
     </Routes>
   );
 }
