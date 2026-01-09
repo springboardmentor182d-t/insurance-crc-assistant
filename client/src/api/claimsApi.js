@@ -6,8 +6,13 @@ const API_BASE = "http:////127.0.0.1:8000";
    GET ALL CLAIMS (LIST)
 ====================== */
 export const getClaims = async () => {
-  const res = await axios.get(`${API_BASE}/claims/`);
-  return res.data;
+  try {
+    const res = await API.get("/claims/list");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching claims:", error);
+    return []; // prevent UI crash
+  }
 };
 
 /* ======================
@@ -15,7 +20,7 @@ export const getClaims = async () => {
 ====================== */
 export const getClaimDetails = async (claimNumber) => {
   try {
-    const res = await axios.get(`${API_BASE}/claims/${claimNumber}`);
+    const res = await API.get(`/claims/${claimNumber}`);
     return res.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {

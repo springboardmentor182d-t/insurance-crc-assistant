@@ -1,17 +1,73 @@
-# Python
+################################
+# Environment files
+################################
+.env
+.env.*
+server/.env
+
+################################
+# Node / React
+################################
+node_modules/
+client/node_modules/
+
+/package-lock.json
+
+build/
+client/build/
+dist/
+client/dist/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+################################
+# Tailwind / PostCSS cache
+################################
+.cache/
+.parcel-cache/
+
+################################
+# Python cache & compiled files
+################################
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.db
 
-# Virtual environment
+################################
+# Python Virtual Environments
+################################
 venv/
-.env
+.venv/
+server/venv/
+server/.venv/
 
-# Node
-node_modules/
+################################
+# Python testing / tooling
+################################
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/
 
-# OS
+################################
+# Test / Coverage
+################################
+.coverage
+htmlcov/
+
+################################
+# IDE / Editor
+################################
+.vscode/
+.idea/
+*.iml
+
+################################
+# OS files
+################################
 .DS_Store
 Thumbs.db
