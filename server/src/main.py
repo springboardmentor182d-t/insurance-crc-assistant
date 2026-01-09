@@ -110,6 +110,19 @@ except Exception as e:
     print("⚠️ Recommendation modules not loaded:", e)
 
 # =========================
+# FRAUD DETECTION ROUTERS (SAFE LOAD)
+# =========================
+try:
+    from src.routers.rules import router as rules_router
+    from src.routers.audit import router as audit_router
+
+    app.include_router(rules_router)
+    app.include_router(audit_router)
+
+except Exception as e:
+    print("⚠️ Fraud detection modules not loaded:", e)
+
+# =========================
 # CREATE ADMIN ON STARTUP
 # =========================
 @app.on_event("startup")
