@@ -36,6 +36,16 @@ import TravelRecResults from "./pages/TravelRecResults";
 import FireRecResults from "./pages/FireRecResults";
 import BusinessRecResults from "./pages/BusinessRecResults";
 
+/* ===== Claims pages ===== */
+import ClaimsDashboard from "./pages/ClaimsDashboard";
+import StartNewClaim from "./pages/StartNewClaim";
+import FileNewClaimStep1 from "./pages/FileNewClaimStep1";
+import FileNewClaimStep2 from "./pages/FileNewClaimStep2";
+import ReviewClaimStep3 from "./pages/ReviewClaimStep3";
+import ClaimSubmission from "./pages/ClaimSubmission";
+import ClaimStatus from "./pages/ClaimStatus";
+import TrackClaim from "./pages/TrackClaim";
+
 export default function App() {
   return (
     <ProfileProvider>
@@ -63,16 +73,42 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/recommendations" element={<Recommendations />} />
 
-            <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
-            <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
-            <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
-            <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
-            <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
-            <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
-            <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
+            {/* Recommendation forms */}
+            <Route
+              path="/health_insurance_rec"
+              element={<HealthRecommendation />}
+            />
+            <Route
+              path="/motor_insurance_rec"
+              element={<MotorRecommendation />}
+            />
+            <Route
+              path="/life_insurance_rec"
+              element={<LifeRecommendation />}
+            />
+            <Route
+              path="/travel_insurance_rec"
+              element={<TravelRecommendation />}
+            />
+            <Route
+              path="/home_insurance_rec"
+              element={<HomeRecommendation />}
+            />
+            <Route
+              path="/business_insurance_rec"
+              element={<BusinessRecommendation />}
+            />
+            <Route
+              path="/fire_property_insurance_rec"
+              element={<FireRecommendation />}
+            />
 
+            {/* Profile & policies */}
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
+            <Route
+              path="/recommendedPolicies"
+              element={<RecommendedPolicies />}
+            />
 
             {/* Result pages */}
             <Route path="/healthrecresults" element={<HealthRecResults />} />
@@ -81,7 +117,22 @@ export default function App() {
             <Route path="/homerecresults" element={<HomeRecResults />} />
             <Route path="/travelrecresults" element={<TravelRecResults />} />
             <Route path="/firerecresults" element={<FireRecResults />} />
-            <Route path="/businessrecresults" element={<BusinessRecResults />} />
+            <Route
+              path="/businessrecresults"
+              element={<BusinessRecResults />}
+            />
+
+            {/* ================= CLAIMS ROUTES ================= */}
+            <Route path="/claims" element={<ClaimsDashboard />} />
+            <Route path="/claims/start" element={<StartNewClaim />} />
+
+            <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
+            <Route path="/claims/file/step2" element={<FileNewClaimStep2 />} />
+            <Route path="/claims/file/step3" element={<ReviewClaimStep3 />} />
+
+            <Route path="/claims/submitted" element={<ClaimSubmission />} />
+            <Route path="/claims/status" element={<ClaimStatus />} />
+            <Route path="/claims/track/:id" element={<TrackClaim />} />
 
             {/* Testing */}
             <Route path="/test" element={<TestFetch />} />

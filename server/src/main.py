@@ -7,6 +7,9 @@ from sqlalchemy.orm import Session
 # DATABASE
 # =========================
 from src.database.core import Base, engine
+from src.claims.models import Claim, ClaimDocument  
+from src.claims.controller import router as claims_router
+
 
 # =========================
 # AUTH & USERS ROUTERS
@@ -51,6 +54,11 @@ Base.metadata.create_all(bind=engine)
 # =========================
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(
+    claims_router,
+    prefix="/claims",
+    tags=["Claims"]
+)
 
 # =========================
 # RECOMMENDATION ROUTERS (SAFE LOAD)
