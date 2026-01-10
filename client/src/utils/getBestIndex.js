@@ -1,23 +1,19 @@
-export function getBestIndex(rule, values) {
-  const valid = values.map(v => v ?? null);
+export const getBestIndex = (rule, values) => {
+  const numericValues = values.map((v) =>
+    typeof v === "number" ? v : null
+  );
 
-  if (rule.type === "boolean") {
-    const hasTrue = valid.some(v => v === true);
-    const hasFalse = valid.some(v => v === false);
-    return hasTrue && hasFalse ? valid.indexOf(true) : null;
+  if (numericValues.every((v) => v == null)) return null;
+
+  if (rule.better === "lower") {
+    const min = Math.min(...numericValues.filter(Boolean));
+    return numericValues.indexOf(min);
   }
 
-  if (rule.type === "number" || rule.type === "rank") {
-    const nums = valid.filter(v => typeof v === "number");
-    if (nums.length < 2) return null;
-
-    const best =
-      rule.better === "lower"
-        ? Math.min(...nums)
-        : Math.max(...nums);
-
-    return valid.indexOf(best);
+  if (rule.better === "higher") {
+    const max = Math.max(...numericValues.filter(Boolean));
+    return numericValues.indexOf(max);
   }
 
   return null;
-}
+};

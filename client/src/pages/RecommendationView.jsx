@@ -17,17 +17,38 @@ export default function RecommendationView() {
   const navigate = useNavigate();
 
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  /* ---------------- FETCH RECOMMENDATION ---------------- */
   useEffect(() => {
+    setLoading(true);
+
     getRecommendationById(id)
-      .then(setData)
-      .catch(() => setData(null));
+      .then((res) => setData(res))
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (!data) {
+  /* ---------------- LOADING STATE ---------------- */
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-gray-500">
-        Loading...
+        Loading recommendation...
+      </div>
+    );
+  }
+
+  /* ---------------- ERROR STATE ---------------- */
+  if (!data) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-gray-500">
+        <p>Recommendation not found.</p>
+        <button
+          onClick={() => navigate("/recommendations")}
+          className="mt-4 text-blue-600 hover:underline"
+        >
+          Back to Recommendations
+        </button>
       </div>
     );
   }
@@ -39,7 +60,7 @@ export default function RecommendationView() {
         {/* ================= LEFT COLUMN ================= */}
         <div className="col-span-2 space-y-6">
 
-          {/* 🔙 Back to Recommendations */}
+          {/* 🔙 Back */}
           <button
             onClick={() => navigate("/recommendations")}
             className="flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 transition"
@@ -48,23 +69,31 @@ export default function RecommendationView() {
             <span>Back to Recommendations</span>
           </button>
 
-          {/* Header */}
+          {/* HEADER */}
           <RecommendationHeader data={data} />
 
-          {/* Reasons */}
+          {/* WHY WE RECOMMEND */}
           <RecommendationReason reasons={data.reasons} />
 
-          {/* Premium vs Coverage */}
+          {/* PREMIUM vs COVERAGE */}
           <PremiumCoverageAnalysis data={data} />
 
-          {/* Key Features */}
-          <RecommendationFeatures features={data.features} />
+          {/* KEY FEATURES */}
+          <RecommendationFeatures
+            features={data.policy?.benefits}
+          />
         </div>
 
         {/* ================= RIGHT COLUMN ================= */}
         <div className="space-y-6">
-          <RecommendationActions />
+
+          {/* ACTIONS (COMPARE / BUY) */}
+          <RecommendationActions policy={data} />
+
+          {/* MARKET COMPARISON */}
           <MarketComparison market={data.market} />
+
+          {/* EXPERT NOTE */}
           <ExpertRecommendation note={data.expert_note} />
         </div>
 

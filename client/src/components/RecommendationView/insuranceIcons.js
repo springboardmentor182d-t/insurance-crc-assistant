@@ -1,5 +1,5 @@
 import {
-  HeartPulse,
+  Heart,
   Shield,
   Car,
   Home,
@@ -9,7 +9,7 @@ import {
 export function getInsuranceIcon(type) {
   switch (type) {
     case "health":
-      return <HeartPulse size={18} className="text-white" />;
+      return <Heart size={18} className="text-white" />;
     case "life":
       return <Shield size={18} className="text-white" />;
     case "auto":

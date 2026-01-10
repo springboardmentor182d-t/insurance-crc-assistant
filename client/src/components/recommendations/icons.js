@@ -1,6 +1,6 @@
 import {
   Heart,
-  ShieldCheck,
+  Shield,
   Car,
   Plane,
   Home,
@@ -13,7 +13,7 @@ export function getPolicyIcon(type) {
       return <Heart className="text-red-500" />;
 
     case "life":
-      return <ShieldCheck className="text-blue-600" />;
+      return <Shield className="text-blue-600" />;
 
     case "auto":
       return <Car className="text-orange-500" />;

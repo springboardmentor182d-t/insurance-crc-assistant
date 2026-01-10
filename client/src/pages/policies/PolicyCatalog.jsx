@@ -10,15 +10,16 @@ export default function PolicyCatalog() {
   const navigate = useNavigate();
   const { selected } = useCompare();
 
-  const [policies, setPolicies] = useState([]);     // ✅ backend data
+  const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 🔑 FILTER STATES
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [typesSelected, setTypesSelected] = useState(["All"]); // ✅ ARRAY
   const [maxPremium, setMaxPremium] = useState(100000);
 
   /* ===============================
-     FETCH POLICIES FROM BACKEND
+     FETCH POLICIES
   =============================== */
   useEffect(() => {
     setLoading(true);
@@ -28,19 +29,21 @@ export default function PolicyCatalog() {
   }, []);
 
   /* ===============================
-     FILTER LOGIC (SAFE)
+     FILTER LOGIC (MULTI-SELECT SAFE)
   =============================== */
   const filteredPolicies = policies.filter((policy) => {
     const matchesSearch =
       policy.name.toLowerCase().includes(search.toLowerCase()) ||
       policy.provider.toLowerCase().includes(search.toLowerCase());
 
-    const matchesCategory =
-      category === "All" || policy.category === category;
+    const matchesType =
+      typesSelected.includes("All") ||
+      typesSelected.includes(policy.category);
 
-    const matchesPremium = policy.premium <= maxPremium;
+    const matchesPremium =
+      policy.premium <= maxPremium;
 
-    return matchesSearch && matchesCategory && matchesPremium;
+    return matchesSearch && matchesType && matchesPremium;
   });
 
   if (loading) {
@@ -85,17 +88,25 @@ export default function PolicyCatalog() {
         <PolicyFilters
           search={search}
           setSearch={setSearch}
-          type={category}          // UI label unchanged
-          setType={setCategory}
+          typesSelected={typesSelected}              // ✅ PASS ARRAY
+          setTypesSelected={setTypesSelected}        // ✅ PASS SETTER
           maxPremium={maxPremium}
           setMaxPremium={setMaxPremium}
+          clearFilters={() => {
+            setSearch("");
+            setTypesSelected(["All"]);
+            setMaxPremium(100000);
+          }}
         />
 
         {/* POLICY GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start flex-1">
           {filteredPolicies.length > 0 ? (
             filteredPolicies.map((policy) => (
-              <PolicyCard key={policy.id} policy={policy} />
+              <PolicyCard
+                key={policy.id}
+                policy={policy}
+              />
             ))
           ) : (
             <p className="text-slate-500">

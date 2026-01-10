@@ -56,7 +56,7 @@ export default function App() {
       <Route path="/reset-password" element={<ResetPassword />} />
       
       {/* ---------- PROTECTED (WITH NAVBAR) ---------- */}
-      <Route element={<ProtectedRoute />}>
+      
         <Route element={<PageContainer />}>
 
           <Route path="/dashboard" element={<Dashboard />} />
@@ -69,17 +69,17 @@ export default function App() {
           <Route path="/policies" element={<PolicyCatalog />} />
           <Route path="/policies/:id" element={<PolicyDetails />} />
           <Route path="/compare" element={<ComparePolicies />} />
-
+          <Route path="/admin/fraud" element={<FraudDetection />} />
+          <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           {/* ---------- ADMIN ONLY ---------- */}
           <Route element={<RoleBasedRoute roleRequired="admin" />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/fraud" element={<FraudDetection />} />
-            <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
+            
+            
           </Route>
 
         </Route>
-      </Route>
-
+    
       {/* ---------- FALLBACK ---------- */}
       <Route path="*" element={<NotFound />} />
 

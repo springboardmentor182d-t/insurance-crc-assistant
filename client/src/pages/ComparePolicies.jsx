@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCompare } from "../context/CompareContext";
-import { comparisonRules } from "../config/comparisonRules";
+import { getComparisonRules } from "../api/comparisonApi";
 import { getBestIndex } from "../utils/getBestIndex";
 import {
   Heart,
@@ -8,13 +9,13 @@ import {
   Car,
   Plane,
   Home,
+  HelpCircle,
   Check,
   X,
-  HelpCircle,
 } from "lucide-react";
 
 /* ===============================
-   CATEGORY CONFIG (SAFE)
+   CATEGORY CONFIG (UI ONLY)
 ================================ */
 const categoryConfig = {
   Health: {
@@ -53,13 +54,36 @@ const categoryConfig = {
    BOOLEAN ICON
 ================================ */
 const boolIcon = (v) =>
-  v === true ? (
+  v ? (
     <Check className="mx-auto text-green-600" size={18} />
-  ) : v === false ? (
-    <X className="mx-auto text-red-500" size={18} />
   ) : (
-    <span className="text-slate-400">N/A</span>
+    <X className="mx-auto text-red-500" size={18} />
   );
+
+/* ===============================
+   VALUE FORMATTER (RULE AWARE)
+================================ */
+const formatValue = (rule, value) => {
+  if (value == null) return "–";
+
+  switch (rule.key) {
+    case "premium":
+    case "coverage":
+      return `₹ ${Number(value).toLocaleString("en-IN")}`;
+
+    case "cashlessHospitals":
+      return `${value}+`;
+
+    case "waitingPeriod":
+      return `${value} Days`;
+
+    case "claimSettlement":
+      return `${value}%`;
+
+    default:
+      return value;
+  }
+};
 
 /* ===============================
    ADD POLICY PLACEHOLDER
@@ -87,6 +111,17 @@ export default function ComparePolicies() {
   const navigate = useNavigate();
   const { selected, clearCompare } = useCompare();
 
+  const [rules, setRules] = useState([]);
+  const [loadingRules, setLoadingRules] = useState(true);
+
+  /* FETCH COMPARISON RULES */
+  useEffect(() => {
+    getComparisonRules()
+      .then(setRules)
+      .finally(() => setLoadingRules(false));
+  }, []);
+
+  /* SAFETY: NOT ENOUGH POLICIES */
   if (selected.length < 2) {
     return (
       <div className="p-10 text-center">
@@ -103,12 +138,22 @@ export default function ComparePolicies() {
     );
   }
 
+  if (loadingRules) {
+    return (
+      <div className="p-10 text-center text-slate-500">
+        Loading comparison rules...
+      </div>
+    );
+  }
+
   return (
     <div className="px-8 py-6 bg-slate-50 min-h-screen">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-semibold">Compare Policies</h1>
+          <h1 className="text-2xl font-semibold">
+            Compare Policies
+          </h1>
           <p className="text-sm text-slate-500">
             Side-by-side comparison of selected policies
           </p>
@@ -129,7 +174,7 @@ export default function ComparePolicies() {
         </div>
       </div>
 
-      {/* POLICY CARDS (CRASH-SAFE) */}
+      {/* POLICY CARDS */}
       <div className="grid grid-cols-[180px_repeat(3,1fr)] gap-6 mb-6">
         <div />
 
@@ -157,7 +202,7 @@ export default function ComparePolicies() {
                 </div>
 
                 <h3 className="font-semibold text-center text-slate-800">
-                  {p.name}
+                  {p.title}
                 </h3>
                 <p className="text-xs text-slate-500">
                   {p.provider}
@@ -174,15 +219,22 @@ export default function ComparePolicies() {
         })}
 
         {selected.length === 2 && (
-          <AddPolicyPlaceholder onBrowse={() => navigate("/policies")} />
+          <AddPolicyPlaceholder
+            onBrowse={() => navigate("/policies")}
+          />
         )}
       </div>
 
       {/* COMPARISON TABLE */}
       <div className="rounded-xl border bg-white overflow-hidden">
-        {comparisonRules.map((rule) => {
-          const values = selected.map((p) => p[rule.key]);
+        {rules.map((rule) => {
+          const values = selected.map(
+            (p) => p[rule.key]
+          );
           const bestIndex = getBestIndex(rule, values);
+
+          // Hide row if all values are null
+          if (values.every((v) => v == null)) return null;
 
           return (
             <div
@@ -204,9 +256,7 @@ export default function ComparePolicies() {
                 >
                   {rule.type === "boolean"
                     ? boolIcon(v)
-                    : rule.format
-                    ? rule.format(v)
-                    : v ?? "N/A"}
+                    : formatValue(rule, v)}
                 </div>
               ))}
             </div>

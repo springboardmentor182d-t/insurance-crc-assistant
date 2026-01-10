@@ -14,6 +14,7 @@ export const getPolicies = async (category = null) => {
   return res.data;
 };
 
+
 /* ======================
    GET POLICY BY ID
 ====================== */

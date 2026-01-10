@@ -16,18 +16,17 @@ USER_ID = 1  # TEMP until auth is added
 # MARKET COMPARISON (TEMP STATIC)
 # -------------------------
 market = {
-    "premium": 17,    # % lower than market
-    "coverage": 25,   # % higher than market
-    "benefits": 15,   # % more benefits
+    "premium": 17,
+    "coverage": 25,
+    "benefits": 15,
 }
 
 
-# -------------------------------------------------
-# GET RECOMMENDATIONS (LIST) – FROM DB
-# -------------------------------------------------
+# =================================================
+# GET RECOMMENDATIONS (LIST)
+# =================================================
 @router.get("/")
 async def get_recommendations(db: AsyncSession = Depends(get_db)):
-    # 1️⃣ Load user preferences
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == USER_ID)
     )
@@ -39,23 +38,20 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
     insurance_types = pref.insurance_types or []
     if isinstance(insurance_types, str):
         insurance_types = [insurance_types]
-    insurance_types = [t.lower() for t in insurance_types]
 
     prefs = {
-        "insuranceTypes": insurance_types,
+        "insuranceTypes": [t.lower() for t in insurance_types],
         "annualBudget": pref.annual_budget or 0,
         "desiredCoverage": pref.desired_coverage or 0,
         "riskAppetite": pref.risk_appetite or "Medium",
     }
 
-    # 2️⃣ Fetch policies from DB
     result = await db.execute(select(Policy))
     policies = result.scalars().all()
 
     items = []
     total_score = 0
 
-    # 3️⃣ Score & filter
     for policy in policies:
         policy_type = policy.category.lower()
 
@@ -78,14 +74,28 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
 
         items.append({
             "id": policy.id,
-            "title": policy.name,
-            "provider": policy.provider,
-            "type": policy_type,
-            "premium": float(policy.premium),
-            "coverage": float(policy.coverage),
             "score": score,
             "reason": reason,
             "savings": max(0, prefs["annualBudget"] - float(policy.premium)),
+
+            # ✅ CONSISTENT POLICY OBJECT
+            "policy": {
+                "id": policy.id,
+                "name": policy.name,
+                "provider": policy.provider,
+                "category": policy.category,
+
+                "premium": float(policy.premium),
+                "coverage": float(policy.coverage),
+                "waitingPeriod": policy.waitingPeriod,
+                "roomRent": policy.roomRent,
+
+                "benefits": policy.benefits or [],
+                "exclusions": policy.exclusions or [],
+
+                "term": policy.term,
+                "deductible": policy.deductible,
+            },
         })
 
     return {
@@ -95,15 +105,14 @@ async def get_recommendations(db: AsyncSession = Depends(get_db)):
     }
 
 
-# -------------------------------------------------
-# GET RECOMMENDATION VIEW (DETAIL) – FROM DB
-# -------------------------------------------------
+# =================================================
+# GET RECOMMENDATION VIEW (DETAIL)
+# =================================================
 @router.get("/{policy_id}/view")
 async def get_recommendation_view(
     policy_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    # 1️⃣ Fetch policy
     result = await db.execute(
         select(Policy).where(Policy.id == policy_id)
     )
@@ -112,9 +121,6 @@ async def get_recommendation_view(
     if not policy:
         return {"error": "Policy not found"}
 
-    policy_type = policy.category.lower()
-
-    # 2️⃣ Load preferences
     result = await db.execute(
         select(UserPreference).where(UserPreference.user_id == USER_ID)
     )
@@ -131,25 +137,24 @@ async def get_recommendation_view(
         insurance_types = pref.insurance_types or []
         if isinstance(insurance_types, str):
             insurance_types = [insurance_types]
+
         prefs["insuranceTypes"] = [t.lower() for t in insurance_types]
         prefs["annualBudget"] = pref.annual_budget or 0
         prefs["desiredCoverage"] = pref.desired_coverage or 0
         prefs["riskAppetite"] = pref.risk_appetite or "Medium"
 
-    # 3️⃣ Score
     score, _ = score_policy(
         {
-            "type": policy_type,
+            "type": policy.category.lower(),
             "premium": float(policy.premium),
             "coverage": float(policy.coverage),
         },
         prefs,
     )
 
-    # 4️⃣ Reasons
     reasons = []
 
-    if policy_type in prefs["insuranceTypes"]:
+    if policy.category.lower() in prefs["insuranceTypes"]:
         reasons.append({
             "key": "type",
             "title": "Preferred Insurance Type",
@@ -187,21 +192,29 @@ async def get_recommendation_view(
 
     return {
         "id": policy.id,
-        "title": policy.name,
-        "provider": policy.provider,
-        "type": policy_type,
-        "premium": float(policy.premium),
-        "coverage": float(policy.coverage),
         "match": score,
         "valueScore": round(float(policy.coverage) / float(policy.premium), 1),
         "savings": max(0, prefs["annualBudget"] - float(policy.premium)),
         "reasons": reasons,
         "market": market,
-        "features": policy.benefits or [],
         "expert_note": expert_note,
-        "exclusions": policy.exclusions or [],
-        "term": policy.term,
-        "deductible": policy.deductible,
-        "waitingPeriod": policy.waitingPeriod,
-        "roomRent": policy.roomRent,
+
+        # ✅ SAME POLICY SHAPE
+        "policy": {
+            "id": policy.id,
+            "name": policy.name,
+            "provider": policy.provider,
+            "category": policy.category,
+
+            "premium": float(policy.premium),
+            "coverage": float(policy.coverage),
+            "waitingPeriod": policy.waitingPeriod,
+            "roomRent": policy.roomRent,
+
+            "benefits": policy.benefits or [],
+            "exclusions": policy.exclusions or [],
+
+            "term": policy.term,
+            "deductible": policy.deductible,
+        },
     }
