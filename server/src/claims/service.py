@@ -13,6 +13,7 @@ def create_claim(db: Session, claim_data: ClaimCreate):
         claim_type=claim_data.claim_type,
         incident_date=claim_data.incident_date,
         amount_claimed=claim_data.amount_claimed,
+        description=claim_data.description,
         status="Pending"
     )
     db.add(db_claim)

@@ -12,6 +12,7 @@ class Claim(Base):
     claim_type = Column(String)
     incident_date = Column(Date)
     amount_claimed = Column(Numeric(10, 2))
+    description = Column(String, nullable=True)
     status = Column(String, default="Pending")
     created_at = Column(DateTime, default=datetime.utcnow)
 

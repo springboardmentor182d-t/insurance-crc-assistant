@@ -8,6 +8,7 @@ class ClaimBase(BaseModel):
     claim_type: str
     incident_date: date
     amount_claimed: Decimal
+    description: Optional[str] = None
     
 class ClaimCreate(ClaimBase):
     pass
