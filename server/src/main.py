@@ -134,13 +134,20 @@ def create_admin():
     admin = db.query(User).filter(User.email == admin_email).first()
 
     if admin is None:
-        admin = User(
-            email=admin_email,
-            hashed_password=hash_password("admin123"),
-            role="ADMIN",
-        )
-        db.add(admin)
-        db.commit()
+        try:
+            admin = User(
+                email=admin_email,
+                hashed_password=hash_password("admin"),
+                role=Role.admin,
+            )
+            db.add(admin)
+            db.commit()
+            print("✅ Admin user created successfully")
+        except Exception as e:
+            print(f"⚠️ Failed to create admin user: {e}")
+            db.rollback()
+    else:
+        print("ℹ️ Admin user already exists")
 
     db.close()
 

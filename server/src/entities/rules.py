@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Enum, JSON, Float, Text, ARRAY
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Enum, JSON, Float, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from src.database.core import Base
@@ -57,7 +57,7 @@ class Rule(Base):
     # Storing logic as JSON since it's a complex nested structure
     logic = Column(JSON, nullable=False)
 
-    tags = Column(ARRAY(String))
+    tags = Column(JSON)
 
     created_by_id = Column(Integer, ForeignKey("users.id"))
     owner_id = Column(Integer, ForeignKey("users.id"))
@@ -95,7 +95,7 @@ class RuleExecutionLog(Base):
     claim_id = Column(String, index=True) # External Claim ID
     executed_at = Column(DateTime(timezone=True), server_default=func.now())
     severity = Column(Enum(Severity))
-    trigger_reasons = Column(ARRAY(String))
+    trigger_reasons = Column(JSON)
     decision = Column(Enum(Decision), default=Decision.pending)
     amount = Column(Float)
     input_payload = Column(JSON)

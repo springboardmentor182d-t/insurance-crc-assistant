@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Enum, ARRAY, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from src.database.core import Base
+from src.entities.rules import Rule, RuleVersion
 import enum
 
 class Role(str, enum.Enum):
