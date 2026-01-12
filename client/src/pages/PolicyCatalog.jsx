@@ -35,13 +35,23 @@ const PolicyCatalog = () => {
       .catch(console.error);
   }, []);
 
- 
+
+  const topPoliciesByType = {};
+  policies.forEach((policy) => {
+    const type = policy.policy_type;
+    if (
+      !topPoliciesByType[type] ||
+      Number(policy.coverage_amount) > Number(topPoliciesByType[type].coverage_amount)
+    ) {
+      topPoliciesByType[type] = policy;
+    }
+  });
+
   const filteredPolicies = policies.filter((policy) => {
     const matchesSearch = policy.title?.toLowerCase().includes(filters.search.toLowerCase());
     const matchesType = !filters.type || policy.policy_type === filters.type;
 
-    
-    const coverageAmount = Number(policy.coverage_amount.replace(/,/g, ""));
+    const coverageAmount = Number(policy.coverage_amount);
 
     let matchesRange = true;
     if (filters.range) {
@@ -72,6 +82,7 @@ const PolicyCatalog = () => {
     }, 2000);
   };
 
+  
   const goToComparePage = () => {
     if (compareList.length < 2) {
       alert("Select at least 2 policies to compare.");
@@ -95,14 +106,36 @@ const PolicyCatalog = () => {
           />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {filteredPolicies.length === 0 && <p className="text-gray-500">No policies found</p>}
+            {filteredPolicies.length === 0 && (
+              <p className="text-gray-500">No policies found</p>
+            )}
 
             {filteredPolicies.map((policy) => {
               const isSelected = compareList.some((p) => p.id === policy.id);
               const message = messages[policy.id];
+              const isTop = topPoliciesByType[policy.policy_type]?.id === policy.id;
 
               return (
-                <div key={policy.id} className="relative bg-white p-6 rounded-xl shadow hover:shadow-lg transition-shadow">
+                <div
+                  key={policy.id}
+                  className={`relative p-6 rounded-xl transition-shadow
+                    ${
+                      policy.recommended
+                        ? "bg-green-50 border-2 border-green-500 shadow-lg"
+                        : isTop
+                        ? "bg-yellow-50 border-2 border-yellow-500 shadow-lg"
+                        : "bg-white shadow hover:shadow-lg"
+                    }`}
+                >
+                  {/* Recommended badge */}
+                  {policy.recommended && (
+                    <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                      Recommended
+                    </span>
+                  )}
+
+                 
+
                   {/* Compare button */}
                   <div className="absolute top-2 right-2 flex flex-col items-center z-10">
                     <button
@@ -123,7 +156,6 @@ const PolicyCatalog = () => {
 
                   <h3 className="text-lg font-semibold">{policy.title}</h3>
                   <p className="text-gray-500 mt-2">{policy.policy_type}</p>
-                  
 
                   <Link
                     to={`/policy-details/${policy.id}`}
@@ -158,7 +190,9 @@ const PolicyCatalog = () => {
                   <p className="text-sm font-semibold">{policy.title}</p>
                   <div className="flex justify-between mt-1">
                     <button
-                      onClick={() => setCompareList(compareList.filter((p) => p.id !== policy.id))}
+                      onClick={() =>
+                        setCompareList(compareList.filter((p) => p.id !== policy.id))
+                      }
                       className="text-red-500 text-xs cursor-pointer bg-transparent border-none"
                     >
                       Remove

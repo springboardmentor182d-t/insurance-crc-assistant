@@ -33,9 +33,9 @@ const PolicyDetails = () => {
 
   // 🔹 Premium calculation
   const calculatePremium = () => {
-    const coverageValue = Number(
-      policy.coverage_amount.replace(/,/g, "")
-    );
+   
+     const coverageValue = Number(policy.coverage_amount);
+
 
     let premium = coverageValue * 0.01;
 
@@ -48,7 +48,7 @@ const PolicyDetails = () => {
     return Math.round(premium);
   };
 
-  // 🔹 Buy plan
+
   const handleBuyPlan = () => {
     setPurchased(true);
     alert("✅ Policy purchased successfully!");
