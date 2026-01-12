@@ -32,6 +32,13 @@ def get_policy_options():
         "Home Insurance",
         "Life Insurance"
     ]
+@router.get("/claim-types")
+def get_claim_types():
+    return [
+        "Hospitalization",
+        "Accident",
+        "Theft"
+    ]
 
 
 # =========================

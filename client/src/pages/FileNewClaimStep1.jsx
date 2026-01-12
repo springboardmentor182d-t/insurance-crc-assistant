@@ -5,8 +5,14 @@ import { baseURL } from "../config";
 const FileNewClaimStep1 = () => {
   const navigate = useNavigate();
 
+  // =========================
+  // STATE
+  // =========================
   const [policies, setPolicies] = useState([]);
+  const [claimTypes, setClaimTypes] = useState([]);
+
   const [loadingPolicies, setLoadingPolicies] = useState(true);
+  const [loadingClaimTypes, setLoadingClaimTypes] = useState(true);
 
   const [formData, setFormData] = useState({
     policy: "",
@@ -17,7 +23,7 @@ const FileNewClaimStep1 = () => {
   });
 
   // =========================
-  // FETCH POLICY OPTIONS FROM BACKEND
+  // FETCH POLICIES
   // =========================
   useEffect(() => {
     const fetchPolicies = async () => {
@@ -39,7 +45,29 @@ const FileNewClaimStep1 = () => {
   }, []);
 
   // =========================
-  // HANDLE FORM CHANGE
+  // FETCH CLAIM TYPES
+  // =========================
+  useEffect(() => {
+    const fetchClaimTypes = async () => {
+      try {
+        const res = await fetch(`${baseURL}/claims/claim-types`);
+        if (!res.ok) throw new Error("Failed to fetch claim types");
+
+        const data = await res.json();
+        setClaimTypes(data);
+      } catch (error) {
+        console.error(error);
+        alert("Unable to load claim types");
+      } finally {
+        setLoadingClaimTypes(false);
+      }
+    };
+
+    fetchClaimTypes();
+  }, []);
+
+  // =========================
+  // HANDLE INPUT CHANGE
   // =========================
   const handleChange = (e) => {
     setFormData({
@@ -73,7 +101,7 @@ const FileNewClaimStep1 = () => {
 
       const data = await res.json();
 
-      // Save claim ID for next steps
+      // Save claim ID for step 2
       localStorage.setItem("claim_id", data.id);
 
       navigate("/claims/file/step2");
@@ -83,6 +111,9 @@ const FileNewClaimStep1 = () => {
     }
   };
 
+  // =========================
+  // UI
+  // =========================
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-semibold mb-6">
@@ -111,19 +142,26 @@ const FileNewClaimStep1 = () => {
           </select>
         </div>
 
-        {/* CLAIM TYPE */}
+        {/* CLAIM TYPE (FROM BACKEND) */}
         <div>
           <label className="text-sm font-medium">Claim Type</label>
           <select
             name="claim_type"
             value={formData.claim_type}
             onChange={handleChange}
+            disabled={loadingClaimTypes}
             className="w-full mt-1 p-2 border rounded"
           >
-            <option value="">Select Claim Type</option>
-            <option value="Hospitalization">Hospitalization</option>
-            <option value="Accident">Accident</option>
-            <option value="Theft">Theft</option>
+            <option value="">
+              {loadingClaimTypes
+                ? "Loading claim types..."
+                : "Select Claim Type"}
+            </option>
+            {claimTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -151,7 +189,7 @@ const FileNewClaimStep1 = () => {
           />
         </div>
 
-        {/* AMOUNT */}
+        {/* AMOUNT CLAIMED */}
         <div>
           <label className="text-sm font-medium">Amount Claimed</label>
           <input
