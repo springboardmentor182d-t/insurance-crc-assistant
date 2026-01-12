@@ -1,8 +1,4 @@
-
-
 import { Bell, Search } from "lucide-react";
-
-
 
 const Navbar = () => {
   return (
@@ -16,15 +12,12 @@ const Navbar = () => {
         />
       </div>
 
-      
       <div className="flex items-center gap-6">
-       
         <button className="relative text-gray-600 hover:text-gray-800">
           <Bell size={20} />
           <span className="absolute -top-1 -right-1 bg-red-500 w-2 h-2 rounded-full"></span>
         </button>
 
-      
         <div className="flex items-center gap-3 cursor-pointer">
           <img
             // src="https://i.pravatar.cc/40"
