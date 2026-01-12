@@ -14,6 +14,7 @@ const TrackClaim = () => {
       try {
         const res = await fetch(`${baseURL}/claims/${id}`);
         if (!res.ok) throw new Error("Failed to fetch claim");
+
         const data = await res.json();
         setClaim(data);
       } catch (err) {
@@ -39,10 +40,10 @@ const TrackClaim = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       {/* Header */}
       <button
-        onClick={() => navigate("/claims/status")}
+        onClick={() => navigate("/claims")}
         className="text-purple-600 mb-4"
       >
-        ← Back to Claim Status
+        ← Back to Dashboard
       </button>
 
       <div className="bg-white rounded-xl shadow p-6">
@@ -74,7 +75,7 @@ const TrackClaim = () => {
           </div>
         </div>
 
-        {/* Timeline (Static for now) */}
+        {/* Timeline */}
         <div>
           <h3 className="font-medium mb-4">Claim Timeline</h3>
 
@@ -119,13 +120,6 @@ const TrackClaim = () => {
           >
             Back to Dashboard
           </button>
-
-          <button
-            onClick={() => navigate("/claims/status")}
-            className="px-6 py-2 border rounded"
-          >
-            Back to Status
-          </button>
         </div>
       </div>
     </div>
@@ -133,5 +127,3 @@ const TrackClaim = () => {
 };
 
 export default TrackClaim;
-
-

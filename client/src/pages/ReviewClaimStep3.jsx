@@ -35,7 +35,7 @@ const ReviewClaimStep3 = () => {
   }, [claimId, navigate]);
 
   const handleSubmit = () => {
-    // For now, submission is logical (status already created)
+    // Logical submission (status already exists)
     localStorage.removeItem("claim_id");
     navigate("/claims/submitted");
   };
@@ -55,24 +55,12 @@ const ReviewClaimStep3 = () => {
       </h1>
 
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
-        <div>
-          <strong>Policy:</strong> {claim.policy}
-        </div>
-        <div>
-          <strong>Claim Type:</strong> {claim.claim_type}
-        </div>
-        <div>
-          <strong>Incident Date:</strong> {claim.incident_date}
-        </div>
-        <div>
-          <strong>Description:</strong> {claim.description}
-        </div>
-        <div>
-          <strong>Amount Claimed:</strong> ₹{claim.amount_claimed}
-        </div>
-        <div>
-          <strong>Status:</strong> {claim.status}
-        </div>
+        <div><strong>Policy:</strong> {claim.policy}</div>
+        <div><strong>Claim Type:</strong> {claim.claim_type}</div>
+        <div><strong>Incident Date:</strong> {claim.incident_date}</div>
+        <div><strong>Description:</strong> {claim.description}</div>
+        <div><strong>Amount Claimed:</strong> ₹{claim.amount_claimed}</div>
+        <div><strong>Status:</strong> {claim.status}</div>
 
         <div className="flex justify-between pt-6">
           <button
@@ -95,5 +83,3 @@ const ReviewClaimStep3 = () => {
 };
 
 export default ReviewClaimStep3;
-
-

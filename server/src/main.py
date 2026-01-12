@@ -7,18 +7,23 @@ from sqlalchemy.orm import Session
 # DATABASE
 # =========================
 from src.database.core import Base, engine
-from src.claims.models import Claim, ClaimDocument  
-from src.claims.controller import router as claims_router
 
+# Import models so tables are created
+from src.claims.models import Claim, ClaimDocument
+from src.users.models import User
 
 # =========================
-# AUTH & USERS ROUTERS
+# ROUTERS
 # =========================
 from src.auth.controller import router as auth_router
 from src.users.controller import router as users_router
-from src.users.models import User
+from src.claims.controller import router as claims_router
+
 from src.auth.service import hash_password
 
+# =========================
+# APP INIT
+# =========================
 app = FastAPI(title="Insurance CRC Assistant")
 
 # =========================
@@ -36,7 +41,7 @@ app.add_middleware(
 )
 
 # =========================
-# STATIC FILES
+# STATIC FILES (UPLOADS)
 # =========================
 app.mount(
     "/uploads",
@@ -50,10 +55,11 @@ app.mount(
 Base.metadata.create_all(bind=engine)
 
 # =========================
-# REGISTER ROUTERS (DIRECT)
+# REGISTER ROUTERS
 # =========================
 app.include_router(auth_router)
 app.include_router(users_router)
+
 app.include_router(
     claims_router,
     prefix="/claims",
@@ -61,7 +67,7 @@ app.include_router(
 )
 
 # =========================
-# RECOMMENDATION ROUTERS (SAFE LOAD)
+# RECOMMENDATION ROUTERS
 # =========================
 try:
     from src.recommendations_profile_preferences.routers import (
@@ -125,7 +131,6 @@ def create_admin():
     db = Session(bind=engine)
 
     admin_email = "admin@insurance.com"
-
     admin = db.query(User).filter(User.email == admin_email).first()
 
     if admin is None:

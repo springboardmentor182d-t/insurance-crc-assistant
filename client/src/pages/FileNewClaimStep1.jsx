@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
-// ✅ IMPORT BASE URL
 
 const FileNewClaimStep1 = () => {
   const navigate = useNavigate();
+
+  const [policies, setPolicies] = useState([]);
+  const [loadingPolicies, setLoadingPolicies] = useState(true);
 
   const [formData, setFormData] = useState({
     policy: "",
@@ -14,6 +16,31 @@ const FileNewClaimStep1 = () => {
     amount_claimed: "",
   });
 
+  // =========================
+  // FETCH POLICY OPTIONS FROM BACKEND
+  // =========================
+  useEffect(() => {
+    const fetchPolicies = async () => {
+      try {
+        const res = await fetch(`${baseURL}/claims/policies`);
+        if (!res.ok) throw new Error("Failed to fetch policies");
+
+        const data = await res.json();
+        setPolicies(data);
+      } catch (error) {
+        console.error(error);
+        alert("Unable to load policy options");
+      } finally {
+        setLoadingPolicies(false);
+      }
+    };
+
+    fetchPolicies();
+  }, []);
+
+  // =========================
+  // HANDLE FORM CHANGE
+  // =========================
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,9 +48,12 @@ const FileNewClaimStep1 = () => {
     });
   };
 
+  // =========================
+  // SUBMIT CLAIM (STEP 1)
+  // =========================
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${ baseURL }/claims`, {
+      const res = await fetch(`${baseURL}/claims`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,16 +67,15 @@ const FileNewClaimStep1 = () => {
         }),
       });
 
-      if (!response.ok) {
+      if (!res.ok) {
         throw new Error("Failed to create claim");
       }
 
-      const data = await response.json();
+      const data = await res.json();
 
-      // Save claim_id for next steps
+      // Save claim ID for next steps
       localStorage.setItem("claim_id", data.id);
 
-      // Go to Step 2
       navigate("/claims/file/step2");
     } catch (error) {
       console.error(error);
@@ -61,21 +90,28 @@ const FileNewClaimStep1 = () => {
       </h1>
 
       <div className="bg-white p-6 rounded-xl shadow space-y-4">
+        {/* POLICY */}
         <div>
           <label className="text-sm font-medium">Policy</label>
           <select
             name="policy"
             value={formData.policy}
             onChange={handleChange}
+            disabled={loadingPolicies}
             className="w-full mt-1 p-2 border rounded"
           >
-            <option value="">Select Policy</option>
-            <option value="Health Insurance">Health Insurance</option>
-            <option value="Travel Insurance">Travel Insurance</option>
-            <option value="Motor Insurance">Motor Insurance</option>
+            <option value="">
+              {loadingPolicies ? "Loading policies..." : "Select Policy"}
+            </option>
+            {policies.map((policy) => (
+              <option key={policy} value={policy}>
+                {policy}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* CLAIM TYPE */}
         <div>
           <label className="text-sm font-medium">Claim Type</label>
           <select
@@ -91,6 +127,7 @@ const FileNewClaimStep1 = () => {
           </select>
         </div>
 
+        {/* INCIDENT DATE */}
         <div>
           <label className="text-sm font-medium">Incident Date</label>
           <input
@@ -102,19 +139,21 @@ const FileNewClaimStep1 = () => {
           />
         </div>
 
+        {/* DESCRIPTION */}
         <div>
           <label className="text-sm font-medium">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded"
             rows={3}
+            className="w-full mt-1 p-2 border rounded"
           />
         </div>
 
+        {/* AMOUNT */}
         <div>
-          <label className="text-sm font-medium">Estimated Amount</label>
+          <label className="text-sm font-medium">Amount Claimed</label>
           <input
             type="number"
             name="amount_claimed"
@@ -124,6 +163,7 @@ const FileNewClaimStep1 = () => {
           />
         </div>
 
+        {/* ACTION BUTTONS */}
         <div className="flex justify-between pt-4">
           <button
             onClick={() => navigate("/claims")}

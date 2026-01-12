@@ -15,6 +15,7 @@ import PageContainer from "./layout/PageContainer";
 import Home from "./pages/Home";
 import Recommendations from "./pages/Recommendations";
 
+/* ===== Recommendation pages ===== */
 import HealthRecommendation from "./pages/HealthRecommendation";
 import MotorRecommendation from "./pages/MotorRecommendation";
 import LifeRecommendation from "./pages/LifeRecommendation";
@@ -23,11 +24,11 @@ import HomeRecommendation from "./pages/HomeRecommendation";
 import BusinessRecommendation from "./pages/BusinessRecommendation";
 import FireRecommendation from "./pages/FireRecommendation";
 
+/* ===== Profile & Results ===== */
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 import TestFetch from "./pages/TestFetch";
 
-/* ===== Result pages ===== */
 import HealthRecResults from "./pages/HealthRecResults";
 import LifeRecResults from "./pages/LifeRecResults";
 import MotorRecResults from "./pages/MotorRecResults";
@@ -68,47 +69,23 @@ export default function App() {
             }
           />
 
-          {/* ================= MAIN APP ROUTES (WITH LAYOUT) ================= */}
+          {/* ================= MAIN APP ROUTES ================= */}
           <Route element={<PageContainer />}>
             <Route path="/" element={<Home />} />
             <Route path="/recommendations" element={<Recommendations />} />
 
             {/* Recommendation forms */}
-            <Route
-              path="/health_insurance_rec"
-              element={<HealthRecommendation />}
-            />
-            <Route
-              path="/motor_insurance_rec"
-              element={<MotorRecommendation />}
-            />
-            <Route
-              path="/life_insurance_rec"
-              element={<LifeRecommendation />}
-            />
-            <Route
-              path="/travel_insurance_rec"
-              element={<TravelRecommendation />}
-            />
-            <Route
-              path="/home_insurance_rec"
-              element={<HomeRecommendation />}
-            />
-            <Route
-              path="/business_insurance_rec"
-              element={<BusinessRecommendation />}
-            />
-            <Route
-              path="/fire_property_insurance_rec"
-              element={<FireRecommendation />}
-            />
+            <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
+            <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
+            <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
+            <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
+            <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
+            <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
+            <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
 
             {/* Profile & policies */}
             <Route path="/profile" element={<ProfilePage />} />
-            <Route
-              path="/recommendedPolicies"
-              element={<RecommendedPolicies />}
-            />
+            <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
 
             {/* Result pages */}
             <Route path="/healthrecresults" element={<HealthRecResults />} />
@@ -117,21 +94,25 @@ export default function App() {
             <Route path="/homerecresults" element={<HomeRecResults />} />
             <Route path="/travelrecresults" element={<TravelRecResults />} />
             <Route path="/firerecresults" element={<FireRecResults />} />
-            <Route
-              path="/businessrecresults"
-              element={<BusinessRecResults />}
-            />
+            <Route path="/businessrecresults" element={<BusinessRecResults />} />
 
             {/* ================= CLAIMS ROUTES ================= */}
             <Route path="/claims" element={<ClaimsDashboard />} />
             <Route path="/claims/start" element={<StartNewClaim />} />
 
+            {/* Step-based flow */}
             <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
             <Route path="/claims/file/step2" element={<FileNewClaimStep2 />} />
             <Route path="/claims/file/step3" element={<ReviewClaimStep3 />} />
 
+            {/* ✅ Alias route for dashboard Review button */}
+            <Route path="/claims/review" element={<ReviewClaimStep3 />} />
+
+            {/* Submission & status */}
             <Route path="/claims/submitted" element={<ClaimSubmission />} />
             <Route path="/claims/status" element={<ClaimStatus />} />
+
+            {/* Track claim */}
             <Route path="/claims/track/:id" element={<TrackClaim />} />
 
             {/* Testing */}
