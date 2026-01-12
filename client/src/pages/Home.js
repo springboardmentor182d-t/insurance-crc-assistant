@@ -6,8 +6,7 @@ import RecommendedPolicies from "../components/dashboard/RecommendedPolicies";
 import ClaimsTable from "../components/dashboard/ClaimsTable";
 import StatsCard from "../components/dashboard/StatsCard";
 import { fetchDashboardData } from "../features/authentication/services/dashboardApi";
-import { useNavigate } from "react-router-dom";
-import { FiBell } from "react-icons/fi";  // need to check
+import { useNavigate } from "react-router-dom";  // need to check
 export default function Home() {
   const [dashboard, setDashboard] = useState(null);
   const [error, setError] = useState("");
