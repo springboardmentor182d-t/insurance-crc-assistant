@@ -7,11 +7,24 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from src.database.core import Base, engine
+
+# Import models so tables are created
+from src.claims.models import Claim, ClaimDocument
+from src.users.models import User
+
+# =========================
+# ROUTERS
+# =========================
 from src.auth.controller import router as auth_router
 from src.users.controller import router as users_router
-from src.users.models import User
+from src.claims.controller import router as claims_router
+
 from src.auth.service import hash_password
 
+# =========================
+# APP INIT
+# =========================
+app = FastAPI(title="Insurance CRC Assistant")
 # ================= LOAD ENV =================
 load_dotenv()
 
@@ -36,6 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# =========================
+# STATIC FILES (UPLOADS)
+# =========================
 # ================= STATIC FILES (AVATARS) =================
 app.mount(
     "/media",
@@ -48,6 +64,59 @@ app.mount(
 # ================= DB =================
 Base.metadata.create_all(bind=engine)
 
+# =========================
+# REGISTER ROUTERS
+# =========================
+app.include_router(auth_router)
+app.include_router(users_router)
+
+app.include_router(
+    claims_router,
+    prefix="/claims",
+    tags=["Claims"]
+)
+
+# =========================
+# RECOMMENDATION ROUTERS
+# =========================
+try:
+    from src.recommendations_profile_preferences.routers import (
+        profile,
+        recommendations,
+
+        health_progress,
+        HealthRecommendation,
+
+        life_progress,
+        LifeRecommendation,
+
+        motor_progress,
+        MotorRecommendation,
+
+        property_progress,
+        PropertyRecommendation,
+
+        travel_progress,
+        TravelRecommendation,
+
+        fire_progress,
+        FireRecommendation,
+
+        business_progress,
+        BusinessRecommendation,
+    )
+
+    app.include_router(profile.router)
+    app.include_router(recommendations.router)
+
+    app.include_router(health_progress.router)
+    app.include_router(HealthRecommendation.router)
+
+    app.include_router(life_progress.router)
+    app.include_router(LifeRecommendation.router)
+
+    app.include_router(motor_progress.router)
+    app.include_router(MotorRecommendation.router)
 # ================= AUTH =================
 app.include_router(auth_router, prefix="/auth")
 app.include_router(users_router, prefix="/users")
@@ -124,6 +193,13 @@ app.include_router(recommendations_router)
 def create_admin():
     db = Session(bind=engine)
     admin_email = "admin@insurance.com"
+    admin = db.query(User).filter(User.email == admin_email).first()
+
+    if admin is None:
+        admin = User(
+            email=admin_email,
+            hashed_password=hash_password("admin123"),
+            role="ADMIN",
 
     if not db.query(User).filter(User.email == admin_email).first():
         db.add(
