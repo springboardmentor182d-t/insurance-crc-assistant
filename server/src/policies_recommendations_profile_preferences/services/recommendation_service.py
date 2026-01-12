@@ -10,6 +10,7 @@ from src.policies_recommendations_profile_preferences.services.travel_scoring im
 from src.policies_recommendations_profile_preferences.services.fire_scoring import recommend_fire_policies
 from src.policies_recommendations_profile_preferences.services.business_scoring import recommend_business_policies
 
+
 CATEGORY_SERVICE_MAP = {
     "Health": recommend_health_policies,
     "Life": recommend_life_policies,
@@ -20,12 +21,28 @@ CATEGORY_SERVICE_MAP = {
     "Business": recommend_business_policies,
 }
 
+
+def extract_premium(policy):
+    if hasattr(policy, "monthly_premium") and policy.monthly_premium is not None:
+        return float(policy.monthly_premium)
+
+    if hasattr(policy, "min_monthly_premium") and policy.min_monthly_premium is not None:
+        return float(policy.min_monthly_premium)
+
+    if hasattr(policy, "min_annual_premium") and policy.min_annual_premium is not None:
+        return float(policy.min_annual_premium)
+
+    if hasattr(policy, "base_premium") and policy.base_premium is not None:
+        return float(policy.base_premium)
+
+    return 0.0
+
+
 def get_recommendations_for_profile(db: Session, profile: dict):
     user_input = ProfileAdapter(profile)
-
     recommendations = []
 
-    for category in profile["categories"]:
+    for category in profile.get("categories", []):
         service = CATEGORY_SERVICE_MAP.get(category)
         if not service:
             continue
@@ -34,17 +51,15 @@ def get_recommendations_for_profile(db: Session, profile: dict):
 
         for item in results:
             policy = item["policy"]
+
             recommendations.append({
                 "policy_id": policy.id,
                 "name": getattr(policy, "policy_name", ""),
                 "category": category,
-                "premium": float(
-                    getattr(policy, "monthly_premium",
-                    getattr(policy, "base_premium", 0))
-                ),
+                "premium": extract_premium(policy),
                 "explanation": {
-                    "goal": profile["goal"],
-                    "risk": profile["riskLevel"],
+                    "goal": profile.get("goal"),
+                    "risk": profile.get("riskLevel"),
                 },
             })
 
