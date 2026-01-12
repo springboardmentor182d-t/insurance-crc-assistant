@@ -3,11 +3,9 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 
 # Database URL (set via environment variable)
-DATABASE_URL = os.getenv(
-    DATABASE_URL = "postgresql://postgres:kartheek777@localhost:5432/db_insurance"
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:kartheek777@localhost:5432/db_insurance"
 
 )
-
 engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
