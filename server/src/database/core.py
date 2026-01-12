@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 import os
 
-# Database URL (set via environment variable)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:kartheek777@localhost:5432/db_insurance"
+# Database URL
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:kartheek777@localhost:5432/db_insurance")
 
-)
 engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
@@ -16,7 +15,6 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-from sqlalchemy.orm import Session
 
 def get_db():
     db = SessionLocal()

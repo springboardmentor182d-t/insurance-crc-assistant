@@ -14,7 +14,7 @@ from src.auth.service import (
 )
 from src.auth.otp_service import generate_otp, otp_expiry_time
 
-router = APIRouter(tags=["Auth"])
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 def get_db():
@@ -86,12 +86,14 @@ def forgot_password(email: str, db: Session = Depends(get_db)):
         PasswordOTP(
             email=email,
             otp=otp,
-            expires_at=datetime.utcnow() + timedelta(minutes=10),
+            expires_at=datetime.utcnow() + timedelta(minutes=10)
         )
     )
     db.commit()
 
+    # (For now, print OTP instead of sending email)
     print("OTP for", email, ":", otp)
+
     return {"message": "OTP sent successfully"}
 
 
@@ -112,11 +114,14 @@ def reset_password(email: str, password: str, db: Session = Depends(get_db)):
     return {"message": "Password reset successful"}
 
 
+# --------------------
+# VERIFY OTP
+# --------------------
 @router.post("/verify-otp")
 def verify_otp(email: str, otp: str, db: Session = Depends(get_db)):
     record = db.query(PasswordOTP).filter(
         PasswordOTP.email == email,
-        PasswordOTP.otp == otp,
+        PasswordOTP.otp == otp
     ).first()
 
     if not record or record.expires_at < datetime.utcnow():

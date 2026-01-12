@@ -59,10 +59,7 @@ export default function App() {
               path="/admin"
               element={
                 <ProtectedRoute role="ADMIN">
-                  <AdminDashboard
-                    darkMode={darkMode}
-                    setDarkMode={setDarkMode}
-                  />
+                  <AdminDashboard darkMode={darkMode} setDarkMode={setDarkMode} />
                 </ProtectedRoute>
               }
             >
