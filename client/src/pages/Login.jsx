@@ -24,7 +24,7 @@ export default function Login() {
       if (role === "admin") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/LandingPage");
+        navigate("/dashboard");
       }
     } catch (error) {
       if (error.response) {

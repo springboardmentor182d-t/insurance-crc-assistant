@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Dict, List
 from collections import defaultdict
@@ -12,7 +12,7 @@ from .reccomentation import compute_final_scores, recommend_best_per_category
 router = APIRouter()
 
 
-# ---------------------- DB Dependency ----------------------
+
 def get_db():
     db = SessionLocal()
     try:
@@ -90,16 +90,16 @@ def get_policy_by_id(policy_id: int, db: Session = Depends(get_db)) -> Dict:
 
     policy_dict = orm_to_dict(policy)
 
-    # Compute scores for all policies to get proper recommendations
+   
     all_policies = [orm_to_dict(p) for p in db.query(Policy).all()]
     all_scored = compute_final_scores(all_policies)
     best_per_category = recommend_best_per_category(all_scored)
 
-    # Add final_score for this policy
+   
     policy_scored = next((p for p in all_scored if p["id"] == policy_dict["id"]), None)
     policy_dict["final_score"] = policy_scored["final_score"] if policy_scored else None
 
-    # Determine if recommended
+    
     policy_dict["recommended"] = (
         policy_dict["policy_type"] in best_per_category
         and best_per_category[policy_dict["policy_type"]]["id"] == policy_dict["id"]

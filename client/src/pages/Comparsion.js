@@ -60,8 +60,9 @@ export function ComparePage() {
 
   return (
     <div className="flex min-h-screen">
-      
-
+      <div className="w-[260px]">
+        <SidebarMenu />
+      </div>
       <main className="flex-1 p-6 bg-gray-100">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Compare Policies
@@ -83,9 +84,7 @@ export function ComparePage() {
             <tbody>
               {comparisonKeys.map((key) => (
                 <tr key={key} className="border-b last:border-b-0">
-                  <td className="px-4 py-3 font-semibold bg-gray-50">
-                    {key}
-                  </td>
+                  <td className="px-4 py-3 font-semibold bg-gray-50">{key}</td>
                   {selectedPolicies.map((policy) => (
                     <td key={policy.id + key} className="px-4 py-3">
                       {renderValue(policy, key)}
@@ -95,9 +94,7 @@ export function ComparePage() {
               ))}
 
               <tr>
-                <td className="px-4 py-3 font-semibold bg-gray-50">
-                  Actions
-                </td>
+                <td className="px-4 py-3 font-semibold bg-gray-50">Actions</td>
                 {selectedPolicies.map((policy) => (
                   <td key={policy.id} className="px-4 py-3">
                     <button
@@ -115,7 +112,7 @@ export function ComparePage() {
 
         <div className="mt-8 text-center">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/policycatalog")}
             className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md"
           >
             Back to Catalog
@@ -125,3 +122,4 @@ export function ComparePage() {
     </div>
   );
 }
+export default ComparePage;

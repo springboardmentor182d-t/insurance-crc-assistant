@@ -6,35 +6,27 @@ const PolicyFilter = ({
 }) => {
   return (
     <div className="flex gap-4 bg-white p-4 rounded-xl shadow">
-      
-      
       <input
         type="text"
         placeholder="Search insurance..."
         value={filters.search}
-        onChange={(e) =>
-          setFilters({ ...filters, search: e.target.value })
-        }
+        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
         className="border px-4 py-2 rounded w-1/3"
       />
-
-     
       <select
-        value={filters.type}
-        onChange={(e) =>
-          setFilters({ ...filters, type: e.target.value })
-        }
+        value={filters.type || ""}
+        onChange={(e) => setFilters({ ...filters, type: e.target.value })}
         className="border px-4 py-2 rounded"
       >
         <option value="">Policy Types</option>
-        {policyTypes.map((type, index) => (
-          <option key={index} value={type}>
-            {type}
-          </option>
-        ))}
-      </select>
 
-      
+        {Array.isArray(policyTypes) &&
+          policyTypes.map((type, index) => (
+            <option key={`${type}-${index}`} value={type}>
+              {type}
+            </option>
+          ))}
+      </select>
       <select
   value={
     filters.range
@@ -65,6 +57,13 @@ const PolicyFilter = ({
     ))}
 </select>
 
+        {Array.isArray(ranges) &&
+          ranges.map((range, index) => (
+            <option key={`range-${index}`} value={index}>
+              {range.label}
+            </option>
+          ))}
+      </select>
     </div>
   );
 };

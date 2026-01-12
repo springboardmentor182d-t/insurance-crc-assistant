@@ -4,11 +4,11 @@ import Sidebar from "../layout/Sidebar";
 import Header from "../components/Header";
 import PolicyFilter from "../features/policies/components/PolicyFilter";
 
+
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const PolicyCatalog = () => {
   const navigate = useNavigate();
-
   const [policies, setPolicies] = useState([]);
   const [policyTypes, setPolicyTypes] = useState([]);
   const [ranges, setRanges] = useState([]);
@@ -48,7 +48,10 @@ const PolicyCatalog = () => {
   });
 
   const filteredPolicies = policies.filter((policy) => {
-    const matchesSearch = policy.title?.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesSearch = policy.title
+      ?.toLowerCase()
+      .includes(filters.search.toLowerCase());
+
     const matchesType = !filters.type || policy.policy_type === filters.type;
 
     const coverageAmount = Number(policy.coverage_amount);
@@ -63,7 +66,6 @@ const PolicyCatalog = () => {
     return matchesSearch && matchesType && matchesRange;
   });
 
-  
   const handleCompareClick = (policy) => {
     const exists = compareList.find((p) => p.id === policy.id);
     if (exists) {
@@ -88,7 +90,9 @@ const PolicyCatalog = () => {
       alert("Select at least 2 policies to compare.");
       return;
     }
-    navigate("/compare", { state: { selectedPolicies: compareList, from: "/policies" } });
+    navigate("/compare", {
+      state: { selectedPolicies: compareList, from: "/policies" },
+    });
   };
 
   return (
@@ -141,8 +145,14 @@ const PolicyCatalog = () => {
                     <button
                       onClick={() => handleCompareClick(policy)}
                       className={`w-6 h-6 rounded-full flex items-center justify-center shadow-md transition-colors text-white
-                        ${isSelected ? "bg-green-500" : "bg-blue-500 hover:bg-blue-600"}`}
-                      title={isSelected ? "Remove from compare" : "Add to compare"}
+                        ${
+                          isSelected
+                            ? "bg-green-500"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        }`}
+                      title={
+                        isSelected ? "Remove from compare" : "Add to compare"
+                      }
                     >
                       {isSelected ? "✓" : "+"}
                     </button>
@@ -158,7 +168,7 @@ const PolicyCatalog = () => {
                   <p className="text-gray-500 mt-2">{policy.policy_type}</p>
 
                   <Link
-                    to={`/policy-details/${policy.id}`}
+                    to={`/policies/details/${policy.id}`}
                     className="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded"
                   >
                     View Details
@@ -169,7 +179,6 @@ const PolicyCatalog = () => {
           </div>
         </div>
       </div>
-
       {/* Compare widget */}
       {compareList.length > 0 && (
         <div
@@ -180,13 +189,17 @@ const PolicyCatalog = () => {
             className="flex justify-between cursor-pointer font-semibold"
             onClick={() => setCompareOpen(!compareOpen)}
           >
-            Compare ({compareList.length}) <span>{compareOpen ? "▼" : "▲"}</span>
+            Compare ({compareList.length}){" "}
+            <span>{compareOpen ? "▼" : "▲"}</span>
           </div>
 
           {compareOpen && (
             <div className="mt-2 space-y-2">
               {compareList.map((policy) => (
-                <div key={policy.id} className="border border-gray-300 rounded-md p-2">
+                <div
+                  key={policy.id}
+                  className="border border-gray-300 rounded-md p-2"
+                >
                   <p className="text-sm font-semibold">{policy.title}</p>
                   <div className="flex justify-between mt-1">
                     <button
@@ -197,7 +210,10 @@ const PolicyCatalog = () => {
                     >
                       Remove
                     </button>
-                    <button disabled className="text-xs px-2 py-1 bg-green-500 text-white rounded">
+                    <button
+                      disabled
+                      className="text-xs px-2 py-1 bg-green-500 text-white rounded"
+                    >
                       Selected
                     </button>
                   </div>

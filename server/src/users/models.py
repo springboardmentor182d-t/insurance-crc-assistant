@@ -26,7 +26,7 @@ class Policy(Base):
     risk_level = Column(String)               
 
 class UserPolicy(Base):
-    __tablename__ = "user_policies"
+    __tablename__ = "userpolicies"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False)             

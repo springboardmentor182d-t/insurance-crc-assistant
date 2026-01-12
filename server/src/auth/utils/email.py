@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from src.auth.config import EMAIL_USER, EMAIL_PASS
+from src.database.config import EMAIL_USER, EMAIL_PASS
 
 def send_otp_email(to_email, otp):
     msg = MIMEMultipart()
