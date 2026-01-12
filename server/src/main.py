@@ -1,34 +1,24 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 
 from .database import engine, Base
 
-from .recommendations_profile_preferences.routers import (
-    profile,
-    recommendations,
+# =========================
+# AUTH & USERS
+# =========================
+from src.auth.controller import router as auth_router
+from src.users.controller import router as users_router
+from src.users.models import User
+from src.auth.service import hash_password
 
-    health_progress,
-    HealthRecommendation,
-
-    life_progress,
-    LifeRecommendation,
-
-    motor_progress,
-    MotorRecommendation,
-
-    property_progress,
-    PropertyRecommendation,
-
-    travel_progress,
-    TravelRecommendation,
-
-    fire_progress,
-    FireRecommendation,
-
-    business_progress,
-    BusinessRecommendation,
-)
+# =========================
+# ADMIN DASHBOARD
+# =========================
+from src.admin.dashboard import router as admin_dashboard_router
+from src.dashboard.router import router as dashboard_router
+from src.admin.investigations import router as investigation_router
 
 app = FastAPI(title="Insurance CRC Assistant")
 
@@ -51,31 +41,54 @@ app.mount(
 # ✅ Create DB tables
 Base.metadata.create_all(bind=engine)
 
-# ✅ Register routers
-app.include_router(profile.router)
-app.include_router(recommendations.router)
+# =========================
+# ROUTERS
+# =========================
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(admin_dashboard_router)
+app.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
+app.include_router(investigation_router)
 
-app.include_router(health_progress.router)
-app.include_router(HealthRecommendation.router)
+# =========================
+# OPTIONAL RECOMMENDATION MODULES
+# =========================
+try:
+    from src.recommendations_profile_preferences.routers import profile, recommendations
 
-app.include_router(life_progress.router)
-app.include_router(LifeRecommendation.router)
+    app.include_router(profile.router)
+    app.include_router(recommendations.router)
 
-app.include_router(motor_progress.router)
-app.include_router(MotorRecommendation.router)
+except Exception as e:
+    print("⚠️ Recommendation modules not loaded:", e)
 
-app.include_router(property_progress.router)
-app.include_router(PropertyRecommendation.router)
+# =========================
+# CREATE ADMIN ON STARTUP
+# =========================
+@app.on_event("startup")
+def create_admin():
+    db = Session(bind=engine)
 
-app.include_router(travel_progress.router)
-app.include_router(TravelRecommendation.router)
+    admin_email = "admin@insurance.com"
 
-app.include_router(fire_progress.router)
-app.include_router(FireRecommendation.router)
+    admin = db.query(User).filter(User.email == admin_email).first()
 
-app.include_router(business_progress.router)
-app.include_router(BusinessRecommendation.router)
+    if not admin:
+        admin = User(
+            username="admin",
+            email=admin_email,
+            hashed_password=hash_password("admin123"),
+            role="ADMIN",
+        )
+        db.add(admin)
+        db.commit()
+        print("✅ Admin user created")
 
+    db.close()
+
+# =========================
+# ROOT
+# =========================
 @app.get("/")
 def root():
     return {"status": "FastAPI backend running"}

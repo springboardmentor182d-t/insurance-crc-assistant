@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
-from server.app.database import Base
+from src.database.core import Base
 
 class PremiumAnalysis(Base):
     __tablename__ = "premium_analysis"

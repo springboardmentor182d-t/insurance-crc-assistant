@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
-from server.app.database import Base
+from src.database.core import Base
 
 class Recommendation(Base):
     __tablename__ = "recommendations"
