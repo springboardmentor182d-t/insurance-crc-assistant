@@ -14,6 +14,7 @@ import AdminDashboard from "./admin/pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminUsers from "./admin/pages/AdminUsers";
 import AdminReports from "./admin/pages/AdminReports";
+import AdminPolicyCatalog from "./admin/pages/AdminPolicyCatalog";
 
 /* ===== Layout & Main pages ===== */
 import PageContainer from "./layout/PageContainer";
@@ -59,44 +60,84 @@ export default function App() {
               path="/admin"
               element={
                 <ProtectedRoute role="ADMIN">
-                  <AdminDashboard darkMode={darkMode} setDarkMode={setDarkMode} />
+                  <AdminDashboard
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                  />
                 </ProtectedRoute>
               }
             >
               <Route path="users" element={<AdminUsers />} />
               <Route path="reports" element={<AdminReports />} />
+              <Route path="policies" element={<AdminPolicyCatalog />} />
             </Route>
 
-            {/* ===== Main App Routes ===== */}
+            {/* ===== Main App Routes (User Layout) ===== */}
             <Route element={<PageContainer />}>
               <Route path="/" element={<Home />} />
               <Route path="/recommendations" element={<Recommendations />} />
 
-              <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
-              <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
-              <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
-              <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
-              <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
-              <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
-              <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
+              <Route
+                path="/health_insurance_rec"
+                element={<HealthRecommendation />}
+              />
+              <Route
+                path="/motor_insurance_rec"
+                element={<MotorRecommendation />}
+              />
+              <Route
+                path="/life_insurance_rec"
+                element={<LifeRecommendation />}
+              />
+              <Route
+                path="/travel_insurance_rec"
+                element={<TravelRecommendation />}
+              />
+              <Route
+                path="/home_insurance_rec"
+                element={<HomeRecommendation />}
+              />
+              <Route
+                path="/business_insurance_rec"
+                element={<BusinessRecommendation />}
+              />
+              <Route
+                path="/fire_property_insurance_rec"
+                element={<FireRecommendation />}
+              />
 
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
+              <Route
+                path="/recommendedPolicies"
+                element={<RecommendedPolicies />}
+              />
 
               {/* Result pages */}
-              <Route path="/healthrecresults" element={<HealthRecResults />} />
+              <Route
+                path="/healthrecresults"
+                element={<HealthRecResults />}
+              />
               <Route path="/liferecresults" element={<LifeRecResults />} />
-              <Route path="/motorrecresults" element={<MotorRecResults />} />
+              <Route
+                path="/motorrecresults"
+                element={<MotorRecResults />}
+              />
               <Route path="/homerecresults" element={<HomeRecResults />} />
-              <Route path="/travelrecresults" element={<TravelRecResults />} />
+              <Route
+                path="/travelrecresults"
+                element={<TravelRecResults />}
+              />
               <Route path="/firerecresults" element={<FireRecResults />} />
-              <Route path="/businessrecresults" element={<BusinessRecResults />} />
+              <Route
+                path="/businessrecresults"
+                element={<BusinessRecResults />}
+              />
 
               {/* Testing */}
               <Route path="/test" element={<TestFetch />} />
             </Route>
 
-            {/* Fallback */}
+            {/* ===== Fallback ===== */}
             <Route path="*" element={<h1>Page Not Found</h1>} />
           </Routes>
         </BrowserRouter>
