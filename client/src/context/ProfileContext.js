@@ -1,41 +1,37 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
-const ProfileContext = createContext(null);
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const ProfileContext = createContext();
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const ProfileProvider = ({ children }) => {
-  const [profile, setProfile] = useState(null); // ❌ no fake data
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const loadProfile = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/api/profile/1`);
+      setProfile(res.data);
+    } catch (err) {
+      console.error("Profile load error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    let isMounted = true;
-
-    axios
-      .get(`${BASE_URL}/api/profile/1`)
-      .then((res) => {
-        if (!isMounted) return;
-
-        setProfile({
-          name: res.data.name,
-          avatar: res.data.avatar
-            ? `${BASE_URL}${res.data.avatar}`
-            : null,
-        });
-        setLoading(false);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setLoading(false);
-      });
-
-    return () => {
-      isMounted = false; // ✅ StrictMode safe
-    };
+    loadProfile();
   }, []);
 
   return (
-    <ProfileContext.Provider value={{ profile, loading, setProfile }}>
+    <ProfileContext.Provider
+      value={{
+        profile,
+        loading,
+        setProfile,
+        reloadProfile: loadProfile, // 🔥 IMPORTANT
+      }}
+    >
       {children}
     </ProfileContext.Provider>
   );
