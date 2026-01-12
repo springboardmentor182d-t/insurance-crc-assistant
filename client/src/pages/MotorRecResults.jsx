@@ -137,7 +137,16 @@ export default function MotorRecResults() {
                 </p>
               </div>
 
-              <button className="mt-6 px-7 py-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+              <button
+                onClick={() => navigate(`/policies/motor/${p.policy_id}`)}
+                className="
+                  mt-6 px-7 py-2 rounded-full text-sm font-semibold
+                  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                  text-white shadow-md
+                  hover:shadow-lg hover:scale-[1.05]
+                  transition-all
+                "
+              >
                 View Policy
               </button>
             </div>

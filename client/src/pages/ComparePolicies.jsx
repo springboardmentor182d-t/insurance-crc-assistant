@@ -83,11 +83,10 @@ export default function ComparePolicies() {
         </div>
       </div>
 
-      {/* COMPARISON CARD */}
+      {/* COMPARISON TABLE */}
       <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full">
-            {/* TABLE HEADER */}
             <thead className="bg-slate-900 text-white sticky top-0 z-10">
               <tr>
                 <th className="p-6 text-left text-sm font-semibold text-slate-300">
@@ -109,7 +108,6 @@ export default function ComparePolicies() {
               </tr>
             </thead>
 
-            {/* TABLE BODY */}
             <tbody>
               {featureKeys.map((key, rowIdx) => (
                 <tr
@@ -129,15 +127,12 @@ export default function ComparePolicies() {
                           Yes
                         </span>
                       )}
-
                       {policy[key] === false && (
                         <span className="px-3 py-1 rounded-full bg-slate-300 text-slate-700 text-xs">
                           No
                         </span>
                       )}
-
                       {policy[key] === null && "—"}
-
                       {typeof policy[key] !== "boolean" &&
                         policy[key] !== null &&
                         String(policy[key])}
@@ -146,7 +141,7 @@ export default function ComparePolicies() {
                 </tr>
               ))}
 
-              {/* 🔥 CTA ROW */}
+              {/* CTA ROW */}
               <tr className="bg-slate-900">
                 <td className="p-6 text-sm font-semibold text-slate-300">
                   Action
@@ -155,6 +150,11 @@ export default function ComparePolicies() {
                 {policies.map((policy, idx) => (
                   <td key={idx} className="p-6">
                     <button
+                      onClick={() =>
+                        navigate("/quote-summary", {
+                          state: { policy },
+                        })
+                      }
                       className="w-full px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow transition"
                     >
                       Get Quote – {policy.policy_name}

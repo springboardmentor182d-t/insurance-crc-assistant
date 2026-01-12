@@ -185,16 +185,17 @@ export default function HomeRecResults() {
                 </div>
 
                 <button
-                  className="
-                    mt-6 px-7 py-2 rounded-full text-sm font-semibold
-                    bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                    text-white shadow-md
-                    hover:shadow-lg hover:scale-[1.05]
-                    transition-all
-                  "
-                >
-                  View Policy
-                </button>
+                onClick={() => navigate(`/policies/home/${p.policy_id}`)}
+                className="
+                  mt-6 px-7 py-2 rounded-full text-sm font-semibold
+                  bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                  text-white shadow-md
+                  hover:shadow-lg hover:scale-[1.05]
+                  transition-all
+                "
+              >
+                View Policy
+              </button>
               </div>
 
               {/* COLOR STRIP */}

@@ -169,6 +169,7 @@ export default function BusinessRecResults() {
               </div>
 
               <button
+                onClick={() => navigate(`/policies/business/${p.policy_id}`)}
                 className="
                   mt-6 px-7 py-2 rounded-full text-sm font-semibold
                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500

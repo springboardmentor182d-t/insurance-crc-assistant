@@ -166,6 +166,7 @@ export default function HealthRecResults() {
 
               {/* View Button – standout */}
               <button
+                onClick={() => navigate(`/policies/health/${p.policy_id}`)}
                 className="
                   mt-6 px-7 py-2 rounded-full text-sm font-semibold
                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
@@ -176,6 +177,7 @@ export default function HealthRecResults() {
               >
                 View Policy
               </button>
+
             </div>
 
             {/* COLOR STRIP */}
