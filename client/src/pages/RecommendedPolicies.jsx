@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { ShieldCheck } from "lucide-react";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+// ✅ FIXED: must match your .env
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function RecommendedPolicies() {
   const [policies, setPolicies] = useState([]);
@@ -14,7 +15,6 @@ export default function RecommendedPolicies() {
   // =========================
   useEffect(() => {
     let isMounted = true;
-
     setLoading(true);
 
     axios
@@ -22,8 +22,10 @@ export default function RecommendedPolicies() {
       .then((res) => {
         if (!isMounted) return;
 
-        console.log("✅ RECOMMENDATIONS API:", res.data.recommendations);
-        setPolicies(res.data.recommendations || []);
+        console.log("✅ FULL API RESPONSE:", res.data);
+        console.log("✅ RECOMMENDATIONS:", res.data?.recommendations);
+
+        setPolicies(res.data?.recommendations || []);
         setLoading(false);
       })
       .catch((err) => {
@@ -45,11 +47,17 @@ export default function RecommendedPolicies() {
     const sorted = [...policies];
 
     if (sortType === "best") return sorted;
+
     if (sortType === "premium") {
-      return sorted.sort((a, b) => a.premium - b.premium);
+      return sorted.sort(
+        (a, b) => Number(a.premium || 0) - Number(b.premium || 0)
+      );
     }
+
     if (sortType === "comprehensive") {
-      return sorted.sort((a, b) => b.premium - a.premium);
+      return sorted.sort(
+        (a, b) => Number(b.premium || 0) - Number(a.premium || 0)
+      );
     }
 
     return sorted;
@@ -119,8 +127,8 @@ export default function RecommendedPolicies() {
         </button>
       </div>
 
-      {/* EMPTY STATE (SAFE) */}
-      {!loading && policies.length === 0 && (
+      {/* EMPTY STATE */}
+      {policies.length === 0 && (
         <div className="bg-white p-6 rounded-xl shadow text-gray-600">
           No policies match your current profile.
         </div>
@@ -150,10 +158,10 @@ export default function RecommendedPolicies() {
 
             <ul className="text-sm text-gray-600 space-y-2 mb-6">
               <li>
-                ✔ Risk Level: <b>{policy.explanation.risk}</b>
+                ✔ Risk Level: <b>{policy.explanation?.risk}</b>
               </li>
               <li>
-                ✔ Goal: <b>{policy.explanation.goal}</b>
+                ✔ Goal: <b>{policy.explanation?.goal}</b>
               </li>
             </ul>
 
@@ -161,9 +169,10 @@ export default function RecommendedPolicies() {
               <div>
                 <p className="text-xs text-gray-500">Annual Premium</p>
                 <p className="text-2xl font-bold">
-                  ₹{policy.premium.toLocaleString()}
+                  ₹{Number(policy.premium || 0).toLocaleString()}
                 </p>
               </div>
+
               <button className="px-4 py-2 text-sm text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
                 Select Plan
               </button>

@@ -88,40 +88,56 @@ export default function Recommendations() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-2">
+    <div className="px-6 py-10">
       {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold tracking-tight">
           Choose Your{" "}
           <span className="bg-gradient-to-r from-indigo-500 to-pink-500 bg-clip-text text-transparent">
             Protection Path
           </span>
         </h1>
         <p className="text-gray-500 mt-3 max-w-2xl mx-auto">
-          Select a category below to receive personalized insurance
-          recommendations tailored just for you.
+          Select a category below to receive personalized insurance recommendations tailored just for you.
         </p>
       </div>
 
-      {/* CTA BUTTON MOVED UP */}
-      <div className="mb-14 flex justify-center">
-        <button
-          onClick={() => navigate("/recommendedPolicies")}
-          className="
-            flex items-center gap-3
-            px-10 py-4
-            rounded-2xl
-            text-lg font-semibold text-white
-            bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-            shadow-lg
-            transition-all duration-300
-            hover:scale-105 hover:shadow-xl
-            focus:outline-none focus:ring-4 focus:ring-indigo-300
-          "
-        >
-          <Sparkles size={22} />
-          Show Recommended Policies Based on Your Profile
-        </button>
+      {/* CTA Section */}
+      <div className="mb-12">
+        <div className="mx-auto max-w-3xl">
+          <div className="rounded-2xl bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border border-indigo-100 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-indigo-600">
+                <Sparkles size={20} />
+              </div>
+              <div>
+                <p className="text-lg font-semibold text-gray-900">
+                  Get recommendations based on your profile
+                </p>
+                <p className="text-sm text-gray-600">
+                  We’ll analyze your preferences and show the best-matched policies.
+                </p>
+              </div>
+            </div>
+
+            <button
+  onClick={() => navigate("/recommendedPolicies")}
+  className="
+    inline-flex items-center justify-center gap-2
+    px-2 py-4
+    rounded-lg text-sm font-semibold text-white
+    bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+    shadow-md
+    transition-all duration-300
+    hover:shadow-lg hover:scale-[1.02]
+    focus:outline-none focus:ring-2 focus:ring-indigo-300
+  "
+>
+  View Recommendations
+  <ArrowRight size={16} />
+</button>
+          </div>
+        </div>
       </div>
 
       {/* Cards Grid */}
@@ -156,7 +172,7 @@ export default function Recommendations() {
                   ${item.btn}
                   transition-all duration-300
                   hover:opacity-95 hover:scale-[1.02]
-                  focus:outline-none focus:ring-2 focus:ring-offset-2`}
+                  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300`}
               >
                 Start Assessment
                 <ArrowRight
