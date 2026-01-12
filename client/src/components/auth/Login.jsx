@@ -3,10 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../styles/insurehub.css";
 import "../../styles/Login.css";   // ✅ NEW CSS FILE
 import AuthIllustration from "../../components/common/AuthIllustration";
-import { login } from "../../api/authService";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+
 
 export default function Login() {
   const nav = useNavigate();
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -14,21 +17,29 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
-    e.preventDefault();
-    setMsg(null);
-    setLoading(true);
+  e.preventDefault();
+  setMsg(null);
+  setLoading(true);
 
-    try {
-      const res = await login(email, password);
-      localStorage.setItem("access_token", res.data.access_token);
-      localStorage.setItem("refresh_token", res.data.refresh_token);
-      nav("/dummy");
-    } catch (err) {
-      setMsg(err?.response?.data?.detail || "Invalid email or password");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const result = await login(email, password);
+
+  if (!result.ok) {
+    setMsg(result.error);
+    setLoading(false);
+    return;
+  }
+
+  // 🔑 AuthContext user is now set
+  if (result.user.role === "ADMIN") {
+    nav("/admin");
+  } else {
+    nav("/dashboard");
+  }
+
+  setLoading(false);
+};
+
+
 
   return (
     <div className="signup-page">

@@ -6,7 +6,7 @@ export default function ProtectedRoute() {
   const { user } = useContext(AuthContext);
   const token = localStorage.getItem("access_token");
 
-  if (!token || !user) {
+  if (!token) {
     return <Navigate to="/login" replace />;
   }
 
