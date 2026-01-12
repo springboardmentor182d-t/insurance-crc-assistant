@@ -12,6 +12,9 @@ export default function RecommendedPolicies() {
 
   const navigate = useNavigate();
 
+  // =========================
+  // FETCH RECOMMENDATIONS
+  // =========================
   useEffect(() => {
     axios
       .get(`${BASE_URL}/api/recommendations/1`)
@@ -22,6 +25,9 @@ export default function RecommendedPolicies() {
       .catch(() => setLoading(false));
   }, []);
 
+  // =========================
+  // SORTING
+  // =========================
   const sortedPolicies = useMemo(() => {
     if (!policies.length) return [];
     const arr = [...policies];
@@ -35,7 +41,9 @@ export default function RecommendedPolicies() {
     return arr;
   }, [policies, sortType]);
 
-  // 🔹 CATEGORY → DETAIL ROUTE
+  // =========================
+  // CATEGORY → DETAIL ROUTE
+  // =========================
   const getPolicyRoute = (category, id) => {
     switch (category) {
       case "Health":
@@ -57,6 +65,9 @@ export default function RecommendedPolicies() {
     }
   };
 
+  // =========================
+  // LOADING
+  // =========================
   if (loading) {
     return (
       <p className="text-center mt-20 text-gray-500 text-sm">
@@ -65,6 +76,9 @@ export default function RecommendedPolicies() {
     );
   }
 
+  // =========================
+  // UI
+  // =========================
   return (
     <div className="px-6 py-10 max-w-7xl mx-auto">
       {/* HEADER */}
@@ -135,11 +149,15 @@ export default function RecommendedPolicies() {
             <div className="space-y-2 text-sm text-gray-600 mb-6">
               <p>
                 ✔ Risk Level:{" "}
-                <span className="font-medium">{policy.explanation?.risk}</span>
+                <span className="font-medium">
+                  {policy.explanation?.risk}
+                </span>
               </p>
               <p>
                 ✔ Goal:{" "}
-                <span className="font-medium">{policy.explanation?.goal}</span>
+                <span className="font-medium">
+                  {policy.explanation?.goal}
+                </span>
               </p>
             </div>
 
@@ -147,11 +165,20 @@ export default function RecommendedPolicies() {
               <div>
                 <p className="text-xs text-gray-400">Annual Premium</p>
                 <p className="text-xl font-semibold text-gray-900">
-                  ₹{Number(policy.premium || 0).toLocaleString()}
+                  ₹
+                  {Number(
+                    policy.premium ??
+                      policy.monthly_premium ??
+                      policy.min_annual_premium ??
+                      policy.min_monthly_premium ??
+                      policy.min_premium ??
+                      policy.base_premium ??
+                      0
+                  ).toLocaleString()}
                 </p>
               </div>
 
-              {/* ✅ CLEAN VIEW PLAN BUTTON */}
+              {/* VIEW PLAN */}
               <button
                 onClick={() =>
                   navigate(
