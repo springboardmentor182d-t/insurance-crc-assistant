@@ -80,7 +80,7 @@ export default function App() {
           <Route path="/recommendations" element={<Recommendations />} />
 
           {/* ---------- ADMIN ONLY ---------- */}
-          <Route element={<RoleBasedRoute roleRequired="admin" />}>
+          <Route element={<RoleBasedRoute roleRequired="ADMIN" />}>
             <Route path="/admin" element={<AdminDashboard />} />
           </Route>
 

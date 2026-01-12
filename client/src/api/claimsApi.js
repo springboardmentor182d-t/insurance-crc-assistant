@@ -1,15 +1,12 @@
 import axios from "axios";
 
-const API_BASE = "http://127.0.0.1:8000";
-
+const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
 /* ======================
    GET ALL CLAIMS
 ====================== */
 export const getClaims = async () => {
-<<<<<<< HEAD
   const res = await axios.get(`${API_BASE}/claims/list`);
   return res.data;
-=======
   try {
     const res = await API.get("/claims/list");
     return res.data;
@@ -17,7 +14,6 @@ export const getClaims = async () => {
     console.error("Error fetching claims:", error);
     return []; // prevent UI crash
   }
->>>>>>> main-group-A
 };
 
 /* ======================

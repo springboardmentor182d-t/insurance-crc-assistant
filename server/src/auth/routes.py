@@ -50,17 +50,28 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
-    q = await db.execute(select(models.User).where(models.User.email == form_data.username))
+    q = await db.execute(
+        select(models.User).where(models.User.email == form_data.username)
+    )
     user = q.scalar_one_or_none()
 
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
+    # 👇 THIS IS THE KEY PART
+    role_name = user.role.name if user.role else None
+
     return {
         "access_token": create_access_token(str(user.id)),
         "token_type": "bearer",
         "refresh_token": create_refresh_token(str(user.id)),
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "role": role_name,
+        },
     }
+
 
 
 # ---------------- CURRENT USER ----------------
