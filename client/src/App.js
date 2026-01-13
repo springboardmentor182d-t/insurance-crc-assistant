@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+/* ===== Context ===== */
 import { ProfileProvider } from "./context/ProfileContext";
+import { CompareProvider } from "./context/CompareContext";
 
 /* ===== Auth pages ===== */
 import Signup from "./pages/Signup";
@@ -7,15 +11,24 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Otp from "./pages/Otp";
 import ResetPassword from "./pages/ResetPassword";
-import AdminDashboard from "./pages/AdminDashboard";
+
+/* ===== Admin pages ===== */
+import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminUsers from "./admin/pages/AdminUsers";
+import AdminReports from "./admin/pages/AdminReports";
+import AdminPolicyCatalog from "./admin/pages/AdminPolicyCatalog";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 /* ===== Layout & Main pages ===== */
 import PageContainer from "./layout/PageContainer";
 import Home from "./pages/Home";
 import Recommendations from "./pages/Recommendations";
+import PolicyCatalog from "./pages/PolicyCatalog";
+import ProfilePage from "./pages/ProfilePage";
+import RecommendedPolicies from "./pages/RecommendedPolicies";
+import SavedQuotes from "./pages/SavedQuotes";
 
-/* ===== Recommendation pages ===== */
+/* ===== Recommendation forms ===== */
 import HealthRecommendation from "./pages/HealthRecommendation";
 import MotorRecommendation from "./pages/MotorRecommendation";
 import LifeRecommendation from "./pages/LifeRecommendation";
@@ -24,11 +37,7 @@ import HomeRecommendation from "./pages/HomeRecommendation";
 import BusinessRecommendation from "./pages/BusinessRecommendation";
 import FireRecommendation from "./pages/FireRecommendation";
 
-/* ===== Profile & Results ===== */
-import ProfilePage from "./pages/ProfilePage";
-import RecommendedPolicies from "./pages/RecommendedPolicies";
-import TestFetch from "./pages/TestFetch";
-
+/* ===== Recommendation Results ===== */
 import HealthRecResults from "./pages/HealthRecResults";
 import LifeRecResults from "./pages/LifeRecResults";
 import MotorRecResults from "./pages/MotorRecResults";
@@ -47,82 +56,119 @@ import ClaimSubmission from "./pages/ClaimSubmission";
 import ClaimStatus from "./pages/ClaimStatus";
 import TrackClaim from "./pages/TrackClaim";
 
+/* ===== Policy Details ===== */
+import BusinessPolicyDetails from "./pages/BusinessPolicyDetails";
+import LifePolicyDetails from "./pages/LifePolicyDetails";
+import TravelPolicyDetails from "./pages/TravelPolicyDetails";
+import HealthPolicyDetails from "./pages/HealthPolicyDetails";
+import FirePolicyDetails from "./pages/FirePolicyDetails";
+import HomePolicyDetails from "./pages/HomePolicyDetails";
+import MotorPolicyDetails from "./pages/MotorPolicyDetails";
+
+/* ===== Compare & Quote ===== */
+import ComparePolicies from "./pages/ComparePolicies";
+import QuoteSummary from "./pages/QuoteSummary";
+
+/* ===== Testing ===== */
+import TestFetch from "./pages/TestFetch";
+
 export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
   return (
     <ProfileProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* ================= PUBLIC AUTH ROUTES ================= */}
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+      <CompareProvider>
+        <div className={darkMode ? "dark min-h-screen" : "min-h-screen"}>
+          <BrowserRouter>
+            <Routes>
 
-          {/* ================= ADMIN PROTECTED ROUTE ================= */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute role="ADMIN">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+              {/* ===== AUTH ===== */}
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/otp" element={<Otp />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* ================= MAIN APP ROUTES ================= */}
-          <Route element={<PageContainer />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/recommendations" element={<Recommendations />} />
+              {/* ===== ADMIN ===== */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute role="ADMIN">
+                    <AdminDashboard
+                      darkMode={darkMode}
+                      setDarkMode={setDarkMode}
+                    />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="reports" element={<AdminReports />} />
+                <Route path="policies" element={<AdminPolicyCatalog />} />
+              </Route>
 
-            {/* Recommendation forms */}
-            <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
-            <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
-            <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
-            <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
-            <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
-            <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
-            <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
+              {/* ===== USER APP ===== */}
+              <Route element={<PageContainer />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/catalog" element={<PolicyCatalog />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/saved-quotes" element={<SavedQuotes />} />
 
-            {/* Profile & policies */}
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
+                <Route path="/recommendations" element={<Recommendations />} />
+                <Route path="/recommendedPolicies" element={<RecommendedPolicies />} />
 
-            {/* Result pages */}
-            <Route path="/healthrecresults" element={<HealthRecResults />} />
-            <Route path="/liferecresults" element={<LifeRecResults />} />
-            <Route path="/motorrecresults" element={<MotorRecResults />} />
-            <Route path="/homerecresults" element={<HomeRecResults />} />
-            <Route path="/travelrecresults" element={<TravelRecResults />} />
-            <Route path="/firerecresults" element={<FireRecResults />} />
-            <Route path="/businessrecresults" element={<BusinessRecResults />} />
+                {/* Recommendation forms */}
+                <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
+                <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
+                <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
+                <Route path="/travel_insurance_rec" element={<TravelRecommendation />} />
+                <Route path="/home_insurance_rec" element={<HomeRecommendation />} />
+                <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
+                <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
 
-            {/* ================= CLAIMS ROUTES ================= */}
-            <Route path="/claims" element={<ClaimsDashboard />} />
-            <Route path="/claims/start" element={<StartNewClaim />} />
+                {/* Recommendation results */}
+                <Route path="/healthrecresults" element={<HealthRecResults />} />
+                <Route path="/liferecresults" element={<LifeRecResults />} />
+                <Route path="/motorrecresults" element={<MotorRecResults />} />
+                <Route path="/homerecresults" element={<HomeRecResults />} />
+                <Route path="/travelrecresults" element={<TravelRecResults />} />
+                <Route path="/firerecresults" element={<FireRecResults />} />
+                <Route path="/businessrecresults" element={<BusinessRecResults />} />
 
-            {/* Step-based flow */}
-            <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
-            <Route path="/claims/file/step2" element={<FileNewClaimStep2 />} />
-            <Route path="/claims/file/step3" element={<ReviewClaimStep3 />} />
+                {/* Policy details */}
+                <Route path="/policies/health/:id" element={<HealthPolicyDetails />} />
+                <Route path="/policies/motor/:id" element={<MotorPolicyDetails />} />
+                <Route path="/policies/life/:id" element={<LifePolicyDetails />} />
+                <Route path="/policies/home/:id" element={<HomePolicyDetails />} />
+                <Route path="/policies/travel/:id" element={<TravelPolicyDetails />} />
+                <Route path="/policies/business/:id" element={<BusinessPolicyDetails />} />
+                <Route path="/policies/fire/:id" element={<FirePolicyDetails />} />
 
-            {/* ✅ Alias route for dashboard Review button */}
-            <Route path="/claims/review" element={<ReviewClaimStep3 />} />
+                {/* Claims */}
+                <Route path="/claims" element={<ClaimsDashboard />} />
+                <Route path="/claims/start" element={<StartNewClaim />} />
+                <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
+                <Route path="/claims/file/step2" element={<FileNewClaimStep2 />} />
+                <Route path="/claims/file/step3" element={<ReviewClaimStep3 />} />
+                <Route path="/claims/review" element={<ReviewClaimStep3 />} />
+                <Route path="/claims/submitted" element={<ClaimSubmission />} />
+                <Route path="/claims/status" element={<ClaimStatus />} />
+                <Route path="/claims/track/:id" element={<TrackClaim />} />
 
-            {/* Submission & status */}
-            <Route path="/claims/submitted" element={<ClaimSubmission />} />
-            <Route path="/claims/status" element={<ClaimStatus />} />
+                {/* Compare */}
+                <Route path="/compare" element={<ComparePolicies />} />
+                <Route path="/quote-summary" element={<QuoteSummary />} />
 
-            {/* Track claim */}
-            <Route path="/claims/track/:id" element={<TrackClaim />} />
+                {/* Test */}
+                <Route path="/test" element={<TestFetch />} />
+              </Route>
 
-            {/* Testing */}
-            <Route path="/test" element={<TestFetch />} />
-          </Route>
+              {/* Fallback */}
+              <Route path="*" element={<h1>Page Not Found</h1>} />
 
-          {/* ================= FALLBACK ================= */}
-          <Route path="*" element={<h1>Page Not Found</h1>} />
-        </Routes>
-      </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </CompareProvider>
     </ProfileProvider>
   );
 }

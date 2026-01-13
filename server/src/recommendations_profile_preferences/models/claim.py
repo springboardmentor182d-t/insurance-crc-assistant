@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, Float, Date, ForeignKey, String
-from server.app.database import Base
+from src.database.core import Base
 
 class Claim(Base):
     __tablename__ = "claims"
@@ -9,3 +9,4 @@ class Claim(Base):
     claim_date = Column(Date, nullable=False)
     claim_amount = Column(Float, nullable=False)
     status = Column(String, nullable=False)
+    

@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import datetime,timedelta
-
+from datetime import datetime, timedelta
 import random
-
 
 from src.database.core import SessionLocal
 from src.users.models import User
@@ -93,11 +91,10 @@ def forgot_password(email: str, db: Session = Depends(get_db)):
     )
     db.commit()
 
-    # (For now, print OTP instead of email)
+    # (For now, print OTP instead of sending email)
     print("OTP for", email, ":", otp)
 
     return {"message": "OTP sent successfully"}
-
 
 
 # --------------------
@@ -117,6 +114,9 @@ def reset_password(email: str, password: str, db: Session = Depends(get_db)):
     return {"message": "Password reset successful"}
 
 
+# --------------------
+# VERIFY OTP
+# --------------------
 @router.post("/verify-otp")
 def verify_otp(email: str, otp: str, db: Session = Depends(get_db)):
     record = db.query(PasswordOTP).filter(
