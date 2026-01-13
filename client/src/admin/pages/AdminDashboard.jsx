@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
@@ -105,7 +106,11 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
       <Sidebar />
       <div className="flex-1">
         <Topbar darkMode={darkMode} setDarkMode={setDarkMode} />
+  
+        {/* 🔥 CHILD ROUTES RENDER HERE */}
+        <Outlet />
 
+        {/* DASHBOARD CONTENT (ONLY FOR /admin) */}
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">

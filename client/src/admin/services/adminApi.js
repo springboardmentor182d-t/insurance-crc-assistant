@@ -1,5 +1,5 @@
 // ✅ Make sure this matches your api.js named export
-import { api } from "../../api";
+import api from "../../api";
 
 // =========================
 // FRAUD TRENDS

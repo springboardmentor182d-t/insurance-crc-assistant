@@ -15,7 +15,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchDashboardData(userId)
-      .then((data) => setDashboard(data))
+      .then((data) => {
+        console.log("Dashboard data:", data); // debug backend response
+        setDashboard(data);
+      })
       .catch((err) => {
         console.error("Dashboard fetch error:", err);
         setError("Failed to load dashboard");
@@ -25,34 +28,48 @@ export default function Home() {
   if (error) return <div className="p-6 text-red-600">{error}</div>;
   if (!dashboard) return <div className="p-6">Loading dashboard...</div>;
 
-  const chartData = dashboard.policies.map((policy) => ({
-    category: policy.policy_type,
-    yourPremium: Number(policy.premium_amount),
+  // -----------------------
+  // Safe access to backend data
+  // -----------------------
+  const user = dashboard.user || {};
+  const policies = dashboard.policies || [];
+  const claims = dashboard.claims || [];
+  const premiumAnalysis = dashboard.premiumAnalysis || [];
+  const recommendations = dashboard.recommendations || [];
+
+  // -----------------------
+  // Chart data
+  // -----------------------
+  const chartData = policies.map((policy) => ({
+    category: policy.name || "N/A",
+    yourPremium: Number(policy.premium) || 0,
   }));
 
   return (
     <div className="bg-gray-50 min-h-screen">
       <main className="px-6 pb-6 space-y-6">
+
+        {/* Top section: Premium chart + Profile summary */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <PremiumChart data={chartData} />
           </div>
-          <ProfileSummary profile={dashboard.user} />
+          <ProfileSummary profile={user} />
         </div>
 
+        {/* Policies section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <MyPolicies policies={dashboard.policies} />
+            <MyPolicies policies={policies} />
           </div>
         </div>
 
+        {/* Stats and claims */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <StatsCard policies={dashboard.policies} />
-          <ClaimsTable
-            claims={dashboard.claims || []}
-            policies={dashboard.policies}
-          />
+          <StatsCard policies={policies} />
+          <ClaimsTable claims={claims} policies={policies} />
         </div>
+
       </main>
     </div>
   );
