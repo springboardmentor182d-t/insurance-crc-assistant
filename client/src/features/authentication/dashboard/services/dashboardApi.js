@@ -17,3 +17,4 @@ export const getRecommendations = () => {
 export const getClaimsOverview = () => {
   return axios.get(`${API_BASE_URL}/claims`);
 };
+ 

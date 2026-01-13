@@ -35,6 +35,9 @@ const Navbar = () => {
             alt="User"
             className="w-9 h-9 rounded-full"
           />
+          <span className="text-sm font-medium text-gray-700">
+            <a href="/profile">User Name</a>
+          </span>
           <span className="text-sm font-medium">User Name</span>
         </div>
       </div>
