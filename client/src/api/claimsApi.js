@@ -1,10 +1,6 @@
 import axios from "axios";
 
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
-
-if (!API_BASE) {
-  console.error("API_BASE_URL is undefined. Check .env file");
-}
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 /* ======================
    AXIOS INSTANCE

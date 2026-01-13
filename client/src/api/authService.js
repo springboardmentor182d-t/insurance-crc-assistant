@@ -1,17 +1,7 @@
-// src/api/authService.js
 import axios from "axios";
 
 /* ================= API INSTANCE ================= */
-
-const API_BASE = process.env.REACT_APP_API_BASE_URL;
-
-if (!API_BASE) {
-  console.error("❌ REACT_APP_API_BASE_URL is undefined. Check .env file");
-}
-
-const API = axios.create({
-  baseURL: API_BASE,
-});
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 /* Automatically attach token */
 API.interceptors.request.use((req) => {
@@ -40,29 +30,34 @@ export const login = (email, password) =>
     }
   );
 
-export const getMe = () => {
+export const getMe = async () => {
   return API.get("/api/auth/me");
 };
 
 /* ================= OTP ================= */
 
-export const forgotPassword = (email) => {
+// src/api/authService.js
+
+export const forgotPassword = async (email) => {
   return API.post("/api/auth/forgot-password", { email });
 };
 
-export const verifyOtp = (email, code) => {
+export const verifyOtp = async (email, code) => {
   return API.post("/api/auth/verify-otp", { email, code });
 };
 
-export const resetPassword = (email, password) => {
+export const resetPassword = async (email, password) => {
   return API.post("/api/auth/reset-password", {
     email,
     new_password: password,
   });
 };
 
+
 /* ================= LOGOUT ================= */
 
 export const logout = () => {
   localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
+  localStorage.removeItem("role");
 };
