@@ -56,7 +56,7 @@ const PolicyFilter = ({
       </option>
     ))}
 </select>
-
+      <select>
         {Array.isArray(ranges) &&
           ranges.map((range, index) => (
             <option key={`range-${index}`} value={index}>

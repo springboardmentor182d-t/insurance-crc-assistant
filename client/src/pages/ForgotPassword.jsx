@@ -8,31 +8,56 @@ export default function ForgotPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState(""); // success | error
+
   const sendOtp = async () => {
-    await api.post("/auth/password/forgot", { email });
-    alert("OTP sent");
-    setStep(2);
+    try {
+      await api.post("/auth/password/forgot", { email });
+      setMessage("OTP sent successfully to your email");
+      setType("success");
+      setStep(2);
+    } catch {
+      setMessage("Failed to send OTP");
+      setType("error");
+    }
   };
 
   const verifyOtp = async () => {
-    await api.post("/auth/password/verify-otp", { email, otp });
-    alert("OTP verified");
-    setStep(3);
+    try {
+      await api.post("/auth/password/verify-otp", { email, otp });
+      setMessage("OTP verified successfully");
+      setType("success");
+      setStep(3);
+    } catch {
+      setMessage("Invalid OTP");
+      setType("error");
+    }
   };
 
   const resetPassword = async () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setMessage("Passwords do not match");
+      setType("error");
       return;
     }
 
-    await api.post("/auth/password/reset", {
-      email,
-      new_password: password,
-    });
+    try {
+      await api.post("/auth/password/reset", {
+        email,
+        new_password: password,
+      });
 
-    alert("Password updated successfully");
-    window.location.href = "/login";
+      setMessage("Password updated successfully. Redirecting to login...");
+      setType("success");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    } catch {
+      setMessage("Failed to reset password");
+      setType("error");
+    }
   };
 
   return (
@@ -40,7 +65,18 @@ export default function ForgotPassword() {
       <div className="bg-white p-6 rounded-lg w-[350px] shadow">
         <h2 className="text-xl font-bold mb-4 text-center">Forgot Password</h2>
 
-        {/* STEP 1 */}
+        {message && (
+          <div
+            className={`mb-3 text-sm p-2 rounded ${
+              type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
         {step === 1 && (
           <>
             <input
@@ -57,7 +93,6 @@ export default function ForgotPassword() {
           </>
         )}
 
-        {/* STEP 2 */}
         {step === 2 && (
           <>
             <input
@@ -74,7 +109,6 @@ export default function ForgotPassword() {
           </>
         )}
 
-        {/* STEP 3 (UPDATED) */}
         {step === 3 && (
           <>
             <input
@@ -83,14 +117,12 @@ export default function ForgotPassword() {
               placeholder="New Password"
               onChange={(e) => setPassword(e.target.value)}
             />
-
             <input
               type="password"
               className="w-full border p-2 mb-3 rounded"
               placeholder="Confirm Password"
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-
             <button
               onClick={resetPassword}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold"
