@@ -17,3 +17,5 @@ pytest
 httpx
 
 json-logic
+email-validator
+python-multipart
