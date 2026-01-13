@@ -16,5 +16,6 @@ python-jose[cryptography]
 pytest
 httpx
 
+json-logic
 email-validator
 python-multipart

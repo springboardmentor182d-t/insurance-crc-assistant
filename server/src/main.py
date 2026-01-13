@@ -188,19 +188,24 @@ from src.policies_recommendations_profile_preferences.routers.recommendations im
 
 app.include_router(recommendations_router)
 
+# =========================
+# FRAUD DETECTION ROUTERS (SAFE LOAD)
+# =========================
+try:
+    from src.routers.rules import router as rules_router
+    from src.routers.audit import router as audit_router
+
+    app.include_router(rules_router)
+    app.include_router(audit_router)
+
+except Exception as e:
+    print("⚠️ Fraud detection modules not loaded:", e)
+
 # ================= ADMIN AUTO CREATE =================
 @app.on_event("startup")
 def create_admin():
     db = Session(bind=engine)
     admin_email = "admin@insurance.com"
-    admin = db.query(User).filter(User.email == admin_email).first()
-
-    if admin is None:
-        admin = User(
-            email=admin_email,
-            hashed_password=hash_password("admin123"),
-            role="ADMIN",
-
     if not db.query(User).filter(User.email == admin_email).first():
         db.add(
             User(
@@ -209,7 +214,7 @@ def create_admin():
                 role="ADMIN",
             )
         )
-        db.commit()
+    db.commit()
     db.close()
 
 # ================= ROOT =================
