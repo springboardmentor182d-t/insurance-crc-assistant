@@ -16,10 +16,13 @@ export default function Register() {
   const [otpVerified, setOtpVerified] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // SEND OTP
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState("");
+
   const sendOtp = async () => {
     if (!email) {
-      alert("Please enter email first");
+      setMessage("Please enter email first");
+      setType("error");
       return;
     }
 
@@ -27,18 +30,20 @@ export default function Register() {
       setLoading(true);
       await api.post("/auth/register/send-otp", { email });
       setOtpSent(true);
-      alert("OTP sent to your email");
+      setMessage("OTP sent to your email");
+      setType("success");
     } catch (err) {
-      alert(err.response?.data?.detail || "Failed to send OTP");
+      setMessage(err.response?.data?.detail || "Failed to send OTP");
+      setType("error");
     } finally {
       setLoading(false);
     }
   };
 
-  // VERIFY OTP
   const verifyOtp = async () => {
     if (!otp) {
-      alert("Please enter OTP");
+      setMessage("Please enter OTP");
+      setType("error");
       return;
     }
 
@@ -46,25 +51,28 @@ export default function Register() {
       setLoading(true);
       await api.post("/auth/register/verify-otp", { email, otp });
       setOtpVerified(true);
-      alert("OTP verified successfully");
+      setMessage("OTP verified successfully");
+      setType("success");
     } catch (err) {
-      alert(err.response?.data?.detail || "Invalid OTP");
+      setMessage(err.response?.data?.detail || "Invalid OTP");
+      setType("error");
     } finally {
       setLoading(false);
     }
   };
 
-  // REGISTER USER
   const submit = async (e) => {
     e.preventDefault();
 
     if (!otpVerified) {
-      alert("Please verify OTP first");
+      setMessage("Please verify OTP first");
+      setType("error");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setMessage("Passwords do not match");
+      setType("error");
       return;
     }
 
@@ -78,14 +86,21 @@ export default function Register() {
 
       alert("Registration successful");
       navigate("/");
+      setMessage("Registration successful");
+      setType("success");
+
+      setTimeout(() => {
+        navigate("/LandingPage");
+      }, 1200);
     } catch (err) {
-      alert(err.response?.data?.detail || "Registration failed");
+      setMessage(err.response?.data?.detail || "Registration failed");
+      setType("error");
     }
   };
 
   return (
     <div className="min-h-screen flex bg-blue-600">
-      {/* LEFT ILLUSTRATION */}
+       {/* LEFT ILLUSTRATION */}
       <div className="hidden md:flex w-2/5 bg-blue-50 items-center justify-center">
         <img
           src="/images/Register.png"
@@ -93,28 +108,51 @@ export default function Register() {
           className="max-w-md"
         />
       </div>
-
-      {/* RIGHT REGISTER CARD */}
-      <div className="w-full md:w-3/5 flex items-center justify-center">
+      <div className="w-full flex items-center justify-center">
         <form
           onSubmit={submit}
-          className="bg-[#fff5f5] rounded-xl shadow-lg w-[450px] p-8"
+          className="bg-white rounded-xl shadow-lg w-[450px] p-8"
         >
-          <h2 className="text-3xl font-bold text-center mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4">
             Create Account
           </h2>
 
-          {/* FULL NAME */}
-          <div className="mb-3">
-            <label className="block text-sm mb-1 text-gray-700">
-              Full Name
-            </label>
+          {message && (
+            <div
+              className={`mb-3 text-sm p-2 rounded ${
+                type === "success"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+
+          <input
+            className="w-full border p-2 mb-3 rounded"
+            placeholder="Full Name"
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+
+          <div className="flex gap-2 mb-3">
             <input
-              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              placeholder="Enter Full Name"
-              onChange={(e) => setName(e.target.value)}
+              className="w-full border p-2 rounded"
+              placeholder="Email"
+              value={email}
+              disabled={otpSent}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
+            <button
+              type="button"
+              onClick={sendOtp}
+              disabled={loading || otpSent}
+              className="bg-blue-500 text-white px-4 rounded"
+            >
+              {otpSent ? "Sent" : "Verify"}
+            </button>
           </div>
 
           {/* EMAIL + OTP */}
@@ -144,17 +182,17 @@ export default function Register() {
 
           {/* OTP FIELD */}
           {otpSent && (
-            <div className="mb-3 flex gap-2">
+            <div className="flex gap-2 mb-3">
               <input
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
+                className="w-full border p-2 rounded"
                 placeholder="Enter OTP"
-                onChange={(e) => setOtp(e.target.value.trim())}
+                onChange={(e) => setOtp(e.target.value)}
               />
               <button
                 type="button"
                 onClick={verifyOtp}
-                disabled={loading || otpVerified || otp.length < 6}
-                className="bg-green-500 hover:bg-green-600 text-white px-4 rounded-lg text-sm"
+                disabled={otpVerified}
+                className="bg-green-500 text-white px-4 rounded"
               >
                 {otpVerified ? "Verified" : "Verify"}
               </button>
@@ -201,25 +239,43 @@ export default function Register() {
               required
             />
           </div>
+          <input
+            className="w-full border p-2 mb-3 rounded"
+            placeholder="Mobile"
+            onChange={(e) => setMobile(e.target.value)}
+            required
+          />
 
-          {/* REGISTER BUTTON */}
+          <input
+            type="password"
+            className="w-full border p-2 mb-3 rounded"
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            className="w-full border p-2 mb-4 rounded"
+            placeholder="Confirm Password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+
           <button
             type="submit"
             disabled={!otpVerified}
-            className={`w-full py-2 rounded-lg text-white font-semibold transition ${
-              otpVerified
-                ? "bg-blue-500 hover:bg-blue-600"
-                : "bg-gray-400 cursor-not-allowed"
+            className={`w-full py-2 rounded text-white ${
+              otpVerified ? "bg-blue-500" : "bg-gray-400"
             }`}
           >
             Register
           </button>
 
-          {/* LOGIN LINK */}
-          <p className="text-center text-sm mt-5">
-            Already Registered?{" "}
+          <p className="text-center text-sm mt-4">
+            Already registered?{" "}
             <Link to="/login" className="text-blue-600 font-semibold">
-              Login here
+              Login
             </Link>
           </p>
         </form>

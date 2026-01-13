@@ -27,12 +27,25 @@ function App() {
         <Route path="/policies" element={<Policies />} />
         <Route path="/policies/details/:id" element={<PolicyDetails />} />
         <Route path="/compare" element={<ComparePage />} />
+
+
+        <Route path="/" element={<PolicyCatalog />} />
+       
+        <Route path="/compare" element={<ComparePage />} />
+        <Route path="/policies" element={<Policies />} />
+        <Route path="/policy-details/:id" element={<PolicyDetails />} />
+
+      <Route
+          path="*"
+          element={<div style={{ padding: 32 }}>Page Not Found</div>}
+        />
         <Route
           path="/premium-calculator"
           element={<PremiumCalculator />}
         />
 
         {/* Auth */}
+        
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
