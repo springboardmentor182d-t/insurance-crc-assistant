@@ -74,7 +74,7 @@ export default function App() {
           <Route element={<RoleBasedRoute roleRequired="admin" />}>
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/fraud" element={<FraudDetection />} />
           </Route>
 
         </Route>
