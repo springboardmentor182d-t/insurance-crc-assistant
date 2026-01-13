@@ -1,5 +1,0 @@
-- [x] Resolve client/package.json merge conflict
-- [x] Resolve server/requirements.txt merge conflict
-- [x] Resolve server/src/database/core.py merge conflict
-- [x] Resolve server/src/main.py merge conflict
-- [ ] Run git add . and git commit to complete merge
