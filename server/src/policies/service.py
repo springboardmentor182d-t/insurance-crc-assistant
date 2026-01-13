@@ -8,13 +8,13 @@ import random
 def calculate_policy_score(policy: Policy) -> float:
     base = 6.5
 
-    if policy.coverage and policy.coverage >= 500_000:
+    if policy.coverage and int(policy.coverage) >= 500_000:
         base += 1.0
 
-    if policy.premium and policy.premium <= 20_000:
+    if policy.premium and int(policy.premium) <= 20_000:
         base += 1.0
 
-    if policy.waitingPeriod in ("None", None):
+    if not policy.waitingPeriod or policy.waitingPeriod == "None":
         base += 0.5
 
     return round(min(base + random.uniform(0, 0.5), 9.5), 1)
@@ -53,7 +53,7 @@ async def list_policies(
             "premium": int(p.premium),
             "coverage": int(p.coverage),
             "term": p.term,
-            "deductible": p.deductible,
+            "deductible": int(p.deductible) if p.deductible is not None else None,
             "waitingPeriod": p.waitingPeriod,
             "roomRent": p.roomRent,
             "benefits": p.benefits or [],
