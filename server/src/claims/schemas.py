@@ -32,3 +32,4 @@ class ClaimSchema(ClaimBase):
 
     class Config:
         from_attributes = True
+        # Backend update by Sahithi - 2026-01-13

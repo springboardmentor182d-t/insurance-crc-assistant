@@ -28,3 +28,5 @@ class ClaimDocument(Base):
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
     claim = relationship("Claim", back_populates="documents")
+
+# Backend update by Sahithi - 2026-01-13

@@ -37,3 +37,6 @@ def add_claim_document(db: Session, claim_id: int, file_url: str, doc_type: str)
     db.commit()
     db.refresh(db_doc)
     return db_doc
+
+# Backend update by Sahithi - 2026-01-13
+
