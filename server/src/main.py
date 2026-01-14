@@ -47,7 +47,7 @@ async def on_startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-app.include_router(protected_router) 
+#app.include_router(protected_router) 
 app.include_router(admin_router)
 app.include_router(profile_router)
 app.include_router(preferences_router)

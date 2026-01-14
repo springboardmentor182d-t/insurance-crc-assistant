@@ -1,35 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getClaims } from "../../api/claimsApi";
+
 import "./claims.css";
 
 function ClaimsList() {
   const navigate = useNavigate();
   const [claims, setClaims] = useState([]);
 
-  // 🔹 BACKEND-IRUNDHU CLAIMS FETCH
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/claims/list")
-      .then((res) => res.json())
-      .then((data) => {
-        // backend data -> UI format
-          const formatted = data.map((c, index) => ({
-  id:c.id ?? index + 1,
-  number: c.claim_number,
-  policy: c.policy_name,
-  date: new Date(c.filed_date).toLocaleDateString(),
-  amount: c.amount,
-  status: "review",
-  label: c.status,
-}));
+    const loadClaims = async () => {
+      try {
+        const data = await getClaims();
 
+        const formatted = data.map((c, index) => ({
+          id: c.id ?? index + 1,
+          number: c.claim_number,
+          policy: c.policy_name,
+          date: new Date(c.filed_date).toLocaleDateString(),
+          amount: c.amount,
+          status: c.status === "approved" ? "approved" : "review",
+          label: c.status,
+        }));
 
         setClaims(formatted);
-      })
-      .catch((err) => {
-      console.error("Error loading claims:", err);
-      setClaims([]); // 👈 UI crash avoid
-    });
-}, []);
+      } catch (err) {
+        console.error("Error loading claims:", err);
+        setClaims([]);
+      }
+    };
+
+    loadClaims();
+  }, []);
 
   return (
     <div className="claims-container">

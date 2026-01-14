@@ -1,58 +1,34 @@
 import "./fileClaim.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getPolicies } from "../../api/claimsApi";
+
+
 
 function FileClaim() {
   const navigate = useNavigate();
+  const [policies, setPolicies] = useState([]);
 
-  const policies = [
-    {
-      id: 1,
-      name: "Health Shield Pro",
-      insurer: "SecureLife Insurance",
-      number: "HSP-2024-001234",
-      valid: "31 Dec 2024",
-      icon: "❤️",
-      theme: "pink",
-    },
-    {
-      id: 2,
-      name: "Life Protect Plus",
-      insurer: "Guardian Insurance",
-      number: "LPP-2024-005678",
-      valid: "15 Mar 2025",
-      icon: "🛡️",
-      theme: "blue",
-    },
-    {
-      id: 3,
-      name: "Auto Guard Complete",
-      insurer: "DriveSecure",
-      number: "AGC-2024-009012",
-      valid: "20 Jun 2025",
-      icon: "🚗",
-      theme: "yellow",
-    },
-  ];
+  useEffect(() => {
+  const loadPolicies = async () => {
+    const data = await getPolicies();
+    setPolicies(data);
+  };
+
+  loadPolicies();
+}, []);
+
 
   return (
     <div className="file-claim-page">
 
       {/* STEPS */}
       <div className="stepper">
-        <div className="step active">
-          <span>1</span>
-          <p>Select Policy</p>
-        </div>
+        <div className="step active"><span>1</span><p>Select Policy</p></div>
         <div className="line"></div>
-        <div className="step">
-          <span>2</span>
-          <p>Incident Details</p>
-        </div>
+        <div className="step"><span>2</span><p>Incident Details</p></div>
         <div className="line"></div>
-        <div className="step">
-          <span>3</span>
-          <p>Upload Documents</p>
-        </div>
+        <div className="step"><span>3</span><p>Upload Documents</p></div>
       </div>
 
       <h1>File a Claim</h1>
@@ -60,7 +36,6 @@ function FileClaim() {
         Select the policy for which you want to file a claim
       </p>
 
-      {/* POLICY CARDS */}
       <div className="policy-wrapper">
         {policies.map((p) => (
           <div
@@ -77,10 +52,10 @@ function FileClaim() {
               <p>{p.insurer}</p>
               <div className="meta">
                 <span>
-                  <b>Policy Number</b><br />{p.number}
+                  <b>Policy Number</b><br />{p.policy_number}
                 </span>
                 <span>
-                  <b>Valid Until</b><br />{p.valid}
+                  <b>Valid Until</b><br />{p.valid_until}
                 </span>
               </div>
             </div>

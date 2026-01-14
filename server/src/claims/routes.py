@@ -15,6 +15,8 @@ import uuid
 from datetime import date
 import os,shutil
 
+from src.entities.policy import Policy
+from src.claims.models import ClaimDocument,Claim
 
 
 router = APIRouter(prefix="/claims",tags=["Claims"])
@@ -83,28 +85,57 @@ async def create_claim_api(
 # # UPLOAD DOCUMENTS 
 # # -------------------------
 @router.post("/upload")
-async def upload_document(
+async def upload_documents(
     claim_id: int = Form(...),
-    file: UploadFile = File(...)
+    files: List[UploadFile] = File(...),   # ✅ MULTIPLE FILES
+    db: AsyncSession = Depends(get_db)      # ✅ DB SESSION
 ):
     UPLOAD_DIR = "uploads"
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    uploaded_files = []
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    for file in files:
+        file_path = os.path.join(UPLOAD_DIR, file.filename)
 
-    document = ClaimDocument(
-        claim_id=claim_id,
-        file_name=file.filename,
-        file_path=file_path
-    )
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
 
-    db.add(document)
+        document = ClaimDocument(
+            claim_id=claim_id,
+            file_name=file.filename,
+            file_path=file_path
+        )
+
+        db.add(document)
+        uploaded_files.append(file.filename)
+
     await db.commit()
 
     return {
-        "message": "File uploaded successfully",
-        "filename": file.filename
+        "message": "Files uploaded successfully",
+        "files": uploaded_files
     }
+
+
+#policy claims file 
+
+
+@router.get("/policies")
+async def get_policies(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Policy))
+    policies = result.scalars().all()
+
+    # frontend-ku match aagara format
+    return [
+        {
+            "id": p.id,
+            "name": p.title,
+            "insurer": "Insurance Provider",   # optional / static
+            "policy_number": f"POL-{p.id}",
+            "valid_until": "31 Dec 2026",       # optional
+            "icon": "🛡️",
+            "theme": "blue"
+        }
+        for p in policies
+    ]

@@ -78,3 +78,14 @@ export const uploadDocuments = async ({ claimId, files }) => {
   if (!res.ok) throw new Error("Upload failed");
   return res.json();
 };
+
+// 🔹 GET POLICIES
+export const getPolicies = async () => {
+  try {
+    const res = await API.get("/claims/policies");
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching policies:", error);
+    return [];
+  }
+};

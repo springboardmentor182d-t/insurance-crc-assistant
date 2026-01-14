@@ -29,7 +29,12 @@ class Claim(Base):
 
     status = Column(String, default="Submitted")
     filed_date = Column(DateTime, default=datetime.utcnow)  # ✅ USE THIS
-
+    
+    documents = relationship(
+        "ClaimDocument",
+        back_populates="claim",
+        cascade="all, delete-orphan"
+    )
 class ClaimDocument(Base):
     __tablename__ = "claim_documents"
 
