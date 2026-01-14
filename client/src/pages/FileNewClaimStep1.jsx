@@ -100,10 +100,7 @@ const FileNewClaimStep1 = () => {
       }
 
       const data = await res.json();
-
-      // Save claim ID for step 2
       localStorage.setItem("claim_id", data.id);
-
       navigate("/claims/file/step2");
     } catch (error) {
       console.error(error);
@@ -115,21 +112,30 @@ const FileNewClaimStep1 = () => {
   // UI
   // =========================
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6">
-        File New Claim – Step 1
-      </h1>
+    <div className="min-h-screen bg-gradient-to-br from-purple-20 via-pink-20 to-sky-50 px-6 py-10">
+      {/* HEADER */}
+      <div className="max-w-3xl mx-auto mb-8">
+        <h1 className="text-3xl font-semibold text-slate-800">
+          File New Claim
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Step 1 of 3 · Claim details
+        </p>
+      </div>
 
-      <div className="bg-white p-6 rounded-xl shadow space-y-4">
+      {/* FORM CARD */}
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8 space-y-6">
         {/* POLICY */}
         <div>
-          <label className="text-sm font-medium">Policy</label>
+          <label className="text-sm font-medium text-slate-700">
+            Policy
+          </label>
           <select
             name="policy"
             value={formData.policy}
             onChange={handleChange}
             disabled={loadingPolicies}
-            className="w-full mt-1 p-2 border rounded"
+            className="w-full mt-2 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
           >
             <option value="">
               {loadingPolicies ? "Loading policies..." : "Select Policy"}
@@ -142,15 +148,17 @@ const FileNewClaimStep1 = () => {
           </select>
         </div>
 
-        {/* CLAIM TYPE (FROM BACKEND) */}
+        {/* CLAIM TYPE */}
         <div>
-          <label className="text-sm font-medium">Claim Type</label>
+          <label className="text-sm font-medium text-slate-700">
+            Claim Type
+          </label>
           <select
             name="claim_type"
             value={formData.claim_type}
             onChange={handleChange}
             disabled={loadingClaimTypes}
-            className="w-full mt-1 p-2 border rounded"
+            className="w-full mt-2 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
           >
             <option value="">
               {loadingClaimTypes
@@ -167,52 +175,58 @@ const FileNewClaimStep1 = () => {
 
         {/* INCIDENT DATE */}
         <div>
-          <label className="text-sm font-medium">Incident Date</label>
+          <label className="text-sm font-medium text-slate-700">
+            Incident Date
+          </label>
           <input
             type="date"
             name="incident_date"
             value={formData.incident_date}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded"
+            className="w-full mt-2 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
           />
         </div>
 
         {/* DESCRIPTION */}
         <div>
-          <label className="text-sm font-medium">Description</label>
+          <label className="text-sm font-medium text-slate-700">
+            Description
+          </label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            rows={3}
-            className="w-full mt-1 p-2 border rounded"
+            rows={4}
+            className="w-full mt-2 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none resize-none"
           />
         </div>
 
-        {/* AMOUNT CLAIMED */}
+        {/* AMOUNT */}
         <div>
-          <label className="text-sm font-medium">Amount Claimed</label>
+          <label className="text-sm font-medium text-slate-700">
+            Amount Claimed
+          </label>
           <input
             type="number"
             name="amount_claimed"
             value={formData.amount_claimed}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded"
+            className="w-full mt-2 px-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
           />
         </div>
 
         {/* ACTION BUTTONS */}
-        <div className="flex justify-between pt-4">
+        <div className="flex justify-between pt-6">
           <button
             onClick={() => navigate("/claims")}
-            className="px-6 py-2 border rounded"
+            className="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition"
           >
             ← Back
           </button>
 
           <button
             onClick={handleSubmit}
-            className="px-6 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            className="px-6 py-2.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition"
           >
             Next: Upload Documents →
           </button>

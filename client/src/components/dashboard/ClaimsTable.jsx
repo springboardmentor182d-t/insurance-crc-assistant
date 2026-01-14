@@ -22,32 +22,31 @@ export default function ClaimsTable({ claims = [], policies = [] }) {
             </tr>
           </thead>
           <tbody>
-            {claims.map((c) => {
-              const policy = policies.find((p) => p.id === c.policy_id);
-              return (
-                <tr key={c.id} className="border-t">
-                  <td className="p-2">
-                    {c.claim_date
-                      ? new Date(c.claim_date).toLocaleDateString()
-                      : "—"}
-                  </td>
-                  <td className="p-2">
-                    {policy
-                      ? `${policy.policy_type} (${policy.policy_number})`
-                      : `Policy #${c.policy_id}`}
-                  </td>
-                  <td className="p-2">
-                    {c.claim_amount
-                      ? c.claim_amount.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        })
-                      : "—"}
-                  </td>
-                  <td className="p-2">{c.status}</td>
-                </tr>
-              );
-            })}
+            {claims.map((c) => (
+  <tr key={c.id} className="border-t">
+    <td className="p-2">
+      {c.claim_date
+        ? new Date(c.claim_date).toLocaleDateString("en-IN")
+        : "—"}
+    </td>
+
+    <td className="p-2">
+      {c.policy_number || "—"}
+    </td>
+
+    <td className="p-2">
+      {c.claim_amount
+        ? c.claim_amount.toLocaleString("en-IN", {
+            style: "currency",
+            currency: "INR",
+          })
+        : "—"}
+    </td>
+
+    <td className="p-2">{c.status}</td>
+  </tr>
+))}
+
           </tbody>
         </table>
       </div>

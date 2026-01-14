@@ -56,14 +56,15 @@ function Login() {
 
       // ✅ STORE TOKEN (important for ProtectedRoute)
       localStorage.setItem("token", data.access_token);
+      localStorage.setItem("role", data.role); // ✅ added (safe)
 
       alert("Login successful!");
 
-      // ✅ ROLE-BASED REDIRECT
+      // ✅ CORRECT REDIRECT
       if (data.role === "ADMIN") {
         navigate("/admin");
       } else {
-        navigate("/home");
+        navigate("/"); // 🔥 FIXED (was /home)
       }
     } catch (error) {
       console.error("LOGIN ERROR 👉", error);

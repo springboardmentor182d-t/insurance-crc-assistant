@@ -15,7 +15,7 @@ export default function LifeRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/life", state)
+      .post("/api/recommendations/life", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

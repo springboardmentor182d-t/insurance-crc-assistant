@@ -13,7 +13,7 @@ export default function MotorRecResults() {
 
   useEffect(() => {
     api
-      .post("/recommendations/motor", state)
+      .post("/api/recommendations/motor", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

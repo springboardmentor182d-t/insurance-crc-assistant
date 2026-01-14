@@ -16,7 +16,7 @@ export default function HomeRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/home", state)
+      .post("/api/recommendations/home", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

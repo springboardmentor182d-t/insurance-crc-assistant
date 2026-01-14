@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./signup.css";
-import { baseURL } from "../config"; 
+import { signup } from "../features/authentication/services/signup"; // ✅ ADDED
 
 function Signup() {
   const navigate = useNavigate();
@@ -46,31 +46,18 @@ function Signup() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `${baseURL}/auth/register?email=${encodeURIComponent(
-          form.email
-        )}&password=${encodeURIComponent(form.password)}`, // ✅ CHANGED
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-      console.log("REGISTER RESPONSE 👉", data);
-
-      if (!response.ok) {
-        alert(data.detail || "Registration failed");
-        return;
-      }
+      // ✅ ONLY CHANGE: use signup service instead of fetch
+      await signup({
+        fullName: form.fullName,
+        email: form.email,
+        password: form.password,
+      });
 
       alert("Account created successfully! Please login.");
       navigate("/login");
     } catch (error) {
       console.error("REGISTER ERROR 👉", error);
-      alert("Server error. Try again later.");
+      alert(error.message || "Server error. Try again later.");
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,7 @@ export default function FireRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/fire", state)
+      .post("/api/recommendations/fire", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

@@ -15,7 +15,7 @@ export default function HealthRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/health", state)
+      .post("/api/recommendations/health", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

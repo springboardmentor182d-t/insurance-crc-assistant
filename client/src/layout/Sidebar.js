@@ -4,7 +4,6 @@ import {
   BookOpen,
   Sparkles,
   FileText,
-  BarChart3,
   Calculator,
   Headphones,
   Bookmark,
@@ -24,8 +23,7 @@ export default function Sidebar() {
 
     { name: "Recommendations", path: "/recommendations", icon: Sparkles },
     { name: "Claims", path: "/claims", icon: FileText },
-    { name: "Analytics", path: "/analytics", icon: BarChart3 },
-    { name: "Premium Calculator", path: "/calculator", icon: Calculator },
+    { name: "Premium Calculator", path: "/premium-calculator", icon: Calculator },
 
     // 🔹 SAVED QUOTES
     { name: "Saved Quotes", path: "/saved-quotes", icon: Bookmark },
