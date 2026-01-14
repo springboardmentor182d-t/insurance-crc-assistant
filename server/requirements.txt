@@ -15,6 +15,3 @@ python-jose[cryptography]
 
 pytest
 httpx
-
-email-validator
-python-multipart

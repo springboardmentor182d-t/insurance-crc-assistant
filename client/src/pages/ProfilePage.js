@@ -3,13 +3,8 @@ import { Camera } from "lucide-react";
 import axios from "axios";
 import { useProfile } from "../context/ProfileContext";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
 export default function ProfilePage() {
-  const {
-    setProfile: setGlobalProfile,
-    reloadProfile, // ✅ ADDED
-  } = useProfile();
+  const { setProfile: setGlobalProfile } = useProfile();
 
   const [profile, setProfile] = useState({
     name: "",
@@ -30,12 +25,12 @@ export default function ProfilePage() {
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/profile/1`)
+      .get("http://127.0.0.1:8000/api/profile/1")
       .then((res) => {
         if (!res.data) return;
 
         const avatarUrl = res.data.avatar
-          ? BASE_URL + res.data.avatar
+          ? "http://127.0.0.1:8000" + res.data.avatar
           : null;
 
         setProfile((prev) => ({
@@ -64,11 +59,13 @@ export default function ProfilePage() {
 
   /* ================= SAVE PROFILE ================= */
   const saveProfile = async () => {
+    console.log("saveProfile STARTED", profile);
+
     try {
       const fd = new FormData();
 
       fd.append("name", profile.name || "");
-      if (profile.dob) fd.append("dob", profile.dob);
+      fd.append("dob", profile.dob || "");
       fd.append("address", profile.address || "");
       fd.append("family_size", profile.familySize || 1);
 
@@ -85,10 +82,12 @@ export default function ProfilePage() {
         fd.append("avatar", profile.avatarFile);
       }
 
-      await axios.post(`${BASE_URL}/api/profile/1`, fd);
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/profile/1",
+        fd
+      );
 
-      // ✅ THIS IS THE FIX (SIDEBAR AUTO UPDATE)
-      await reloadProfile();
+      console.log("SAVE RESPONSE:", res.data);
 
       alert("Profile saved successfully ✅");
     } catch (err) {
@@ -97,7 +96,7 @@ export default function ProfilePage() {
       if (err.response) {
         alert(
           `Save failed (${err.response.status}):\n` +
-            JSON.stringify(err.response.data)
+          JSON.stringify(err.response.data)
         );
       } else {
         alert("Save failed: Network / CORS error");
@@ -175,6 +174,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* NAME */}
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   👤 Full Name
@@ -189,6 +189,7 @@ export default function ProfilePage() {
                 />
               </div>
 
+              {/* DOB */}
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   📅 Date of Birth
@@ -203,6 +204,7 @@ export default function ProfilePage() {
                 />
               </div>
 
+              {/* ADDRESS */}
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   📍 Address
@@ -244,11 +246,12 @@ export default function ProfilePage() {
                     key={cat}
                     type="button"
                     onClick={() => toggleCategory(cat)}
-                    className={`px-4 py-1.5 rounded-lg text-sm border ${
-                      profile.categories.includes(cat)
-                        ? "bg-indigo-600 text-white border-indigo-600"
-                        : "border-gray-200 text-gray-600"
-                    }`}
+                    className={`px-4 py-1.5 rounded-lg text-sm border
+                      ${
+                        profile.categories.includes(cat)
+                          ? "bg-indigo-600 text-white border-indigo-600"
+                          : "border-gray-200 text-gray-600"
+                      }`}
                   >
                     {cat}
                   </button>
@@ -326,7 +329,9 @@ export default function ProfilePage() {
           <div className="bg-white rounded-xl border p-6 space-y-4">
             <button
               type="button"
-              onClick={saveProfile}
+              onClick={() => {
+                saveProfile();
+              }}
               className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700"
             >
               Save Profile
