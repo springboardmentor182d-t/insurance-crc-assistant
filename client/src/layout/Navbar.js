@@ -1,14 +1,11 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-
 export default function TopNavbar() {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // ✅ HOOKS (must be first, always)
   const [open, setOpen] = useState(false);
-  const [notifications] = useState([]); // empty initially
+  const [notifications, setNotifications] = useState([]); // ✅ empty initially
+
   const bellRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -18,30 +15,18 @@ export default function TopNavbar() {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const hasUnread = notifications.some((n) => n.unread);
-
-  // ✅ SHOW NAVBAR ONLY ON DASHBOARD ROUTES
-  const showNavbar =
-    location.pathname === "/" ||
-    location.pathname === "/dashboard";
-
-  if (!showNavbar) {
-    return null;
-  }
+  const hasUnread = notifications.some(n => n.unread);
 
   return (
     <header className="h-20 bg-white flex items-center justify-between px-8 border-b">
+
       {/* LEFT */}
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">
-          Dashboard
-        </h1>
+        <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
         <p className="text-sm text-gray-500">
           Welcome back! Here's your insurance portfolio status.
         </p>
@@ -49,6 +34,7 @@ export default function TopNavbar() {
 
       {/* RIGHT */}
       <div className="flex items-center gap-4">
+
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -62,12 +48,12 @@ export default function TopNavbar() {
         {/* Notifications */}
         <div className="relative" ref={bellRef}>
           <button
-            onClick={() => setOpen((prev) => !prev)}
+            onClick={() => setOpen(prev => !prev)}
             className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200"
           >
             <Bell className="h-5 w-5 text-gray-600" />
             {hasUnread && (
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
             )}
           </button>
 
@@ -83,15 +69,13 @@ export default function TopNavbar() {
                     No notifications
                   </p>
                 ) : (
-                  notifications.map((n) => (
+                  notifications.map(n => (
                     <div
                       key={n.id}
                       className="px-4 py-3 text-sm hover:bg-gray-50 cursor-pointer"
                     >
                       <p className="font-medium">{n.title}</p>
-                      <p className="text-xs text-gray-500">
-                        {n.message}
-                      </p>
+                      <p className="text-xs text-gray-500">{n.message}</p>
                     </div>
                   ))
                 )}
@@ -114,6 +98,7 @@ export default function TopNavbar() {
         >
           + Get a Quote
         </button>
+
       </div>
     </header>
   );

@@ -7,7 +7,6 @@ import {
   BarChart3,
   Calculator,
   Headphones,
-  Bookmark,
 } from "lucide-react";
 import { useProfile } from "../context/ProfileContext";
 
@@ -18,26 +17,12 @@ export default function Sidebar() {
 
   const menu = [
     { name: "Dashboard", path: "/", icon: LayoutDashboard },
-
-    // 🔹 POLICY CATALOG (SPECIAL ACTIVE LOGIC)
     { name: "Policy Catalog", path: "/catalog", icon: BookOpen },
-
     { name: "Recommendations", path: "/recommendations", icon: Sparkles },
     { name: "Claims", path: "/claims", icon: FileText },
     { name: "Analytics", path: "/analytics", icon: BarChart3 },
     { name: "Premium Calculator", path: "/calculator", icon: Calculator },
-
-    // 🔹 SAVED QUOTES
-    { name: "Saved Quotes", path: "/saved-quotes", icon: Bookmark },
   ];
-
-  // 🔹 POLICY RELATED ROUTES
-  const isPolicySectionActive =
-    location.pathname.startsWith("/catalog") ||
-    location.pathname.startsWith("/policies") ||
-    location.pathname.startsWith("/compare") ||
-    location.pathname.startsWith("/quote") ||
-    location.pathname.startsWith("/saved-quotes");
 
   return (
     <aside className="w-64 bg-white border-r min-h-screen flex flex-col justify-between">
@@ -58,7 +43,6 @@ export default function Sidebar() {
           {menu.map((item) => {
             const Icon = item.icon;
 
-            // 🔹 Recommendation active logic (existing)
             const isRecommendationActive =
               item.path === "/recommendations" &&
               (location.pathname === "/recommendations" ||
@@ -66,17 +50,13 @@ export default function Sidebar() {
                 location.pathname.endsWith("_insurance_rec") ||
                 location.pathname.endsWith("recresults"));
 
-            // 🔹 Policy catalog active logic
-            const isPolicyActive =
-              item.path === "/catalog" && isPolicySectionActive;
-
             return (
               <NavLink
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition ${
-                    isPolicyActive || isRecommendationActive || isActive
+                    isRecommendationActive || isActive
                       ? "bg-indigo-50 text-indigo-600 font-semibold"
                       : "text-gray-600 hover:bg-gray-100"
                   }`
@@ -110,7 +90,7 @@ export default function Sidebar() {
           </button>
         </div>
 
-        {/* PROFILE */}
+        {/* PROFILE SECTION */}
         <NavLink
           to="/profile"
           className={({ isActive }) =>
