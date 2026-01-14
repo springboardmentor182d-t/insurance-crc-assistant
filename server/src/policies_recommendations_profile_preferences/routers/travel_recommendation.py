@@ -7,10 +7,10 @@ from src.policies_recommendations_profile_preferences.schemas.travel_recommendat
 from src.policies_recommendations_profile_preferences.services.travel_scoring import calculate_travel_score
 
 router = APIRouter(
-    tags=["Travel Recommendation"]
+   prefix="/api/recommendations", tags=["Travel Recommendation"]
 )
 
-@router.post("/")
+@router.post("/travel")
 def recommend_travel_policies(
     input: TravelRecommendationInput,
     db: Session = Depends(get_db)

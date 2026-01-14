@@ -5,9 +5,9 @@ from src.database.core import get_db
 from src.policies_recommendations_profile_preferences.schemas.fire_recommendation import FireRecommendationInput
 from src.policies_recommendations_profile_preferences.services.fire_scoring import recommend_fire_policies
 
-router = APIRouter( tags=["Fire Recommendations"])
+router = APIRouter( prefix="/api/recommendations",tags=["Fire Recommendations"])
 
-@router.post("/")
+@router.post("/fire")
 def get_fire_recommendations(
     user_input: FireRecommendationInput,
     db: Session = Depends(get_db)

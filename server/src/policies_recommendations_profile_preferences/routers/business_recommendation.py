@@ -6,10 +6,10 @@ from src.policies_recommendations_profile_preferences.schemas.business_recommend
 from src.policies_recommendations_profile_preferences.services.business_scoring import recommend_business_policies
 
 router = APIRouter(
-    tags=["Business Recommendations"]
+   prefix="/api/recommendations", tags=["Business Recommendations"]
 )
 
-@router.post("/")
+@router.post("/business")
 def get_business_recommendations(
     user_input: BusinessRecommendationInput,
     db: Session = Depends(get_db)

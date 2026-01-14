@@ -7,10 +7,10 @@ from src.policies_recommendations_profile_preferences.schemas.motor_recommendati
 from src.policies_recommendations_profile_preferences.services.motor_scoring import calculate_motor_score
 
 router = APIRouter(
-    tags=["Motor Recommendation"]
+    prefix="/api/recommendations",tags=["Motor Recommendation"]
 )
 
-@router.post("/")
+@router.post("/motor")
 def recommend_motor_policies(input: MotorRecommendationInput, db: Session = Depends(get_db)):
     policies = db.query(MotorPolicy).filter(
         MotorPolicy.status == "active",

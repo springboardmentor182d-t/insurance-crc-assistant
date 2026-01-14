@@ -6,10 +6,10 @@ from src.policies_recommendations_profile_preferences.schemas.home_recommendatio
 from src.policies_recommendations_profile_preferences.services.home_scoring import calculate_home_score
 
 router = APIRouter(
-    tags=["Home Recommendation"]
+    prefix="/api/recommendations",tags=["Home Recommendation"]
 )
 
-@router.post("/")
+@router.post("/home")
 def recommend_home_policies(
     input: HomeRecommendationInput,
     db: Session = Depends(get_db)

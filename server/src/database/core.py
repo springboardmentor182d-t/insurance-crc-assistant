@@ -22,3 +22,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# 🔥 FORCE SQLAlchemy TO REGISTER THESE MODELS
+from src.users.models import User
+from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
+from src.policies_recommendations_profile_preferences.models.recommendation import Recommendation
+
