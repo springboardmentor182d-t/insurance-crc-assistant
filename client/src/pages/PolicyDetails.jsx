@@ -3,10 +3,16 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Sidebar from "../layout/Sidebar";
 
+
+
+
+
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const PolicyDetails = () => {
   const { id } = useParams();
+
+  console.log("PolicyDetails mounted with id:", id);
 
   const [policy, setPolicy] = useState(null);
   const [error, setError] = useState("");
@@ -176,3 +182,4 @@ const PolicyDetails = () => {
 };
 
 export default PolicyDetails;
+

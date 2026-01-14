@@ -159,7 +159,7 @@ const PolicyCatalog = () => {
                   </p>
 
                   <Link
-                    to={`/policy-details/${policy.id}`}
+                    to={`/policies/details/${policy.id}`}
                     className="inline-block mt-4 bg-blue-600 text-white px-4 py-2 rounded"
                   >
                     View Details
