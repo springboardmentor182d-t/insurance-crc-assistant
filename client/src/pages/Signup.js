@@ -148,13 +148,6 @@ function Signup() {
               </button>
             </form>
 
-            <div className="divider">Or continue with</div>
-
-            <div className="social-buttons">
-              <button className="google-btn">Google</button>
-              <button className="apple-btn">Apple</button>
-            </div>
-
             <p className="login-link">
               Already have an account? <Link to="/login">Login</Link>
             </p>

@@ -126,13 +126,6 @@ function Login() {
               </button>
             </form>
 
-            <div className="divider">Or continue with</div>
-
-            <div className="social-buttons">
-              <button className="google-btn">Google</button>
-              <button className="apple-btn">Apple</button>
-            </div>
-
             <p className="signup-link">
               Don’t have an account?{" "}
               <Link to="/signup">Register Now</Link>
