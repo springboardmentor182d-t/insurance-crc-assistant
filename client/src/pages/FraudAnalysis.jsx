@@ -124,7 +124,6 @@ const FraudAnalytics = () => {
 
           {result && (
             <>
-              {/* Summary Cards */}
               <div className="grid grid-cols-4 gap-6">
                 <div className="bg-white p-5 rounded-xl shadow">
                   <p className="text-gray-500 text-sm">Total Claims</p>
@@ -152,7 +151,6 @@ const FraudAnalytics = () => {
                 </div>
               </div>
 
-              {/* Flagged Claims */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {result.claims.map((claim) => (
                   <div
@@ -174,7 +172,6 @@ const FraudAnalytics = () => {
                 ))}
               </div>
 
-              {/* Pie Chart */}
               <div className="bg-white p-6 rounded-xl shadow">
                 <h3 className="font-semibold mb-4">Claims Risk Distribution</h3>
 
