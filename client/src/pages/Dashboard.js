@@ -13,6 +13,7 @@ import ClaimsChart from "../components/Dashboard/ClaimsChart";
 import RecentClaimsTable from "../components/Dashboard/RecentClaimsTable";
 
 
+
 import {
   getDashboardSummary,
   getUserPolicies,
@@ -41,6 +42,14 @@ const Dashboard = () => {
   });
 
   const [loading, setLoading] = useState(true);
+
+  const [refreshKey, setRefreshKey] = useState(0);
+
+useEffect(() => {
+  const key = localStorage.getItem("notify_refresh");
+  if (key) setRefreshKey(key);
+}, []);
+
 
  
   useEffect(() => {
@@ -80,7 +89,8 @@ const Dashboard = () => {
 
      
       <div className="flex-1 flex flex-col">
-        <Navbar />
+        <Navbar refreshKey={refreshKey} />
+
 
         <PageContainer>
           <h1 className="text-2xl font-semibold mb-6">

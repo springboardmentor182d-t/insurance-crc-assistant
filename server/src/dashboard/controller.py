@@ -1,10 +1,21 @@
 from fastapi import APIRouter
+
+from pathlib import Path
+
+
+
+
+
+
+
 from .service import (
     get_dashboard_summary,
     get_policies,
     get_recommendations,
     get_claims_overview,
 )
+
+
 
 router = APIRouter(
     prefix="/dashboard",
@@ -26,3 +37,5 @@ def recommendations():
 @router.get("/claims")
 def claims_overview():
     return get_claims_overview()
+
+
