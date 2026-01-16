@@ -5,7 +5,8 @@ import LandingPage from "./pages/Landingpage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
-
+import FraudDetection from "./pages/FraudDetection";
+import FraudAnalysis from "./pages/FraudAnalysis";
 import PolicyCatalog from "./pages/PolicyCatalog";
 import PolicyDetails from "./pages/PolicyDetails";
 import PremiumCalculator from "./pages/PremiumCalculator";
@@ -20,6 +21,8 @@ function App() {
         <Route path="/compare" element={<Comparsion />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/policies/details/:id" element={<PolicyDetails />} />
+        <Route path="/Frauddetection" element={<FraudDetection />} />
+        <Route path="/fraud-analysis" element={<FraudAnalysis />} />
 
         <Route
           path="*"

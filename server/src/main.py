@@ -5,6 +5,7 @@ from src.policy.routes.policy import router as policy_router
 from src.auth.routes.auth_routes import router as auth_router
 from src.auth.routes.auth_otp_routes import router as register_otp_router
 from src.auth.routes.forgot_password import router as forgot_password_router
+from src.fraud.fraud_route import router as fraud_router
 app = FastAPI()
 
 app.add_middleware(
@@ -39,7 +40,7 @@ app.include_router(
     tags=["policies"]
 )
 
-
+app.include_router(fraud_router)
 app.include_router(auth_router)
 app.include_router(register_otp_router)
 app.include_router(forgot_password_router)

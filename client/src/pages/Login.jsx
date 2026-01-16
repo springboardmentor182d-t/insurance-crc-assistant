@@ -12,15 +12,12 @@ export default function Login() {
 
     try {
       const res = await api.post("/auth/login", { email, password });
-
       const { access_token, role } = res.data;
-
       localStorage.setItem("access_token", access_token);
       localStorage.setItem("role", role);
-
       alert("Login successful");
 
-      // 🔑 ROLE BASED REDIRECT
+      // ROLE BASED REDIRECT
       if (role === "admin") {
         navigate("/admin/dashboard");
       } else {
@@ -42,14 +39,12 @@ export default function Login() {
       <div className="hidden md:flex w-2/5 bg-blue-50 items-center justify-center">
         <img src="/images/Login.png" alt="Login" className="max-w-md" />
       </div>
-
       <div className="w-full md:w-3/5 flex items-center justify-center">
         <form
           onSubmit={submit}
           className="bg-[#fff5f5] rounded-xl shadow-lg w-[400px] p-8"
         >
           <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
-
           <div className="mb-4">
             <label className="block text-sm mb-1 text-gray-700">Email</label>
             <input
@@ -59,7 +54,6 @@ export default function Login() {
               required
             />
           </div>
-
           <div className="mb-2">
             <label className="block text-sm mb-1 text-gray-700">Password</label>
             <input
@@ -69,20 +63,17 @@ export default function Login() {
               required
             />
           </div>
-
           <div className="text-right mb-5">
             <Link to="/forgot-password" className="text-sm text-blue-600">
               Forgot Password?
             </Link>
           </div>
-
           <button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold"
           >
             Continue
           </button>
-
           <p className="text-center text-sm mt-5">
             New User?{" "}
             <Link to="/register" className="text-blue-600 font-semibold">
