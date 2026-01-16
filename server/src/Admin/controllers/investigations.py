@@ -16,6 +16,48 @@ def get_db():
     finally:
         db.close()
 
+@router.post("/start")
+def start_investigation(payload: dict, db: Session = Depends(get_db)):
+    claim_id = payload.get("claim_id")
+    priority = payload.get("priority", "Medium")
+    notes = payload.get("notes", "")
+
+    if not claim_id:
+        raise HTTPException(status_code=400, detail="claim_id required")
+
+    claim = db.query(Claim).filter(Claim.id == claim_id).first()
+    if not claim:
+        raise HTTPException(status_code=404, detail="Claim not found")
+
+    fraud_event = (
+        db.query(FraudEvent)
+        .filter(FraudEvent.claim_id == claim_id)
+        .first()
+    )
+
+    investigation = Investigation(
+        claim_id=claim_id,
+        investigator="Admin",
+        investigator_id=1,  # admin id
+        priority=priority,
+        status="PENDING",
+        notes=notes,
+    )
+
+    db.add(investigation)
+
+    if fraud_event:
+        fraud_event.flagged = False
+
+    claim.status = "Under Investigation"
+
+    db.commit()
+
+    return {
+        "message": "Investigation started successfully",
+        "investigation_id": investigation.id,
+    }
+
 
 # ================= LIST INVESTIGATIONS =================
 @router.get("/")
