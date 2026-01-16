@@ -33,12 +33,9 @@ const Navbar = () => {
           <img
             src="https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png"
             alt="User"
-            className="w-9 h-9 rounded-full"
+            className="w-9 h-9 rounded-full object-cover"
           />
-          <span className="text-sm font-medium text-gray-700">
-            <a href="/profile">User Name</a>
-          </span>
-          <span className="text-sm font-medium">User Name</span>
+          <span className="text-sm font-medium text-gray-700">User Name</span>
         </div>
       </div>
     </header>

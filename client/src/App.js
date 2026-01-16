@@ -37,7 +37,7 @@ function App() {
        
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/policies" element={<Policies />} />
-        <Route path="/policy-details/:id" element={<PolicyDetails />} />
+        <Route path="/policies/details/:id" element={<PolicyDetails />} />
 
       <Route
           path="*"
