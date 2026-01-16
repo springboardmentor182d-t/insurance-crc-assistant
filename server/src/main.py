@@ -55,6 +55,9 @@ from src.policies_recommendations_profile_preferences.models.fire_policy import 
 from src.policies_recommendations_profile_preferences.models.business_policy import BusinessPolicy
 from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
 from src.policies_recommendations_profile_preferences.models.recommendation import Recommendation
+from src.Admin.models.fraud_event import FraudEvent
+from src.Admin.models.rule_trigger import RuleTrigger
+
 
 # ================= DATABASE =================
 Base.metadata.create_all(bind=engine)
@@ -161,6 +164,15 @@ def create_admin():
         db.commit()
 
     db.close()
+from src.Admin.controllers.dashboard import router as admin_dashboard_router
+app.include_router(admin_dashboard_router)
+from src.Admin.controllers import flagged_claims
+app.include_router(flagged_claims.router)
+from src.Admin.controllers.fraud_rules import router as fraud_rules_router
+app.include_router(fraud_rules_router)
+from src.Admin.controllers import investigations
+app.include_router(investigations.router)
+
 
 # ================= ROOT =================
 @app.get("/")
