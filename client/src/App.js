@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import FraudDetection from "./pages/FraudDetection";
+import FraudAnalysis from "./pages/FraudAnalysis";
+
 import LandingPage from "./pages/Landingpage";
 import PolicyCatalog from "./pages/PolicyCatalog";
 import PolicyDetails from "./pages/PolicyDetails";
@@ -26,7 +29,8 @@ function App() {
         <Route path="/policycatalog" element={<PolicyCatalog />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/policies/details/:id" element={<PolicyDetails />} />
-        <Route path="/compare" element={<ComparePage />} />
+        <Route path="/Frauddetection" element={<FraudDetection />} />
+        <Route path="/fraud-analysis" element={<FraudAnalysis />} />
 
 
         <Route path="/" element={<PolicyCatalog />} />

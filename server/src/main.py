@@ -7,6 +7,7 @@ from src.database.core import Base, engine
 from src.auth.routes.auth_routes import router as auth_router
 from src.auth.routes.auth_otp_routes import router as register_otp_router
 from src.auth.routes.forgot_password import router as forgot_password_router
+from src.fraud.fraud_route import router as fraud_router
 from src.policy.routes.policy import router as policy_router
 
 # Create DB tables
@@ -60,6 +61,7 @@ app.include_router(
     tags=["policies"]
 )
 
+app.include_router(fraud_router)
 # Auth APIs
 app.include_router(auth_router, prefix="/api")
 app.include_router(register_otp_router, prefix="/api")
