@@ -20,6 +20,8 @@ def send_register_otp(data: RegisterOtpSchema):
     send_otp_email(data.email, otp)
     return {"message": "Registration OTP sent"}
 
+
+
 @router.post("/verify-otp")
 def verify_register_otp(data: RegisterOtpSchema):
     record = otp_store.get(data.email)
@@ -34,3 +36,4 @@ def verify_register_otp(data: RegisterOtpSchema):
         raise HTTPException(status_code=400, detail="Invalid OTP")
 
     return {"message": "Registration OTP verified"}
+  
