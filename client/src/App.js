@@ -1,5 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import AdminDashboard from "./pages/Admindashboard";
+
+
+
 import FraudDetection from "./pages/FraudDetection";
 import FraudAnalysis from "./pages/FraudAnalysis";
 
@@ -29,6 +33,7 @@ function App() {
         <Route path="/policycatalog" element={<PolicyCatalog />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/policies/details/:id" element={<PolicyDetails />} />
+        <Route path="/AdminDashboard" element={<AdminDashboard />}/>
         <Route path="/Frauddetection" element={<FraudDetection />} />
         <Route path="/fraud-analysis" element={<FraudAnalysis />} />
 
