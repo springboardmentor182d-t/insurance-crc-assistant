@@ -1,0 +1,24 @@
+{
+  "riskTolerance": 26,
+  "coverageInterests": {
+    "health": true,
+    "travel": true,
+    "home": false,
+    "life": false
+  },
+  "premiumRange": {
+    "min": 200,
+    "max": 20
+  },
+  "preferredProviders": {
+    "globalSure": true,
+    "trustGuard": true,
+    "secureLink": false,
+    "carePro": false
+  },
+  "communication": {
+    "email": true,
+    "sms": false
+  },
+  "autoClaim": true
+}
