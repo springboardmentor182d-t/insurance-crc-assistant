@@ -1,0 +1,74 @@
+[
+  {
+    "id": "cl1001",
+    "name": "John Smith",
+    "policy_start_date": "2024-02-01",
+    "claim_date": "2024-02-20",
+    "claim_amount": 8500,
+    "sum_insured": 10000,
+    "claims_last_6_months": 3,
+    "documents_ok": false,
+    "shared_bank_account": true,
+    "location_mismatch": false
+  },
+  {
+    "id": "cl1002",
+    "name": "Jane Doe",
+    "policy_start_date": "2023-08-15",
+    "claim_date": "2024-03-10",
+    "claim_amount": 2500,
+    "sum_insured": 15000,
+    "claims_last_6_months": 0,
+    "documents_ok": true,
+    "shared_bank_account": false,
+    "location_mismatch": false
+  },
+  {
+    "id": "cl1003",
+    "name": "Alice Johnson",
+    "policy_start_date": "2024-01-05",
+    "claim_date": "2024-01-25",
+    "claim_amount": 7000,
+    "sum_insured": 8000,
+    "claims_last_6_months": 1,
+    "documents_ok": true,
+    "shared_bank_account": false,
+    "location_mismatch": true
+  },
+  {
+    "id": "cl1004",
+    "name": "Robert Brown",
+    "policy_start_date": "2022-11-01",
+    "claim_date": "2024-02-28",
+    "claim_amount": 12000,
+    "sum_insured": 20000,
+    "claims_last_6_months": 4,
+    "documents_ok": false,
+    "shared_bank_account": false,
+    "location_mismatch": false
+  },
+  {
+    "id": "cl1005",
+    "name": "Emily White",
+    "policy_start_date": "2023-06-10",
+    "claim_date": "2024-03-05",
+    "claim_amount": 18000,
+    "sum_insured": 20000,
+    "claims_last_6_months": 2,
+    "documents_ok": true,
+    "shared_bank_account": true,
+    "location_mismatch": true
+  },
+  {
+    "id": "cl1006",
+    "name": "Michael Lee",
+    "policy_start_date": "2024-02-10",
+    "claim_date": "2024-02-25",
+    "claim_amount": 3000,
+    "sum_insured": 12000,
+    "claims_last_6_months": 0,
+    "documents_ok": true,
+    "shared_bank_account": false,
+    "location_mismatch": false
+  }
+]

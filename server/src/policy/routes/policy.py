@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import Dict, List
 from collections import defaultdict
@@ -8,6 +8,10 @@ from src.users.models import Policy
 
 # Import scoring & recommendation functions
 from .reccomentation import compute_final_scores, recommend_best_per_category
+
+from src.notifications.service import create_notification
+from src.auth.dependencies import get_current_user
+
 
 router = APIRouter()
 
