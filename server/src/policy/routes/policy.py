@@ -54,27 +54,27 @@ def get_policies(db: Session = Depends(get_db)) -> List[Dict]:
 
     return scored_policies
 
-
-@router.get("/types", response_model=List[str])
-def get_policy_types(db: Session = Depends(get_db)) -> List[str]:
-    """Return all unique policy types"""
+@router.get("/types")
+def get_policy_types(db: Session = Depends(get_db)):
     types = db.query(Policy.policy_type).distinct().all()
     return [t[0] for t in types]
 
-
-@router.get("/filters", response_model=Dict[str, List[Dict]])
-def get_policy_filters(db: Session = Depends(get_db)) -> Dict[str, List[Dict]]:
-    """Return filters for frontend"""
+@router.get("/filters")
+def get_policy_filters(db: Session = Depends(get_db)):
     types = db.query(Policy.policy_type).distinct().all()
+    policy_types = [t[0] for t in types]
+
+    premium_ranges = [
+        {"label": "Below ₹500", "min": 0, "max": 500},
+        {"label": "₹500 - ₹700", "min": 500, "max": 700},
+        {"label": "Above ₹700", "min": 700, "max": 100000},
+    ]
 
     return {
-        "types": [t[0] for t in types],
-        "ranges": [
-            {"label": "Below ₹5L", "min": 0, "max": 500000},
-            {"label": "₹5L - ₹10L", "min": 500001, "max": 1000000},
-            {"label": "Above ₹10L", "min": 1000001, "max": 2000000},
-        ],
+        "types": policy_types,
+        "ranges": premium_ranges
     }
+
 
 
 @router.get("/{policy_id}", response_model=Dict)

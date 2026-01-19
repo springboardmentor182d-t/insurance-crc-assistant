@@ -95,7 +95,7 @@ const Sidebar = () => {
 
     {
       name: "Plans",
-      path: "/#",
+      path: "/policycatalog",
       icon: <GitCompare size={18} />,
     },
     {

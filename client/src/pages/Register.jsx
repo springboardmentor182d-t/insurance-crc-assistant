@@ -77,7 +77,7 @@ export default function Register() {
       });
 
       alert("Registration successful");
-      navigate("/LandingPage");
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.detail || "Registration failed");
     }

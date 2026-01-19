@@ -1,7 +1,7 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route,Navigate } from "react-router-dom";
 import Comparsion from "./pages/Comparsion";
 import Dashboard from "./pages/Dashboard";
-import LandingPage from "./pages/Landingpage";
+/*import LandingPage from "./pages/Landingpage";*/
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -15,7 +15,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route path="/policycatalog" element={<PolicyCatalog />} />
         <Route path="/compare" element={<Comparsion />} />
         <Route path="/policies" element={<Policies />} />

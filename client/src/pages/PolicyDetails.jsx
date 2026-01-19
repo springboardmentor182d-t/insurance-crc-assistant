@@ -12,7 +12,7 @@ const PolicyDetails = () => {
   const [purchased, setPurchased] = useState(false);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/policies/details/${id}`)
+    fetch(`${BASE_URL}/policies/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Policy not found");
