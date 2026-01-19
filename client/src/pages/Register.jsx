@@ -85,13 +85,7 @@ export default function Register() {
       });
 
       alert("Registration successful");
-      navigate("/");
-      setMessage("Registration successful");
-      setType("success");
-
-      setTimeout(() => {
-        navigate("/LandingPage");
-      }, 1200);
+      navigate("/dashboard");
     } catch (err) {
       setMessage(err.response?.data?.detail || "Registration failed");
       setType("error");

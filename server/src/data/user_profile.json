@@ -1,6 +1,3 @@
 {
-  "name": "User Name",
-  "email": "sarah@example.com",
-  "phone": "+91 9876543210",
-  "address": "Mumbai, India"
+  "additionalProp1": {}
 }

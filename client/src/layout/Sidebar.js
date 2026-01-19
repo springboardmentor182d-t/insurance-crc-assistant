@@ -103,8 +103,8 @@ const Sidebar = () => {
       icon: <Lightbulb size={18} />,
     },
     {
-      name: "Compare Plans",
-      path: "/compare",
+      name: "Plans",
+      path: "/policycatalog",
       icon: <GitCompare size={18} />,
     },
     {
