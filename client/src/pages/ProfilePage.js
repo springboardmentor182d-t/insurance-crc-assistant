@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
 import axios from "axios";
 import { useProfile } from "../context/ProfileContext";
-
+import { useTheme } from "../context/ThemeContext"; 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function ProfilePage() {
@@ -10,7 +10,7 @@ export default function ProfilePage() {
     setProfile: setGlobalProfile,
     reloadProfile, // ✅ ADDED
   } = useProfile();
-
+const { theme, toggleTheme } = useTheme();
   const [profile, setProfile] = useState({
     name: "",
     avatar: null,
@@ -129,11 +129,20 @@ export default function ProfilePage() {
 
   return (
     <div className="px-6 py-6 max-w-7xl space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
       <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
       <p className="text-sm text-gray-500 mb-8">
         These details help us recommend the best insurance plans for you.
       </p>
-
+        </div>
+        <button
+          onClick={toggleTheme}
+          className="px-4 py-2 rounded-lg border text-sm"
+        >
+          {theme === "dark" ? "🌞 Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT */}
         <div className="lg:col-span-2 space-y-6">

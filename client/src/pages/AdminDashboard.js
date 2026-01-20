@@ -29,7 +29,11 @@ export default function AdminDashboard() {
   if (!data) return <div className="p-6">Failed to load dashboard</div>;
 
   return (
-    <div className="min-h-screen bg-[#f5f3ff]">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       <main className="px-6 pb-6 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">

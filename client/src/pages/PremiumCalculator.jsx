@@ -36,7 +36,11 @@ const PremiumCalculator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-slate-50 px-6 py-10">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm p-8 space-y-10">
         {/* HEADER */}
         <div>

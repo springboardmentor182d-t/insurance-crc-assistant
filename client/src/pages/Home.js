@@ -27,17 +27,11 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{
-        background: `
-          radial-gradient(at top left, #fbcfe8 0%, transparent 60%),
-          radial-gradient(at bottom left, #fed7aa 0%, transparent 65%),
-          radial-gradient(at center right, #ccfbf1 0%, transparent 60%),
-          radial-gradient(at top right, #ede9fe 0%, transparent 55%),
-          linear-gradient(135deg, #f8fafc 0%, #dbeafe 100%)
-        `,
-      }}
-    >
+      className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black"
+      >
       {/* Top Bar */}
       <div className="flex justify-between items-center px-6 py-3  backdrop-blur shadow-sm" />
 
