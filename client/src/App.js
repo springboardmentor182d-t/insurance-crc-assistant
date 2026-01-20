@@ -23,6 +23,9 @@ import Preferences from "./pages/Preferences";
 import Recommendations from "./pages/Recommendations";
 import NotFound from "./pages/NotFound";
 
+/* NOTIFICATIONS PAGE */
+import NotificationList from "./features/notification/components/NotificationList";
+
 /* LAYOUT */
 import PageContainer from "./layout/PageContainer";
 
@@ -44,21 +47,9 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/verify-otp" element={<OTPVerify />} />
-      <Route path="/enter-otp" element={<EnterOtp/>} />
-      <Route path="/reset-password" element={<ResetPassword/>} />
-      <Route path="/landing" element={<Landing/>} />
-      <Route path="/claims" element={<ClaimsList />} />
-      <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
-      <Route path="/dummy" element={<Dummy />} />
-      <Route path="/admin/fraud" element={<FraudDetection />} />
-      <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/preferences" element={<Preferences />} />
-      <Route path="/recommendations" element={<Recommendations />} />
-
       <Route path="/enter-otp" element={<EnterOtp />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      
+
       {/* ---------- PROTECTED (WITH NAVBAR) ---------- */}
       <Route element={<ProtectedRoute />}>
         <Route element={<PageContainer />}>
@@ -70,9 +61,14 @@ export default function App() {
           <Route path="/preferences" element={<Preferences />} />
           <Route path="/recommendations" element={<Recommendations />} />
 
+          {/* ---------- NOTIFICATIONS PAGE ---------- */}
+          <Route path="/notifications" element={<NotificationList />} />
+
           {/* ---------- ADMIN ONLY ---------- */}
           <Route element={<RoleBasedRoute roleRequired="ADMIN" />}>
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/fraud" element={<FraudDetection />} />
+            <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />
           </Route>
 
         </Route>
@@ -84,3 +80,5 @@ export default function App() {
     </Routes>
   );
 }
+
+
