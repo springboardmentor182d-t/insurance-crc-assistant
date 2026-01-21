@@ -31,7 +31,11 @@ export default function EditFraudRule() {
   if (!rule) return <div className="p-8">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 px-6 py-10">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       <div className="max-w-2xl mx-auto">
 
         {/* Back */}

@@ -42,7 +42,11 @@ export default function Investigations() {
   };
 
   return (
-    <div className="min-h-screen bg-violet-50 p-6">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       <div className="max-w-7xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold text-gray-900">
           Investigations

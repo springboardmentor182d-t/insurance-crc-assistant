@@ -170,7 +170,11 @@ export default function QuoteSummary() {
 
 
   return (
-    <div className="min-h-screen bg-[#f7f7fb] px-10 py-8 grid grid-cols-3 gap-8">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
 
       {/* LEFT */}
       <div className="col-span-2 space-y-6">
@@ -265,7 +269,7 @@ export default function QuoteSummary() {
 
           <button className="px-6 py-3 rounded-xl bg-purple-600 text-white">
             Mark it as Active
-          </button>
+         </button>
         </div>
       </div>
     </div>

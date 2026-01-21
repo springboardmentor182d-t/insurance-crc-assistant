@@ -41,7 +41,11 @@ const ReviewClaimStep3 = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-20 via-pink-20 to-sky-50 flex items-center justify-center text-slate-600">
+      <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
         Loading claim details...
       </div>
     );
@@ -49,14 +53,22 @@ const ReviewClaimStep3 = () => {
 
   if (!claim) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-20 via-pink-20 to-sky-50 flex items-center justify-center text-red-600">
+      <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
         Claim not found
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-20 via-pink-20 to-sky-50 px-6 py-10">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       {/* HEADER */}
       <div className="max-w-3xl mx-auto mb-8">
         <h1 className="text-3xl font-semibold text-slate-800">

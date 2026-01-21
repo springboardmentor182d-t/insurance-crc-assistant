@@ -14,7 +14,11 @@ const ClaimsDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-8">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       {/* PAGE HEADER */}
       <div className="mb-10">
         <h1 className="text-3xl font-semibold text-slate-800">

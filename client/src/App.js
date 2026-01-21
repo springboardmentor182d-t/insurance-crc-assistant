@@ -81,6 +81,8 @@ import TestFetch from "./pages/TestFetch";
 
 export default function App() {
   return (
+    <div className="min-h-screen bg-gray-100 text-gray-900
+                    dark:bg-gray-950 dark:text-gray-100">
     <ProfileProvider>
       <CompareProvider>
         <BrowserRouter>
@@ -195,5 +197,6 @@ export default function App() {
         </BrowserRouter>
       </CompareProvider>
     </ProfileProvider>
+    </div>
   );
 }
