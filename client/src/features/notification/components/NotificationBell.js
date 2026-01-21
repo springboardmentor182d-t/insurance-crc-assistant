@@ -1,4 +1,3 @@
-// client/src/features/notifications/components/NotificationBell.js
 
 import { useState } from "react";
 import { useNotifications } from "../hooks/useNotifications";
@@ -13,13 +12,16 @@ export default function NotificationBell() {
     fetchNotifications();
   };
 
+
   return (
     <div className="relative">
       <button onClick={() => setOpen(!open)} className="relative">
         🔔
+       
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
             {unreadCount}
+            
           </span>
         )}
       </button>
@@ -48,6 +50,8 @@ export default function NotificationBell() {
                   onClick={() => handleRead(n.id)}
                   className="text-blue-500 text-xs mt-1"
                 >
+
+
                   Mark as read
                 </button>
               )}
