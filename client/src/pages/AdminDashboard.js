@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { getFraudSummary, exportFraudCSV } from "../utils/fraudApi";
+import PoliciesOverview from "../components/dashboard/PoliciesOverview";
+import ClaimsOverview from "../components/dashboard/ClaimsOverview";
+import InvestigationsOverview from "../components/dashboard/InvestigationsOverview";
 
 import FraudSummaryCards from "../components/dashboard/FraudSummaryCards";
 import FraudAlertBanner from "../components/dashboard/FraudAlertBanner";
@@ -40,6 +43,12 @@ export default function AdminDashboard() {
         <h1 className="text-2xl font-semibold text-gray-900">
           Admin Dashboard
         </h1>
+        {/* Overviews */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <PoliciesOverview data={data} />
+  <ClaimsOverview data={data} />
+  <InvestigationsOverview data={data} />
+</div>
 
         {/* Button wrapper to prevent stretching */}
         <div className="flex items-center">
