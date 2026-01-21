@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFraudSummary, exportFraudCSV } from "../utils/fraudApi";
+import { useAdminApi, getFraudSummary, exportFraudCSV } from "../utils/fraudApi";
 
 import FraudSummaryCards from "../components/dashboard/FraudSummaryCards";
 import FraudAlertBanner from "../components/dashboard/FraudAlertBanner";
@@ -8,13 +8,14 @@ import RiskDistribution from "../components/dashboard/RiskDistribution";
 import TopTriggeredRules from "../components/dashboard/TopTriggeredRules";
 
 export default function AdminDashboard() {
+  const api = useAdminApi(); // ✅ REQUIRED
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await getFraudSummary();
+        const res = await getFraudSummary(api); // ✅ PASS api
         setData(res);
       } catch (err) {
         console.error(err);
@@ -23,7 +24,7 @@ export default function AdminDashboard() {
       }
     };
     load();
-  }, []);
+  }, [api]);
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (!data) return <div className="p-6">Failed to load dashboard</div>;
@@ -33,27 +34,28 @@ export default function AdminDashboard() {
       <main className="px-6 pb-6 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Admin Dashboard
-        </h1>
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Admin Dashboard
+          </h1>
 
-        {/* Button wrapper to prevent stretching */}
-        <div className="flex items-center">
-          <button
-            onClick={exportFraudCSV}
-            className="inline-flex items-center justify-center
-                      px-4 py-2 text-sm font-medium
-                      rounded-lg
-                      bg-indigo-600 text-white
-                      hover:bg-indigo-700 transition
-                      shadow-sm
-                      w-auto max-w-fit"
-            style={{ width: "auto" }}
-          >
-            Export CSV
-          </button>
+          {/* Button wrapper to prevent stretching */}
+          <div className="flex items-center">
+            <button
+              onClick={() => exportFraudCSV(api)} // ✅ PASS api
+              className="inline-flex items-center justify-center
+                        px-4 py-2 text-sm font-medium
+                        rounded-lg
+                        bg-indigo-600 text-white
+                        hover:bg-indigo-700 transition
+                        shadow-sm
+                        w-auto max-w-fit"
+              style={{ width: "auto" }}
+            >
+              Export CSV
+            </button>
+          </div>
         </div>
-      </div>
+
         {/* Summary Cards */}
         <FraudSummaryCards data={data} />
 

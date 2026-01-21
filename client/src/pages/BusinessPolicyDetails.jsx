@@ -18,7 +18,7 @@ export default function BusinessPolicyDetails() {
 
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     api
       .get(`/policies/business/${id}`)
@@ -84,18 +84,22 @@ export default function BusinessPolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "business",
-                    policy,
+            onClick={() =>
+              navigate("/quote-summary", {
+                state: {
+                  policy: {
+                    ...policy,
+                    policy_type: "business",
                   },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+                  from: "/catalog",
+                },
+              })
+            }
+            className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+          >
+            Get Quote
+          </button>
+
           </div>
         </div>
       </div>

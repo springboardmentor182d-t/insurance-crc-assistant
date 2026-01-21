@@ -8,57 +8,59 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const ALL_CATEGORIES = [
-  "Life Insurance",
-  "Health Insurance",
-  "Fire Insurance",
-  "Travel Insurance",
-  "Motor Insurance",
-  "Business Insurance",
-  "Home Insurance",
-];
+// Simple label formatter (no "Insurance")
+const formatLabel = (category) => category;
 
 export default function PremiumChart({ data = [] }) {
-  const dataMap = {};
-  data.forEach((item) => {
-    dataMap[item.category] = {
-      user_cost: item.user_cost,
-      market_cost: item.market_cost,
-    };
-  });
-
-  const chartData = ALL_CATEGORIES.map((category) => ({
-    category,
-    user_cost: dataMap[category]?.user_cost ?? 0,
-    market_cost: dataMap[category]?.market_cost ?? 0,
+  // Build chart data ONLY from backend data
+  const chartData = data.map((item) => ({
+    category: formatLabel(item.category),
+    user_cost: item.user_cost,
+    market_cost: item.market_cost,
   }));
+
+  if (chartData.length === 0) {
+    return (
+      <div className="bg-white rounded-lg p-6 text-sm text-gray-500">
+        No premium analysis available yet.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white shadow-md rounded-lg p-6">
-      <h3 className="text-lg font-semibold mb-4">Premium Analysis</h3>
+      <h3 className="text-lg font-semibold mb-1">
+        Premium Analysis (Your Cost vs Market)
+      </h3>
+      <p className="text-xs text-gray-500 mb-4">
+        Monthly comparison based on your selected insurance preferences
+      </p>
 
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart
-          data={chartData}
-          barCategoryGap="35%"
-          barGap={6}
-        >
-          <XAxis dataKey="category" />
+      <ResponsiveContainer width="100%" height={320}>
+        <BarChart data={chartData} barCategoryGap="30%">
+          <XAxis
+            dataKey="category"
+            tick={{ fontSize: 12 }}
+          />
           <YAxis />
-          <Tooltip />
+          <Tooltip
+            formatter={(value) => `₹${value.toLocaleString()}`}
+          />
           <Legend />
 
           <Bar
             dataKey="market_cost"
+            name="Market Avg"
             fill="#8b5cf6"
-            name="Market Average"
-            barSize={20}
+            radius={[6, 6, 0, 0]}
+            barSize={18}
           />
           <Bar
             dataKey="user_cost"
+            name="Your Budget"
             fill="#3b82f6"
-            name="Your Premium"
-            barSize={20}
+            radius={[6, 6, 0, 0]}
+            barSize={18}
           />
         </BarChart>
       </ResponsiveContainer>

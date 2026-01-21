@@ -1,33 +1,61 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Trash2, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
+
+const POLICY_ROUTE_MAP = {
+  health: "health",
+  life: "life",
+  motor: "motor",
+  auto: "motor",
+  travel: "travel",
+  home: "home",
+  business: "business",
+  fire: "fire",
+  fire_property: "fire",
+  motor_insurance: "motor",
+  life_insurance: "life",
+};
+
 
 export default function SavedQuotes() {
   const navigate = useNavigate();
   const [quotes, setQuotes] = useState([]);
 
   useEffect(() => {
-    const stored =
-      JSON.parse(localStorage.getItem("savedQuotes")) || [];
-    setQuotes(stored.reverse());
+    const fetchQuotes = async () => {
+      try {
+        const res = await api.get("/saved-quotes");
+        setQuotes(res.data);
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load saved quotes");
+      }
+    };
+
+    fetchQuotes();
   }, []);
 
-  const deleteQuote = (quoteId) => {
-    const updated = quotes.filter((q) => q.id !== quoteId);
-    setQuotes(updated);
-    localStorage.setItem("savedQuotes", JSON.stringify(updated.reverse()));
+  const deleteQuote = async (quoteId) => {
+    try {
+      await api.delete(`/saved-quotes/${quoteId}`);
+      setQuotes((prev) => prev.filter((q) => q.id !== quoteId));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete quote");
+    }
   };
 
   const viewQuote = (quote) => {
-    navigate(
-      `/quote-summary/${quote.type}/${quote.policy_id}?saved=${quote.id}`
-    );
-  };
+  const routeType =
+    POLICY_ROUTE_MAP[quote.policy_type] || "health";
+
+  navigate(`/policies/${routeType}/${quote.policy_id}`);
+};
+
 
   return (
     <div className="min-h-screen bg-[#f7f7fb] px-10 py-8">
-
-      {/* ✅ CONTENT WRAPPER */}
       <div className="max-w-5xl">
 
         {/* HEADER */}
@@ -64,26 +92,43 @@ export default function SavedQuotes() {
                 <h3 className="font-semibold text-lg text-gray-900">
                   {q.policy_name}
                 </h3>
+
                 <p className="text-sm text-gray-500">
-                  {q.insurer}
+                  {q.insurer_name}
                 </p>
 
                 <div className="mt-4 space-y-1 text-sm text-gray-700">
                   <p>Tenure: {q.tenure} year(s)</p>
-                  <p>Base Premium: ₹{Math.round(q.base)}</p>
-                  <p>GST: ₹{Math.round(q.tax)}</p>
+
+                  <p>
+                    Base Premium: ₹{Math.round(q.base_premium)}{" "}
+                    <span className="text-xs text-gray-400">/month</span>
+                  </p>
+
+                  <p>
+                    GST: ₹{Math.round(q.gst)}{" "}
+                    <span className="text-xs text-gray-400">/month</span>
+                  </p>
+
                   <p className="font-semibold text-indigo-600">
-                    Total: ₹{Math.round(q.total)}
+                    Total: ₹{Math.round(q.total_premium)}{" "}
+                    <span className="text-xs">/month</span>
                   </p>
                 </div>
 
                 <div className="flex justify-between items-center mt-6">
                   <p className="text-xs text-gray-400">
-                    Saved on {new Date(q.saved_at).toLocaleString()}
+                    Saved on {new Date(q.created_at).toLocaleString()}
                   </p>
 
                   <div className="flex items-center gap-4">
-                    {/* VIEW QUOTE */}
+                    {/* VIEW */}
+                    <button
+                      onClick={() => viewQuote(q)}
+                      className="text-indigo-600 hover:text-indigo-800"
+                    >
+                      <Eye size={16} />
+                    </button>
 
                     {/* DELETE */}
                     <button
@@ -98,7 +143,6 @@ export default function SavedQuotes() {
             ))}
           </div>
         )}
-
       </div>
     </div>
   );

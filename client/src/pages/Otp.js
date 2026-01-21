@@ -8,19 +8,17 @@ const Otp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Email passed from ForgotPassword page
-  const email = location.state?.email;
+  const { email, flow, fullName, password } = location.state || {};
 
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const inputsRef = useRef([]);
 
-  // 🔐 Prevent direct access to OTP page
   useEffect(() => {
-    if (!email) {
-      navigate("/forgot-password");
+    if (!email || !flow) {
+      navigate("/login");
     }
-  }, [email, navigate]);
+  }, [email, flow, navigate]);
 
   const handleChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -34,13 +32,6 @@ const Otp = () => {
     }
   };
 
-  const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
-    }
-  };
-
-  // ✅ VERIFY OTP (FIXED)
   const handleVerify = async () => {
     const otpCode = otp.join("");
 
@@ -51,52 +42,38 @@ const Otp = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(
-        `${baseURL}/auth/verify-otp?email=${encodeURIComponent(
-          email
-        )}&otp=${otpCode}`,
-        { method: "POST" }
-      );
+      if (flow === "register") {
+        const res = await fetch(`${baseURL}/auth/verify-register-otp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            full_name: fullName,
+            password,
+            otp: otpCode,
+          }),
+        });
 
-      const data = await response.json();
-      console.log("OTP VERIFY RESPONSE 👉", data);
-
-      if (!response.ok) {
-        alert(data.detail || "Invalid or expired OTP");
-        return;
+        if (!res.ok) return alert("Invalid or expired OTP");
+        navigate("/login");
       }
 
-      // ✅ Save email for reset password step
-      localStorage.setItem("reset_email", email);
+      if (flow === "forgot") {
+        const res = await fetch(
+          `${baseURL}/auth/verify-forgot-otp?email=${encodeURIComponent(
+            email
+          )}&otp=${otpCode}`,
+          { method: "POST" }
+        );
 
-      // ✅ Go to reset password page
-      navigate("/reset-password");
-    } catch (error) {
-      console.error("OTP VERIFY ERROR 👉", error);
-      alert("Server error. Try again.");
+        if (!res.ok) return alert("Invalid or expired OTP");
+        localStorage.setItem("reset_email", email);
+        navigate("/reset-password");
+      }
+    } catch {
+      alert("Server error");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // ✅ RESEND OTP
-  const handleResend = async () => {
-    try {
-      const response = await fetch(
-        `${baseURL}/auth/forgot-password?email=${encodeURIComponent(email)}`,
-        { method: "POST" }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.detail || "Failed to resend OTP");
-        return;
-      }
-
-      alert("OTP resent successfully!");
-    } catch {
-      alert("Failed to resend OTP");
     }
   };
 
@@ -106,11 +83,11 @@ const Otp = () => {
 
       <div className="otp-container">
         <div className="otp-card">
-          <div className="lock-icon">🔒</div>
+          <div className="lock-icon">🔐</div>
 
           <h2>Verify OTP</h2>
-          <p>
-            We've sent a 6-digit verification code to your email <br />
+          <p className="subtitle">
+            We’ve sent a 6-digit code to <br />
             <strong>{email}</strong>
           </p>
 
@@ -122,31 +99,21 @@ const Otp = () => {
                 maxLength="1"
                 value={digit}
                 onChange={(e) => handleChange(e.target.value, index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
                 ref={(el) => (inputsRef.current[index] = el)}
               />
             ))}
           </div>
 
-          <div className="resend">
-            Didn't receive the code?{" "}
-            <span onClick={handleResend}>Resend</span>
-          </div>
-
           <button
             className="verify-btn"
-            disabled={loading || otp.join("").length !== 6}
+            disabled={loading}
             onClick={handleVerify}
           >
             {loading ? "Verifying..." : "Verify OTP →"}
           </button>
 
-          <div className="back" onClick={() => navigate("/login")}>
+          <div className="back-link" onClick={() => navigate("/login")}>
             ← Back to Login
-          </div>
-
-          <div className="support">
-            Need help? <span>Contact Support</span>
           </div>
         </div>
       </div>

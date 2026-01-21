@@ -1,77 +1,60 @@
+import { Bookmark, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function MyPolicies({ policies = [] }) {
   const navigate = useNavigate();
 
+  const goToPolicy = (p) => {
+    navigate(`/policies/${p.policy_type}/${p.policy_id}`);
+  };
+
   if (!policies.length) {
     return (
-      <div className="bg-white shadow-md rounded-lg p-6 text-center">
-        <p className="text-gray-500 text-sm">No policies found.</p>
+      <div className="bg-white rounded-xl p-6 border text-center">
+        <Bookmark className="mx-auto text-indigo-400 mb-3" size={28} />
+        <p className="text-gray-600 text-sm mb-2">
+          You haven’t saved any quotes yet
+        </p>
+        <button
+          onClick={() => navigate("/catalog")}
+          className="text-indigo-600 text-sm font-medium hover:underline"
+        >
+          Browse policy catalog →
+        </button>
       </div>
     );
   }
 
-  const statusColors = {
-    active: "bg-green-100 text-green-700",
-    renewing: "bg-yellow-100 text-yellow-700",
-    expired: "bg-red-100 text-red-700",
-  };
-
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="bg-white rounded-xl border p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">My Policies</h3>
-
+        <h3 className="text-lg font-semibold">Saved Quotes</h3>
         <button
-          onClick={() => navigate("/catalog")}
-          className="text-blue-600 text-sm hover:underline"
+          onClick={() => navigate("/saved-quotes")}
+          className="text-indigo-600 text-sm hover:underline flex items-center gap-1"
         >
-          View All →
+          View All <ArrowRight size={14} />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {policies.map((policy) => {
-          const status = (policy.status || "").toLowerCase();
-          const badgeStyle =
-            statusColors[status] || "bg-gray-100 text-gray-700";
-
-          return (
-            <div
-              key={policy.id}
-              className="border rounded-lg p-4 shadow-sm bg-gray-50"
-            >
-              <h4 className="text-md font-semibold text-gray-800 mb-1">
-                {policy.policy_type || "Insurance"}
-              </h4>
-
-              <p className="text-sm text-gray-600 mb-1">
-                <strong>Policy #:</strong> {policy.policy_number}
-              </p>
-
-              <p className="text-sm text-gray-600 mb-1">
-                <strong>Premium:</strong> ₹{policy.premium}/mo
-              </p>
-
-              <p className="text-sm text-gray-600 mb-1">
-                <strong>Next Renewal:</strong>{" "}
-                {policy.renewal_date
-                  ? new Date(policy.renewal_date).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })
-                  : "N/A"}
-              </p>
-
-              <span
-                className={`inline-block mt-2 px-3 py-1 text-xs font-medium rounded-full ${badgeStyle}`}
-              >
-                {(policy.status || "unknown").toUpperCase()}
-              </span>
-            </div>
-          );
-        })}
+      <div className="space-y-3">
+        {policies.map((p) => (
+          <div
+            key={p.id}
+            onClick={() => goToPolicy(p)}
+            className="border rounded-lg p-4 cursor-pointer hover:border-indigo-400 hover:shadow-sm transition"
+          >
+            <h4 className="font-medium text-gray-800">
+              {p.policy_name}
+            </h4>
+            <p className="text-xs text-gray-500">
+              {p.insurer_name} • {p.tenure} yr
+            </p>
+            <p className="text-sm font-semibold text-indigo-600 mt-1">
+              ₹{p.total_premium.toLocaleString()}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./login.css";
 import { baseURL } from "../config";
+import { useProfile } from "../context/ProfileContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useProfile();
 
   const [form, setForm] = useState({
     email: "",
@@ -14,7 +16,6 @@ function Login() {
 
   const [loading, setLoading] = useState(false);
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -23,7 +24,18 @@ function Login() {
     }));
   };
 
-  // Handle login submit
+  // ✅ ONLY NEW FUNCTION
+  const handleForgotPassword = () => {
+    if (!form.email) {
+      alert("Please enter your email first");
+      return;
+    }
+
+    navigate("/forgot-password", {
+      state: { email: form.email },
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,33 +53,34 @@ function Login() {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
-          username: form.email, // OAuth2 expects username
+          username: form.email,
           password: form.password,
         }),
       });
 
       const data = await response.json();
-      console.log("LOGIN RESPONSE FROM BACKEND 👉", data);
 
       if (!response.ok) {
         alert(data.detail || "Invalid credentials");
         return;
       }
 
-      // ✅ STORE TOKEN (important for ProtectedRoute)
+      // ✅ store token globally
       localStorage.setItem("token", data.access_token);
-      localStorage.setItem("role", data.role); // ✅ added (safe)
+      localStorage.setItem("role", data.role);
+
+      // update context (optional but fine)
+      login(data.access_token, data.role);
+
 
       alert("Login successful!");
 
-      // ✅ CORRECT REDIRECT
       if (data.role === "ADMIN") {
         navigate("/admin");
       } else {
-        navigate("/"); // 🔥 FIXED (was /home)
+        navigate("/dashboard");
       }
     } catch (error) {
-      console.error("LOGIN ERROR 👉", error);
       alert("Server error. Please try again later.");
     } finally {
       setLoading(false);
@@ -95,10 +108,11 @@ function Login() {
             </p>
 
             <form onSubmit={handleSubmit}>
-              <label>Email or Username</label>
+              <label>Email Address</label>
               <input
                 type="email"
                 name="email"
+                autoComplete="email"
                 placeholder="name@example.com"
                 value={form.email}
                 onChange={handleChange}
@@ -107,14 +121,19 @@ function Login() {
 
               <div className="password-row">
                 <label>Password</label>
-                <Link to="/forgot-password" className="forgot-link">
+                <span
+                  className="forgot-link"
+                  onClick={handleForgotPassword}
+                  style={{ cursor: "pointer" }}
+                >
                   Forgot Password?
-                </Link>
+                </span>
               </div>
 
               <input
                 type="password"
                 name="password"
+                autoComplete="current-password"
                 placeholder="Enter your password"
                 value={form.password}
                 onChange={handleChange}

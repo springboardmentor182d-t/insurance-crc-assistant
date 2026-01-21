@@ -16,6 +16,7 @@ export default function MotorPolicyDetails() {
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     api
       .get(`/policies/motor/${id}`)
@@ -30,7 +31,7 @@ export default function MotorPolicyDetails() {
     <div className="min-h-screen px-10 py-8 bg-[#f6f5fb]">
       {/* BACK */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/catalog')}
         className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6"
       >
         <ArrowLeft size={16} /> Back
@@ -83,18 +84,22 @@ export default function MotorPolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "motor",
-                    policy,
-                  },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+  onClick={() =>
+    navigate("/quote-summary", {
+      state: {
+        policy: {
+          ...policy,
+          policy_type: "motor",
+        },
+        from: "/catalog",
+      },
+    })
+  }
+  className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+>
+  Get Quote
+</button>
+
           </div>
         </div>
       </div>

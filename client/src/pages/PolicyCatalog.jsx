@@ -213,22 +213,36 @@ function PolicyCard({ policy }) {
 
       {/* FOOTER */}
       <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-        <div>
-          <p className="text-xs text-gray-500">Monthly Premium</p>
-          <p className="text-lg font-bold text-gray-900">
-            ₹{Math.round(policy.monthly_premium)}
-            <span className="text-sm font-normal text-gray-500"> /mo</span>
-          </p>
-        </div>
+  {/* LEFT : PREMIUM */}
+  <div>
+    {policy.type === "travel" ? (
+      <>
+        <p className="text-xs text-gray-500">Starting from</p>
+        <p className="text-lg font-bold text-gray-900">
+          ₹{Math.round(policy.display_premium)}
+          <span className="text-sm font-normal text-gray-500"> /year</span>
+        </p>
+      </>
+    ) : (
+      <>
+        <p className="text-xs text-gray-500">Monthly Premium</p>
+        <p className="text-lg font-bold text-gray-900">
+          ₹{Math.round(policy.monthly_premium)}
+          <span className="text-sm font-normal text-gray-500"> /mo</span>
+        </p>
+      </>
+    )}
+  </div>
 
-        {/* ✅ ONLY COLOR CHANGE HERE */}
-        <button
-          onClick={() => navigate(`/policies/${policy.type}/${policy.id}`)}
-          className={`px-5 py-2 rounded-full text-sm font-semibold transition ${theme.btn}`}
-        >
-          View Details
-        </button>
-      </div>
+  {/* RIGHT : ACTION */}
+  <button
+    onClick={() => navigate(`/policies/${policy.type}/${policy.id}`)}
+    className={`px-5 py-2 rounded-full text-sm font-semibold transition ${theme.btn}`}
+  >
+    View Details
+  </button>
+</div>
+
     </div>
   );
 }

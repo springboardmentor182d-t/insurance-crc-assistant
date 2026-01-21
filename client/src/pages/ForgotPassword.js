@@ -1,46 +1,44 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./forgotpassword.css";
 import { baseURL } from "../config";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
+
+  const [loading, setLoading] = useState(false);
+
+  // 🔐 Prevent direct access
+  useEffect(() => {
+    if (!email) {
+      navigate("/login");
+    }
+  }, [email, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email) {
-      alert("Please enter your email address");
-      return;
-    }
-
     try {
       setLoading(true);
 
-      const response = await fetch(
-        `${baseURL}/auth/forgot-password?email=${encodeURIComponent(email)}`,
-        {
-          method: "POST",
-        }
-      );
+      await fetch(`${baseURL}/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
-      const data = await response.json();
-      console.log("FORGOT PASSWORD RESPONSE 👉", data);
-
-      if (!response.ok) {
-        alert(data.detail || "Failed to send OTP");
-        return;
-      }
-
-      alert("OTP sent successfully!");
-      // ✅ Move to OTP page and pass email
-      navigate("/otp", { state: { email } });
+      // 🔹 Always navigate (no info leak)
+      navigate("/otp", {
+        state: {
+          email,
+          flow: "forgot",
+        },
+      });
     } catch (error) {
-      console.error("FORGOT PASSWORD ERROR 👉", error);
-      alert("Server error. Try again later.");
+      alert("Server error. Try again.");
     } finally {
       setLoading(false);
     }
@@ -56,20 +54,15 @@ const ForgotPassword = () => {
 
           <h2>Forgot Password?</h2>
           <p>
-            Enter your registered email address and we’ll send you an OTP to reset
-            your password.
+            We will send an OTP to your registered email address.
           </p>
 
-          <form onSubmit={handleSubmit}>
-            <label>Email Address</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          {/* ✅ EMAIL DISPLAY ONLY */}
+          <div className="email-display">
+            <strong>{email}</strong>
+          </div>
 
+          <form onSubmit={handleSubmit}>
             <button type="submit" disabled={loading}>
               {loading ? "Sending OTP..." : "Send OTP →"}
             </button>
@@ -77,10 +70,6 @@ const ForgotPassword = () => {
 
           <div className="back-link" onClick={() => navigate("/login")}>
             ← Back to Login
-          </div>
-
-          <div className="support">
-            Need help? <span>Contact Support</span>
           </div>
         </div>
       </div>

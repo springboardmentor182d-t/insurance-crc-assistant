@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
-import axios from "axios";
+import api from "../api";
 import { useProfile } from "../context/ProfileContext";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function ProfilePage() {
-  const {
-    setProfile: setGlobalProfile,
-    reloadProfile, // ✅ ADDED
-  } = useProfile();
-
+  const { setProfile: setGlobalProfile } = useProfile();
   const [profile, setProfile] = useState({
     name: "",
     avatar: null,
@@ -29,81 +25,109 @@ export default function ProfilePage() {
 
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/profile/1`)
-      .then((res) => {
-        if (!res.data) return;
+  api
+    .get("/api/profile")
+    .then((res) => {
+      if (!res.data) return;
 
-        const avatarUrl = res.data.avatar
-          ? BASE_URL + res.data.avatar
-          : null;
+      const avatarUrl = res.data.avatar
+        ? res.data.avatar.startsWith("http")
+          ? res.data.avatar
+          : BASE_URL + res.data.avatar
+        : null;
 
-        setProfile((prev) => ({
-          ...prev,
-          name: res.data.name || "",
-          dob: res.data.dob || "",
-          address: res.data.address || "",
-          familySize: res.data.familySize || 1,
-          categories: res.data.categories || [],
-          monthlyBudget: res.data.monthlyBudget || 15000,
-          goal: res.data.goal || "Family Protection",
-          riskLevel: res.data.riskLevel || "Medium",
-          avatar: avatarUrl,
-        }));
+      setProfile((prev) => ({
+        ...prev,
+        name: res.data.name || "",
+        dob: res.data.dob ? res.data.dob.slice(0, 10) : "",
+        address: res.data.address || "",
+        familySize: res.data.familySize || 1,
+        categories: res.data.categories || [],
+        monthlyBudget: res.data.monthlyBudget || 15000,
+        goal: res.data.goal || "Family Protection",
+        riskLevel: res.data.riskLevel || "Medium",
+        avatar: avatarUrl,
+      }));
 
-        // 🔴 sync sidebar immediately
-        setGlobalProfile({
-          name: res.data.name || "John Doe",
-          avatar: avatarUrl,
-        });
-      })
-      .catch((err) => {
-        console.error("Profile load error:", err);
+      // 🔥 update sidebar instantly
+      setGlobalProfile({
+        ...res.data,
+        avatar: avatarUrl,
       });
-  }, [setGlobalProfile]);
+    })
+    .catch((err) => {
+      console.error("Profile load error:", err);
+    });
+}, [setGlobalProfile]);
+
 
   /* ================= SAVE PROFILE ================= */
   const saveProfile = async () => {
-    try {
-      const fd = new FormData();
+  let saveSucceeded = false;
 
-      fd.append("name", profile.name || "");
-      if (profile.dob) fd.append("dob", profile.dob);
-      fd.append("address", profile.address || "");
-      fd.append("family_size", profile.familySize || 1);
+  try {
+    const fd = new FormData();
 
-      fd.append(
-        "preferences",
-        JSON.stringify({
-          categories: profile.categories || [],
-          monthly_budget: profile.monthlyBudget || 15000,
-          goal: profile.goal || "Family Protection",
-        })
-      );
+    fd.append("name", profile.name || "");
+    if (profile.dob) fd.append("dob", profile.dob);
+    fd.append("address", profile.address || "");
+    fd.append("family_size", profile.familySize || 1);
 
-      if (profile.avatarFile) {
-        fd.append("avatar", profile.avatarFile);
-      }
+    fd.append(
+      "preferences",
+      JSON.stringify({
+        categories: profile.categories || [],
+        monthly_budget: profile.monthlyBudget || 15000,
+        goal: profile.goal || "Family Protection",
+      })
+    );
 
-      await axios.post(`${BASE_URL}/api/profile/1`, fd);
-
-      // ✅ THIS IS THE FIX (SIDEBAR AUTO UPDATE)
-      await reloadProfile();
-
-      alert("Profile saved successfully ✅");
-    } catch (err) {
-      console.error("SAVE PROFILE ERROR FULL:", err);
-
-      if (err.response) {
-        alert(
-          `Save failed (${err.response.status}):\n` +
-            JSON.stringify(err.response.data)
-        );
-      } else {
-        alert("Save failed: Network / CORS error");
-      }
+    if (profile.avatarFile) {
+      fd.append("avatar", profile.avatarFile);
     }
-  };
+
+    await api.post("/api/profile", fd);
+
+    saveSucceeded = true;
+  } catch (err) {
+    console.error("SAVE PROFILE API FAILED:", err);
+
+    if (err.response) {
+      alert(
+        `Save failed (${err.response.status}):\n` +
+          JSON.stringify(err.response.data)
+      );
+    } else {
+      alert("Save failed ❌");
+    }
+    return; // ⛔ STOP here
+  }
+
+  if (saveSucceeded) {
+  try {
+    // ✅ THIS IS WHERE IT GOES
+    const res = await api.get("/api/profile");
+
+    const avatarUrl = res.data.avatar
+      ? res.data.avatar.startsWith("http")
+        ? res.data.avatar
+        : BASE_URL + res.data.avatar
+      : null;
+
+    // 🔥 update sidebar immediately
+    setGlobalProfile({
+      ...res.data,
+      avatar: avatarUrl,
+    });
+
+    alert("Profile saved successfully ✅");
+  } catch (e) {
+    console.warn("Profile reload failed:", e);
+  }
+}
+
+
+};
 
   /* ================= AVATAR ================= */
   const handleAvatarChange = (e) => {
@@ -128,7 +152,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="px-6 py-6 max-w-7xl space-y-6">
+    <div className="min-h-screen px-6 py-6 max-w-7xl space-y-6"
+  style={{
+    background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)"
+  }}>
       <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
       <p className="text-sm text-gray-500 mb-8">
         These details help us recommend the best insurance plans for you.

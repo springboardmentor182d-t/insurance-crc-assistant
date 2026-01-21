@@ -10,7 +10,6 @@ export default function BusinessRecResults() {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("score");
-
   /* ================= FETCH ================= */
   useEffect(() => {
     if (!state) return;

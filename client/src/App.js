@@ -14,12 +14,13 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 /* ================= USER LAYOUT & PAGES ================= */
 import PageContainer from "./layout/PageContainer";
-import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import Recommendations from "./pages/Recommendations";
 import PolicyCatalog from "./pages/PolicyCatalog";
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 import SavedQuotes from "./pages/SavedQuotes";
+import Support from "./pages/Support";
 
 /* ================= RECOMMENDATION FLOWS ================= */
 import HealthRecommendation from "./pages/HealthRecommendation";
@@ -84,6 +85,7 @@ export default function App() {
       <CompareProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
             {/* ================= PUBLIC AUTH ================= */}
             <Route path="/signup" element={<Signup />} />
@@ -126,10 +128,11 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/catalog" element={<PolicyCatalog />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/saved-quotes" element={<SavedQuotes />} />
+              <Route path="/support" element={<Support />} />
 
               {/* Recommendations */}
               <Route path="/recommendations" element={<Recommendations />} />

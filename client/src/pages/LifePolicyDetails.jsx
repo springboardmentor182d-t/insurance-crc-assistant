@@ -85,18 +85,22 @@ export default function LifePolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "life",
-                    policy,
-                  },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+  onClick={() =>
+    navigate("/quote-summary", {
+      state: {
+        policy: {
+          ...policy,
+          policy_type: "life",
+        },
+        from: "/catalog",
+      },
+    })
+  }
+  className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+>
+  Get Quote
+</button>
+
           </div>
         </div>
       </div>

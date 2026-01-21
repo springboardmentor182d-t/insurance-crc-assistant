@@ -19,6 +19,7 @@ export default function HealthPolicyDetails() {
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     api
       .get(`/policies/health/${id}`)
@@ -82,18 +83,22 @@ export default function HealthPolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "health",
-                    policy,
-                  },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+  onClick={() =>
+    navigate("/quote-summary", {
+      state: {
+        policy: {
+          ...policy,
+          policy_type: "health",
+        },
+        from: "/catalog",
+      },
+    })
+  }
+  className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+>
+  Get Quote
+</button>
+
           </div>
         </div>
       </div>

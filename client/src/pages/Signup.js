@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./signup.css";
-import { signup } from "../features/authentication/services/signup"; // ✅ ADDED
+import { baseURL } from "../config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -46,18 +46,31 @@ function Signup() {
     try {
       setLoading(true);
 
-      // ✅ ONLY CHANGE: use signup service instead of fetch
-      await signup({
-        fullName: form.fullName,
-        email: form.email,
-        password: form.password,
+      const response = await fetch(`${baseURL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: form.email }),
       });
 
-      alert("Account created successfully! Please login.");
-      navigate("/login");
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.detail || "Failed to send OTP");
+        return;
+      }
+
+      alert(data.message);
+
+      navigate("/otp", {
+        state: {
+          email: form.email,
+          fullName: form.fullName,
+          password: form.password,
+          flow: "register",
+        },
+      });
     } catch (error) {
-      console.error("REGISTER ERROR 👉", error);
-      alert(error.message || "Server error. Try again later.");
+      alert(error.message || "Server error");
     } finally {
       setLoading(false);
     }
@@ -69,13 +82,15 @@ function Signup() {
 
       <div className="signup-container">
         <div className="signup-card">
+          {/* LEFT SIDE */}
           <div className="signup-left">
             <h2>We’ve got you covered, rain or shine.</h2>
             <p>
-              Insurance is not just a policy; it’s a promise to rebuild,
-              recover, and restore hope when life takes an unexpected turn.
+              Insurance is not just a policy; it’s a promise to rebuild, recover,
+              and restore hope when life takes an unexpected turn.
             </p>
 
+            {/* ✅ IMAGE RESTORED */}
             <img
               src="https://res.cloudinary.com/ds66aym8t/image/upload/v1766555411/signup_hdeoj9.png"
               alt="Insurance Illustration"
@@ -83,6 +98,7 @@ function Signup() {
             />
           </div>
 
+          {/* RIGHT SIDE */}
           <div className="signup-right">
             <h1>Create your account</h1>
             <p className="subtitle">
@@ -94,7 +110,6 @@ function Signup() {
               <input
                 type="text"
                 name="fullName"
-                placeholder="e.g. John Doe"
                 value={form.fullName}
                 onChange={handleChange}
                 required
@@ -104,7 +119,6 @@ function Signup() {
               <input
                 type="email"
                 name="email"
-                placeholder="name@example.com"
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -114,7 +128,6 @@ function Signup() {
               <input
                 type="password"
                 name="password"
-                placeholder="Create a password"
                 value={form.password}
                 onChange={handleChange}
                 required
@@ -124,7 +137,6 @@ function Signup() {
               <input
                 type="password"
                 name="confirmPassword"
-                placeholder="Confirm your password"
                 value={form.confirmPassword}
                 onChange={handleChange}
                 required
@@ -144,13 +156,15 @@ function Signup() {
               </div>
 
               <button type="submit" disabled={loading}>
-                {loading ? "Creating Account..." : "Create Account →"}
+                {loading ? "Sending OTP..." : "Verify Email →"}
               </button>
             </form>
 
             <p className="login-link">
-              Already have an account? <Link to="/login">Login</Link>
+            <span className="login-text">Already have an account?</span>{" "}
+            <Link to="/login">Login</Link>
             </p>
+
           </div>
         </div>
       </div>
