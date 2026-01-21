@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate ,useLocation} from "react-router-dom";
 import api from "../api";
 import {
   ArrowLeft,
@@ -12,10 +12,11 @@ export default function HomePolicyDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addPolicy } = useCompare();
-
+  const location = useLocation();
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     api
       .get(`/policies/home/${id}`)
@@ -86,18 +87,22 @@ export default function HomePolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "home",
-                    policy,
-                  },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+  onClick={() =>
+    navigate("/quote-summary", {
+      state: {
+        policy: {
+          ...policy,
+          policy_type: "home",
+        },
+        from: "/catalog",
+      },
+    })
+  }
+  className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+>
+  Get Quote
+</button>
+
           </div>
         </div>
       </div>

@@ -1,47 +1,45 @@
 import { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
-import axios from "axios";
+import api from "../api";
 import { useProfile } from "../context/ProfileContext";
-import { useTheme } from "../context/ThemeContext"; 
+import { useTheme } from "../context/ThemeContext";
+
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function ProfilePage() {
-  const {
-    setProfile: setGlobalProfile,
-    reloadProfile, // ✅ ADDED
-  } = useProfile();
-const { theme, toggleTheme } = useTheme();
+  const { setProfile: setGlobalProfile } = useProfile();
+  const { theme, toggleTheme } = useTheme();
+
   const [profile, setProfile] = useState({
     name: "",
     avatar: null,
     avatarFile: null,
-
     dob: "",
     address: "",
-
     categories: [],
     monthlyBudget: 15000,
     familySize: 1,
     goal: "Family Protection",
-
     riskLevel: "Medium",
   });
 
   /* ================= LOAD PROFILE ================= */
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/profile/1`)
+    api
+      .get("/api/profile")
       .then((res) => {
         if (!res.data) return;
 
         const avatarUrl = res.data.avatar
-          ? BASE_URL + res.data.avatar
+          ? res.data.avatar.startsWith("http")
+            ? res.data.avatar
+            : BASE_URL + res.data.avatar
           : null;
 
         setProfile((prev) => ({
           ...prev,
           name: res.data.name || "",
-          dob: res.data.dob || "",
+          dob: res.data.dob ? res.data.dob.slice(0, 10) : "",
           address: res.data.address || "",
           familySize: res.data.familySize || 1,
           categories: res.data.categories || [],
@@ -51,9 +49,9 @@ const { theme, toggleTheme } = useTheme();
           avatar: avatarUrl,
         }));
 
-        // 🔴 sync sidebar immediately
+        // 🔥 update sidebar instantly
         setGlobalProfile({
-          name: res.data.name || "John Doe",
+          ...res.data,
           avatar: avatarUrl,
         });
       })
@@ -85,23 +83,26 @@ const { theme, toggleTheme } = useTheme();
         fd.append("avatar", profile.avatarFile);
       }
 
-      await axios.post(`${BASE_URL}/api/profile/1`, fd);
+      await api.post("/api/profile", fd);
 
-      // ✅ THIS IS THE FIX (SIDEBAR AUTO UPDATE)
-      await reloadProfile();
+      // 🔁 reload profile after save
+      const res = await api.get("/api/profile");
+
+      const avatarUrl = res.data.avatar
+        ? res.data.avatar.startsWith("http")
+          ? res.data.avatar
+          : BASE_URL + res.data.avatar
+        : null;
+
+      setGlobalProfile({
+        ...res.data,
+        avatar: avatarUrl,
+      });
 
       alert("Profile saved successfully ✅");
     } catch (err) {
-      console.error("SAVE PROFILE ERROR FULL:", err);
-
-      if (err.response) {
-        alert(
-          `Save failed (${err.response.status}):\n` +
-            JSON.stringify(err.response.data)
-        );
-      } else {
-        alert("Save failed: Network / CORS error");
-      }
+      console.error("SAVE PROFILE FAILED:", err);
+      alert("Save failed ❌");
     }
   };
 
@@ -128,14 +129,21 @@ const { theme, toggleTheme } = useTheme();
   };
 
   return (
-    <div className="px-6 py-6 max-w-7xl space-y-6">
+    <div
+      className="min-h-screen px-6 py-6 max-w-7xl space-y-6"
+      style={{
+        background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)",
+      }}
+    >
+      {/* HEADER */}
       <div className="flex justify-between items-center">
         <div>
-      <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
-      <p className="text-sm text-gray-500 mb-8">
-        These details help us recommend the best insurance plans for you.
-      </p>
+          <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
+          <p className="text-sm text-gray-500 mb-8">
+            These details help us recommend the best insurance plans for you.
+          </p>
         </div>
+
         <button
           onClick={toggleTheme}
           className="px-4 py-2 rounded-lg border text-sm"
@@ -143,6 +151,7 @@ const { theme, toggleTheme } = useTheme();
           {theme === "dark" ? "🌞 Light Mode" : "🌙 Dark Mode"}
         </button>
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT */}
         <div className="lg:col-span-2 space-y-6">
@@ -164,7 +173,7 @@ const { theme, toggleTheme } = useTheme();
                   {profile.avatar ? (
                     <img
                       src={profile.avatar}
-                      alt={`${profile.name || "User"} profile`}
+                      alt="profile"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -174,9 +183,7 @@ const { theme, toggleTheme } = useTheme();
               </label>
 
               <div>
-                <p className="font-medium">
-                  {profile.name || "Primary Profile"}
-                </p>
+                <p className="font-medium">{profile.name || "User"}</p>
                 <p className="text-sm text-gray-500">
                   Used for recommendations
                 </p>
@@ -184,47 +191,34 @@ const { theme, toggleTheme } = useTheme();
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  👤 Full Name
-                </label>
-                <input
-                  type="text"
-                  value={profile.name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, name: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={profile.name}
+                onChange={(e) =>
+                  setProfile({ ...profile, name: e.target.value })
+                }
+                className="border rounded-md px-3 py-2 w-full"
+              />
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  📅 Date of Birth
-                </label>
-                <input
-                  type="date"
-                  value={profile.dob}
-                  onChange={(e) =>
-                    setProfile({ ...profile, dob: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+              <input
+                type="date"
+                value={profile.dob}
+                onChange={(e) =>
+                  setProfile({ ...profile, dob: e.target.value })
+                }
+                className="border rounded-md px-3 py-2 w-full"
+              />
 
-              <div className="md:col-span-2">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  📍 Address
-                </label>
-                <input
-                  type="text"
-                  value={profile.address}
-                  onChange={(e) =>
-                    setProfile({ ...profile, address: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="Address"
+                value={profile.address}
+                onChange={(e) =>
+                  setProfile({ ...profile, address: e.target.value })
+                }
+                className="border rounded-md px-3 py-2 w-full md:col-span-2"
+              />
             </div>
           </div>
 
@@ -234,116 +228,62 @@ const { theme, toggleTheme } = useTheme();
               🛡 Insurance Preferences
             </h3>
 
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700 mb-3 block">
-                🛡 Coverage Interests
-              </label>
-
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Health",
-                  "Life",
-                  "Auto",
-                  "Home",
-                  "Travel",
-                  "Fire",
-                  "Business",
-                ].map((cat) => (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {["Health", "Life", "Auto", "Home", "Travel", "Fire", "Business"].map(
+                (cat) => (
                   <button
                     key={cat}
-                    type="button"
                     onClick={() => toggleCategory(cat)}
                     className={`px-4 py-1.5 rounded-lg text-sm border ${
                       profile.categories.includes(cat)
-                        ? "bg-indigo-600 text-white border-indigo-600"
-                        : "border-gray-200 text-gray-600"
+                        ? "bg-indigo-600 text-white"
+                        : "text-gray-600"
                     }`}
                   >
                     {cat}
                   </button>
-                ))}
-              </div>
+                )
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  💰 Annual Budget
-                </label>
-                <input
-                  type="number"
-                  value={profile.monthlyBudget}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      monthlyBudget: Number(e.target.value),
-                    })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
+            <div className="grid grid-cols-2 gap-6">
+              <input
+                type="number"
+                value={profile.monthlyBudget}
+                onChange={(e) =>
+                  setProfile({
+                    ...profile,
+                    monthlyBudget: Number(e.target.value),
+                  })
+                }
+                className="border rounded-md px-3 py-2"
+              />
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  👨‍👩‍👧 Family Members
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  value={profile.familySize}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      familySize: Number(e.target.value),
-                    })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  🎯 Insurance Goal
-                </label>
-                <select
-                  value={profile.goal}
-                  onChange={(e) =>
-                    setProfile({ ...profile, goal: e.target.value })
-                  }
-                  className="border rounded-md px-3 py-2 w-full"
-                >
-                  <option>Family Protection</option>
-                  <option>Tax Saving</option>
-                  <option>Lowest Premium</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  ⚠️ Risk Level
-                </label>
-                <div className="border rounded-md px-3 py-2 bg-gray-50 text-indigo-600 font-semibold">
-                  {profile.riskLevel}
-                </div>
-              </div>
+              <input
+                type="number"
+                min={1}
+                value={profile.familySize}
+                onChange={(e) =>
+                  setProfile({
+                    ...profile,
+                    familySize: Number(e.target.value),
+                  })
+                }
+                className="border rounded-md px-3 py-2"
+              />
             </div>
           </div>
         </div>
 
         {/* RIGHT */}
         <div>
-          <div className="bg-white rounded-xl border p-6 space-y-4">
+          <div className="bg-white rounded-xl border p-6">
             <button
-              type="button"
               onClick={saveProfile}
               className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700"
             >
               Save Profile
             </button>
-
-            <p className="text-xs text-gray-500 text-center">
-              Your recommendations update automatically after saving.
-            </p>
           </div>
         </div>
       </div>

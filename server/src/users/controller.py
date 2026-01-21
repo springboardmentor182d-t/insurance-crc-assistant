@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from src.auth.jwt import get_current_user
 
-router = APIRouter(prefix="/users", tags=["Users"])
+router = APIRouter(tags=["Users"])
 
 @router.get("/user")
 def user_dashboard(current_user=Depends(get_current_user)):

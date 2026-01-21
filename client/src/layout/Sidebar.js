@@ -16,7 +16,9 @@ export default function Sidebar() {
   const { profile, loading } = useProfile();
 
   const menu = [
-    { name: "Dashboard", path: "/", icon: LayoutDashboard },
+    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+
+    // 🔹 POLICY CATALOG (SPECIAL ACTIVE LOGIC)
     { name: "Policy Catalog", path: "/catalog", icon: BookOpen },
     { name: "Recommendations", path: "/recommendations", icon: Sparkles },
     { name: "Claims", path: "/claims", icon: FileText },

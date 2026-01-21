@@ -9,12 +9,19 @@ from src.policies_recommendations_profile_preferences.services.recommendation_se
 
 router = APIRouter(prefix="/api/recommendations", tags=["Recommendations"])
 
+
 @router.get("/{user_id}")
 def recommend_from_profile(user_id: int, db: Session = Depends(get_db)):
     profile = get_profile(db, user_id)
+
+    # 🔴 HARD SAFETY CHECK
     if not profile:
-        return {"recommendations": []}
+        return {
+            "recommendations": []
+        }
+
+    recommendations = get_recommendations_for_profile(db, profile)
 
     return {
-        "recommendations": get_recommendations_for_profile(db, profile)
+        "recommendations": recommendations
     }

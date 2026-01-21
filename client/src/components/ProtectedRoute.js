@@ -1,24 +1,18 @@
 import { Navigate } from "react-router-dom";
-import  {jwtDecode } from "jwt-decode";
+import { useProfile } from "../context/ProfileContext";
 
 const ProtectedRoute = ({ children, role }) => {
-  const token = localStorage.getItem("token");
+  const { token, role: userRole } = useProfile();
 
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
-  try {
-    const decoded = jwtDecode(token);
-
-    if (role && decoded.role !== role) {
-      return <Navigate to="/" />;
-    }
-
-    return children;
-  } catch {
-    return <Navigate to="/login" />;
+  if (role && userRole !== role) {
+    return <Navigate to="/login" replace />;
   }
+
+  return children;
 };
 
 export default ProtectedRoute;

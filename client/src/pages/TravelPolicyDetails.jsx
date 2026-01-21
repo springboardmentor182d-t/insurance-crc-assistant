@@ -16,6 +16,7 @@ export default function TravelPolicyDetails() {
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     api
       .get(`/policies/travel/${id}`)
@@ -95,18 +96,22 @@ export default function TravelPolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "travel",
-                    policy,
-                  },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+  onClick={() =>
+    navigate("/quote-summary", {
+      state: {
+        policy: {
+          ...policy,
+          policy_type: "travel",
+        },
+        from: "/catalog",
+      },
+    })
+  }
+  className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+>
+  Get Quote
+</button>
+
           </div>
         </div>
       </div>

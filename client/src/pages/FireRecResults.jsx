@@ -11,6 +11,7 @@ export default function FireRecResults() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("score");
 
+  
   useEffect(() => {
     if (!state) return;
 

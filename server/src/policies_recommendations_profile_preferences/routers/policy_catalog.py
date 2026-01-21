@@ -74,7 +74,7 @@ def get_policy_catalog(db: Session = Depends(get_db)):
             "type": "travel",
             "policy_name": p.policy_name,
             "insurer": p.insurer_name,
-            "monthly_premium": float(p.min_premium),
+            "display_premium": float(p.display_premium),
         })
 
     # ---------------- BUSINESS ----------------

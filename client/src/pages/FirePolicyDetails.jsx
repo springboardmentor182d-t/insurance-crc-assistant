@@ -15,7 +15,7 @@ export default function FirePolicyDetails() {
 
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     api
       .get(`/policies/fire/${id}`)
@@ -84,18 +84,22 @@ export default function FirePolicyDetails() {
 
             {/* ✅ GET QUOTE → QUOTE SUMMARY */}
             <button
-              onClick={() =>
-                navigate("/quote-summary", {
-                  state: {
-                    policyType: "fire",
-                    policy,
+            onClick={() =>
+              navigate("/quote-summary", {
+                state: {
+                  policy: {
+                    ...policy,
+                    policy_type: "fire",
                   },
-                })
-              }
-              className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-            >
-              Get Quote
-            </button>
+                  from: "/catalog",
+                },
+              })
+            }
+            className="px-5 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
+          >
+            Get Quote
+          </button>
+
           </div>
         </div>
       </div>
