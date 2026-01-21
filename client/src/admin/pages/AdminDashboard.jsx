@@ -5,21 +5,23 @@ import Topbar from "../components/Topbar";
 import FraudRateAnalysis from "../components/FraudRateAnalysis";
 import RiskDistribution from "../components/RiskDistribution";
 import TopTriggeredRules from "../components/TopTriggeredRules";
+import HighRiskAlert from "../components/HighRiskAlert";
 import {
   getDashboardSummary,
   createInvestigation,
 } from "../services/adminApi";
-import HighRiskAlert from "../components/HighRiskAlert";
-// Date picker
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarIcon } from "@heroicons/react/24/outline";
+
+import { Download, ChevronDown } from "lucide-react";
 
 export default function AdminDashboard({ darkMode, setDarkMode }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showExport, setShowExport] = useState(false);
 
   const [form, setForm] = useState({
     claimId: "",
@@ -48,7 +50,7 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
   }, []);
 
   // =========================
-  // CREATE INVESTIGATION (REAL)
+  // CREATE INVESTIGATION
   // =========================
   const handleCreateInvestigation = async () => {
     if (!form.claimId || !form.investigator) {
@@ -70,13 +72,47 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
         date: new Date(),
       });
 
-      // refresh dashboard after creation
       fetchStats();
     } catch (error) {
-      console.error("Failed to create investigation", error);
       alert("Failed to create investigation");
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // =========================
+  // EXPORT HANDLER (DOWNLOAD)
+  // =========================
+  const handleExport = async (type) => {
+    setShowExport(false);
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/admin/export/${type}`,
+        { method: "GET" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Export failed");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `admin_dashboard_${new Date()
+        .toISOString()
+        .slice(0, 10)}.${type === "excel" ? "xlsx" : type}`;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to download file");
     }
   };
 
@@ -84,9 +120,6 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
     return <div className="p-6">Loading admin dashboard...</div>;
   }
 
-  // =========================
-  // DB-BASED VALUES ONLY
-  // =========================
   const totalClaims = stats?.total_claims ?? 0;
   const pendingClaims = stats?.status_counts?.pending ?? 0;
   const rejectedClaims = stats?.status_counts?.rejected ?? 0;
@@ -104,23 +137,60 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
       }`}
     >
       <Sidebar />
+
       <div className="flex-1">
         <Topbar darkMode={darkMode} setDarkMode={setDarkMode} />
-  
-        {/* 🔥 CHILD ROUTES RENDER HERE */}
         <Outlet />
 
-        {/* DASHBOARD CONTENT (ONLY FOR /admin) */}
         <div className="p-6 space-y-6">
-          {/* Header */}
+          {/* HEADER */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-            <button
-              className="bg-purple-600 text-white px-4 py-2 w-40 rounded-md shadow hover:bg-purple-700"
-              onClick={() => setShowModal(true)}
-            >
-              New Investigation
-            </button>
+
+            <div className="flex items-center gap-3">
+              {/* EXPORT DROPDOWN */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowExport(!showExport)}
+                  className="flex items-center gap-2 border px-4 py-2 rounded-md shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Download size={16} />
+                  Export Data
+                  <ChevronDown size={16} />
+                </button>
+
+                {showExport && (
+                  <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 border rounded-md shadow-lg z-50">
+                    <button
+                      onClick={() => handleExport("csv")}
+                      className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Export as CSV
+                    </button>
+                    <button
+                      onClick={() => handleExport("excel")}
+                      className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Export as Excel
+                    </button>
+                    <button
+                      onClick={() => handleExport("pdf")}
+                      className="block w-full px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Export as PDF
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* NEW INVESTIGATION */}
+              <button
+                className="bg-purple-600 text-white px-4 py-2 w-40 rounded-md shadow hover:bg-purple-700"
+                onClick={() => setShowModal(true)}
+              >
+                New Investigation
+              </button>
+            </div>
           </div>
 
           {/* SUMMARY CARDS */}
@@ -137,11 +207,9 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
             />
           </div>
 
-          {/* High Risk Activity */}
           <HighRiskAlert />
 
-
-          {/* Charts */}
+          {/* CHARTS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow h-72">
               <FraudRateAnalysis />
@@ -151,19 +219,16 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
             </div>
           </div>
 
-          {/* Top Triggered Rules */}
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow h-72">
             <TopTriggeredRules />
           </div>
         </div>
       </div>
 
-      {/* =========================
-          MODAL
-      ========================= */}
+      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-lg shadow-lg p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 w-full max-w-md p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">
               Start New Investigation
             </h2>
@@ -175,7 +240,7 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
                 onChange={(e) =>
                   setForm({ ...form, claimId: e.target.value })
                 }
-                className="w-full border rounded-md px-3 py-2 dark:bg-gray-700"
+                className="w-full border px-3 py-2 rounded-md"
               />
 
               <input
@@ -184,7 +249,7 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
                 onChange={(e) =>
                   setForm({ ...form, investigator: e.target.value })
                 }
-                className="w-full border rounded-md px-3 py-2 dark:bg-gray-700"
+                className="w-full border px-3 py-2 rounded-md"
               />
 
               <select
@@ -192,7 +257,7 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
                 onChange={(e) =>
                   setForm({ ...form, priority: e.target.value })
                 }
-                className="w-full border rounded-md px-3 py-2 dark:bg-gray-700"
+                className="w-full border px-3 py-2 rounded-md"
               >
                 <option>Low</option>
                 <option>Medium</option>
@@ -202,7 +267,7 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
               <DatePicker
                 selected={form.date}
                 onChange={(date) => setForm({ ...form, date })}
-                className="w-full border rounded-md px-3 py-2 dark:bg-gray-700"
+                className="w-full border px-3 py-2 rounded-md"
               />
 
               <textarea
@@ -211,21 +276,21 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
                 onChange={(e) =>
                   setForm({ ...form, notes: e.target.value })
                 }
-                className="w-full border rounded-md px-3 py-2 dark:bg-gray-700"
+                className="w-full border px-3 py-2 rounded-md"
               />
             </div>
 
             <div className="mt-6 flex justify-end gap-3">
               <button
-                className="px-4 py-2 border rounded-md"
                 onClick={() => setShowModal(false)}
+                className="border px-4 py-2 rounded-md"
               >
                 Cancel
               </button>
               <button
-                disabled={submitting}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
                 onClick={handleCreateInvestigation}
+                disabled={submitting}
+                className="bg-purple-600 text-white px-4 py-2 rounded-md"
               >
                 {submitting ? "Creating..." : "Create"}
               </button>
@@ -238,14 +303,12 @@ export default function AdminDashboard({ darkMode, setDarkMode }) {
 }
 
 // =========================
-// SMALL REUSABLE CARD
+// SUMMARY CARD
 // =========================
 function SummaryCard({ title, value }) {
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-      <h2 className="text-sm text-gray-500 dark:text-gray-400">
-        {title}
-      </h2>
+      <h2 className="text-sm text-gray-500">{title}</h2>
       <p className="text-xl font-bold">{value}</p>
     </div>
   );

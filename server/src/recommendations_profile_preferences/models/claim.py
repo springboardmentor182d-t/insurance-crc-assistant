@@ -9,4 +9,4 @@ class Claim(Base):
     claim_date = Column(Date, nullable=False)
     claim_amount = Column(Float, nullable=False)
     status = Column(String, nullable=False)
-    
+   

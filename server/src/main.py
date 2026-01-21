@@ -13,21 +13,20 @@ from src.auth.service import hash_password
 # ================= LOAD ENV =================
 load_dotenv()
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 # ================= APP =================
 app = FastAPI(
-    title="Insurance CRC Assistant",
-    servers=[{"url": BASE_URL}],
+    title="Insurance CRC Assistant"
 )
 
 # ================= CORS =================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        FRONTEND_URL,
-        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -55,16 +54,22 @@ app.include_router(users_router, prefix="/users", tags=["Users"])
 
 # ================= ADMIN & DASHBOARD =================
 from src.admin.dashboard import router as admin_dashboard_router
+from src.admin.policies.router import router as admin_policy_router
 from src.dashboard.router import router as dashboard_router
 from src.admin.investigations import router as investigation_router
+from src.admin.router import router as admin_router
 
 app.include_router(admin_dashboard_router)
 app.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
 app.include_router(investigation_router)
+app.include_router(admin_router)
+
+# ✅ IMPORTANT: INCLUDE ADMIN POLICIES ROUTER ONLY ONCE
+# prefix is already defined inside router file
+app.include_router(admin_policy_router)
 
 # ================= CLAIMS =================
 from src.claims.controller import router as claims_router
-
 app.include_router(claims_router, prefix="/claims", tags=["Claims"])
 
 # ================= POLICY CATALOG =================
@@ -74,7 +79,7 @@ from src.policies_recommendations_profile_preferences.routers.policy_catalog imp
 
 app.include_router(policy_catalog_router, prefix="/catalog", tags=["Catalog"])
 
-# ================= POLICY DETAILS =================
+# ================= POLICY DETAILS ROUTERS =================
 from src.policies_recommendations_profile_preferences.routers.health_policy import router as health_policy_router
 from src.policies_recommendations_profile_preferences.routers.motor_policy import router as motor_policy_router
 from src.policies_recommendations_profile_preferences.routers.life_policy import router as life_policy_router
@@ -126,5 +131,4 @@ def create_admin():
 def root():
     return {
         "status": "Insurance CRC Assistant API running",
-        "base_url": BASE_URL,
     }
