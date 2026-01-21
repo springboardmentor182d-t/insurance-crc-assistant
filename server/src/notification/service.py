@@ -18,3 +18,4 @@ async def create_notification_async(
     await db.commit()
     await db.refresh(notif)
     return notif
+
