@@ -19,3 +19,5 @@ def send_email(to_email: str, subject: str, body: str):
     server.login(SMTP_USER, SMTP_PASS)
     server.send_message(msg)
     server.quit()
+    
+    
