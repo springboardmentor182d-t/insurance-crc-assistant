@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 
 from src.policies_recommendations_profile_preferences.services.profile_adapter import ProfileAdapter
-
 from src.policies_recommendations_profile_preferences.services.health_scoring import recommend_health_policies
 from src.policies_recommendations_profile_preferences.services.life_scoring import recommend_life_policies
 from src.policies_recommendations_profile_preferences.services.motor_scoring import recommend_motor_policies
@@ -23,31 +22,46 @@ CATEGORY_SERVICE_MAP = {
 
 
 def extract_premium(policy):
-    if hasattr(policy, "monthly_premium") and policy.monthly_premium:
-        return float(policy.monthly_premium)
-
-    if hasattr(policy, "min_monthly_premium") and policy.min_monthly_premium:
-        return float(policy.min_monthly_premium)
-
-    if hasattr(policy, "min_annual_premium") and policy.min_annual_premium:
-        return float(policy.min_annual_premium)
-
-    if hasattr(policy, "base_premium") and policy.base_premium:
-        return float(policy.base_premium)
-
-    # ✅ TRAVEL FIX
-    if hasattr(policy, "min_premium") and policy.min_premium:
-        return float(policy.min_premium)
-
+    for field in [
+        "monthly_premium",
+        "min_monthly_premium",
+        "min_annual_premium",
+        "base_premium",
+        "min_premium",
+    ]:
+        if hasattr(policy, field) and getattr(policy, field):
+            return float(getattr(policy, field))
     return 0.0
 
 
 def get_recommendations_for_profile(db: Session, profile: dict):
+    """
+    FINAL FIX:
+    - Works even if profile categories are missing or lowercase
+    - NO dependency on recommendations table
+    """
+
     user_input = ProfileAdapter(profile)
     recommendations = []
 
-    for category in profile.get("categories", []):
+    categories = profile.get("categories")
+
+    # 🔑 GUARANTEED FALLBACK
+    if not categories or not isinstance(categories, list):
+        categories = [
+            "Health",
+            "Life",
+            "Auto",
+            "Home",
+            "Travel",
+            "Fire",
+            "Business",
+        ]
+
+    for raw_category in categories:
+        category = raw_category.strip().title()
         service = CATEGORY_SERVICE_MAP.get(category)
+
         if not service:
             continue
 

@@ -29,12 +29,14 @@ def recommend_travel_policies(
     results = []
     for policy in policies:
         score = calculate_travel_score(policy, input)
-        annual = float(policy.min_premium)
+
+        annual = float(policy.display_premium)  # ✅ FIX
+        monthly = round(annual / 12, 2)
         results.append({
             "policy_id": policy.id,
             "policy_name": policy.policy_name,
             "insurer_name": policy.insurer_name,
-            "monthly_premium": round(annual / 12, 2),
+            "annual_premium": float(policy.display_premium),  # ✅ SINGLE SOURCE
             "score": score
         })
 

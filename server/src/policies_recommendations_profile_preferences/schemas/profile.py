@@ -4,7 +4,7 @@ from datetime import date
 
 class ProfileBase(BaseModel):
     name: Optional[str]
-    dob: Optional[date]
+    dob: Optional[str]
     address: Optional[str]
     familySize: int = 1
     monthlyBudget: int = 15000

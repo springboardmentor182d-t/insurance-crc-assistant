@@ -2,14 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
-from datetime import date, timedelta
 
 from src.database.core import get_db
-from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
+
 from src.policies_recommendations_profile_preferences.models.profile import Profile
-from src.policies_recommendations_profile_preferences.models.health_policy import HealthPolicy
-from src.policies_recommendations_profile_preferences.models.life_policy import LifePolicy
-from src.policies_recommendations_profile_preferences.models.motor_policy import MotorPolicy
+from src.policies_recommendations_profile_preferences.models.profile_category import ProfileCategory
+from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
+from src.policies_recommendations_profile_preferences.models.saved_quote import SavedQuote
 from src.claims.models import Claim
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
@@ -30,57 +29,46 @@ def get_dashboard(user_id: int, db: Session = Depends(get_db)):
     profile_data = None
 
     if profile:
+        categories = [
+            c.category
+            for c in db.query(ProfileCategory)
+            .filter(ProfileCategory.profile_id == profile.id)
+            .all()
+        ]
+
         profile_data = {
             "id": profile.id,
             "username": profile.name,
             "photo": profile.avatar,
             "risk": profile.risk_level,
-            "role": "Policyholder",
-            "tenure": "3 Years",
+            "familySize": profile.family_size,
+            "monthlyBudget": profile.monthly_budget,
+            "goal": profile.goal,
+            "categories": categories,   # ✅ FIXED
         }
 
-    # ---------- POLICIES ----------
-    policies = []
+    # ---------- SAVED QUOTES ----------
+    saved_quotes_db = (
+        db.query(SavedQuote)
+        .filter(SavedQuote.user_id == user_id)
+        .order_by(SavedQuote.created_at.desc())
+        .limit(6)
+        .all()
+    )
 
-    today = date.today()
-    renewal_date = today + timedelta(days=365)  # ✅ REAL renewal date
-
-    health = db.query(HealthPolicy).limit(1).all()
-    life = db.query(LifePolicy).limit(1).all()
-    motor = db.query(MotorPolicy).limit(1).all()
-
-    for p in health:
-        policies.append({
-            "id": p.id,
-            "policy_type": "Health Insurance",
-            "policy_name": p.policy_name,
-            "policy_number": f"H-{p.id}",
-            "premium": float(p.monthly_premium),
-            "status": "active",
-            "renewal_date": renewal_date,  # ✅ DATE OBJECT
-        })
-
-    for p in life:
-        policies.append({
-            "id": p.id,
-            "policy_type": "Life Insurance",
-            "policy_name": p.policy_name,
-            "policy_number": f"L-{p.id}",
-            "premium": float(p.min_monthly_premium),
-            "status": "active",
-            "renewal_date": renewal_date,
-        })
-
-    for p in motor:
-        policies.append({
-            "id": p.id,
-            "policy_type": "Motor Insurance",
-            "policy_name": p.policy_name,
-            "policy_number": f"M-{p.id}",
-            "premium": float(p.min_annual_premium),
-            "status": "active",
-            "renewal_date": renewal_date,
-        })
+    policies = [
+        {
+            "id": q.id,
+            "policy_type": q.policy_type,
+            "policy_id": q.policy_id,
+            "policy_name": q.policy_name,
+            "insurer_name": q.insurer_name,
+            "tenure": q.tenure,
+            "total_premium": float(q.total_premium),
+            "created_at": q.created_at,
+        }
+        for q in saved_quotes_db
+    ]
 
     # ---------- CLAIMS ----------
     claims_db = (
@@ -91,15 +79,16 @@ def get_dashboard(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-    claims = []
-    for c in claims_db:
-        claims.append({
+    claims = [
+        {
             "id": c.id,
             "policy_number": c.policy,
             "claim_date": c.incident_date,
             "claim_amount": c.amount_claimed,
             "status": c.status,
-        })
+        }
+        for c in claims_db
+    ]
 
     # ---------- PREMIUM ANALYSIS ----------
     premium_rows = (
@@ -108,14 +97,15 @@ def get_dashboard(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-    premium_analysis = []
-    for p in premium_rows:
-        premium_analysis.append({
+    premium_analysis = [
+        {
             "category": p.category,
             "user_cost": float(p.user_cost),
             "market_cost": float(p.market_cost),
             "frequency": p.frequency.lower(),
-        })
+        }
+        for p in premium_rows
+    ]
 
     return {
         "profile": profile_data,

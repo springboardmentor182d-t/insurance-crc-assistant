@@ -34,4 +34,6 @@ def get_travel_policy(policy_id: int, db: Session = Depends(get_db)):
         "min_premium": float(p.min_premium),
         "max_premium": float(p.max_premium),
         "status": p.status,
+        "display_premium": float(p.display_premium),
+
     }

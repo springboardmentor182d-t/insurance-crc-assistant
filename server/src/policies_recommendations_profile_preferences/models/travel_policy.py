@@ -35,4 +35,7 @@ class TravelPolicy(Base):
     min_premium = Column(Numeric(10,2), nullable=False)
     max_premium = Column(Numeric(10,2), nullable=False)
 
+    # ✅ NEW (catalog only)
+    display_premium = Column(Numeric(10,2), nullable=False)
+
     status = Column(String(20), default="active")
