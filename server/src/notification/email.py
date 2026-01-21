@@ -1,4 +1,3 @@
-# server/src/notifications/email.py
 
 import smtplib
 from email.mime.text import MIMEText

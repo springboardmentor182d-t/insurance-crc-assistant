@@ -1,4 +1,3 @@
-# server/src/notifications/models.py
 
 from sqlalchemy import Column, Integer, String, Boolean, Text, ForeignKey, TIMESTAMP
 from sqlalchemy.sql import func
