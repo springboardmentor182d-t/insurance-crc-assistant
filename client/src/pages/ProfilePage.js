@@ -85,7 +85,7 @@ export default function ProfilePage() {
 
       await api.post("/api/profile", fd);
 
-      // 🔁 Reload profile to sync sidebar
+      // 🔁 reload profile after save
       const res = await api.get("/api/profile");
 
       const avatarUrl = res.data.avatar
@@ -129,11 +129,17 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="px-6 py-6 max-w-7xl space-y-6">
+    <div
+      className="min-h-screen px-6 py-6 max-w-7xl space-y-6"
+      style={{
+        background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)",
+      }}
+    >
+      {/* HEADER */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-semibold mb-2">My Profile</h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-8">
             These details help us recommend the best insurance plans for you.
           </p>
         </div>
@@ -167,7 +173,7 @@ export default function ProfilePage() {
                   {profile.avatar ? (
                     <img
                       src={profile.avatar}
-                      alt="avatar"
+                      alt="profile"
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -186,12 +192,13 @@ export default function ProfilePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <input
+                type="text"
                 placeholder="Full Name"
                 value={profile.name}
                 onChange={(e) =>
                   setProfile({ ...profile, name: e.target.value })
                 }
-                className="border rounded-md px-3 py-2"
+                className="border rounded-md px-3 py-2 w-full"
               />
 
               <input
@@ -200,16 +207,17 @@ export default function ProfilePage() {
                 onChange={(e) =>
                   setProfile({ ...profile, dob: e.target.value })
                 }
-                className="border rounded-md px-3 py-2"
+                className="border rounded-md px-3 py-2 w-full"
               />
 
               <input
+                type="text"
                 placeholder="Address"
                 value={profile.address}
                 onChange={(e) =>
                   setProfile({ ...profile, address: e.target.value })
                 }
-                className="border rounded-md px-3 py-2 md:col-span-2"
+                className="border rounded-md px-3 py-2 w-full md:col-span-2"
               />
             </div>
           </div>
@@ -238,7 +246,7 @@ export default function ProfilePage() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-6">
               <input
                 type="number"
                 value={profile.monthlyBudget}
@@ -253,6 +261,7 @@ export default function ProfilePage() {
 
               <input
                 type="number"
+                min={1}
                 value={profile.familySize}
                 onChange={(e) =>
                   setProfile({
@@ -267,13 +276,15 @@ export default function ProfilePage() {
         </div>
 
         {/* RIGHT */}
-        <div className="bg-white rounded-xl border p-6">
-          <button
-            onClick={saveProfile}
-            className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700"
-          >
-            Save Profile
-          </button>
+        <div>
+          <div className="bg-white rounded-xl border p-6">
+            <button
+              onClick={saveProfile}
+              className="w-full bg-indigo-600 text-white py-2.5 rounded-lg hover:bg-indigo-700"
+            >
+              Save Profile
+            </button>
+          </div>
         </div>
       </div>
     </div>
