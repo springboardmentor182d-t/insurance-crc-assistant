@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     fetchDashboardData(userId)
       .then((data) => {
-        console.log("Dashboard data:", data); // debug backend response
+        console.log("Dashboard data:", data);
         setDashboard(data);
       })
       .catch((err) => {
@@ -29,13 +29,11 @@ export default function Home() {
   if (!dashboard) return <div className="p-6">Loading dashboard...</div>;
 
   // -----------------------
-  // Safe access to backend data
+  // Safe access
   // -----------------------
   const user = dashboard.user || {};
   const policies = dashboard.policies || [];
   const claims = dashboard.claims || [];
-  const premiumAnalysis = dashboard.premiumAnalysis || [];
-  const recommendations = dashboard.recommendations || [];
 
   // -----------------------
   // Chart data
@@ -46,10 +44,14 @@ export default function Home() {
   }));
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div
+      className="min-h-screen
+                 bg-gradient-to-br
+                 from-slate-100 via-blue-50 to-indigo-100
+                 dark:from-gray-950 dark:via-gray-900 dark:to-black"
+    >
       <main className="px-6 pb-6 space-y-6">
-
-        {/* Top section: Premium chart + Profile summary */}
+        {/* Top section */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <PremiumChart data={chartData} />
@@ -57,19 +59,18 @@ export default function Home() {
           <ProfileSummary profile={user} />
         </div>
 
-        {/* Policies section */}
+        {/* Policies */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <MyPolicies policies={policies} />
           </div>
         </div>
 
-        {/* Stats and claims */}
+        {/* Stats + Claims */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <StatsCard policies={policies} />
           <ClaimsTable claims={claims} policies={policies} />
         </div>
-
       </main>
     </div>
   );

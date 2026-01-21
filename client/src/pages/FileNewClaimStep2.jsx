@@ -34,7 +34,7 @@ const FileNewClaimStep2 = () => {
       formData.append("file", file);
 
       const response = await fetch(
-        `${ baseURL}/claims/${claimId}/upload`,
+        `${baseURL}/claims/${claimId}/upload`,
         {
           method: "POST",
           body: formData,
@@ -56,51 +56,69 @@ const FileNewClaimStep2 = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-semibold mb-6">
-        File New Claim – Step 2
-      </h1>
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
 
-      <div className="bg-white p-6 rounded-xl shadow space-y-6">
-        {/* Upload Section */}
+      {/* HEADER */}
+      <div className="max-w-3xl mx-auto mb-8">
+        <h1 className="text-3xl font-semibold text-slate-800">
+          File New Claim
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Step 2 of 3 · Upload documents
+        </p>
+      </div>
+
+      {/* CARD */}
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8 space-y-8">
+        {/* UPLOAD AREA */}
         <div>
-          <label className="text-sm font-medium mb-2 block">
+          <label className="text-sm font-medium text-slate-700 block mb-3">
             Upload Supporting Document
           </label>
 
-          <input
-            type="file"
-            accept=".pdf,.jpg,.png"
-            onChange={handleFileChange}
-            className="block w-full text-sm"
-          />
+          <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center bg-slate-50">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.png"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 cursor-pointer"
+            />
+
+            <p className="text-xs text-slate-500 mt-2">
+              Accepted formats: PDF, JPG, PNG
+            </p>
+          </div>
         </div>
 
-        {/* Upload Button */}
+        {/* UPLOAD BUTTON */}
         <button
           onClick={handleUpload}
           disabled={uploading}
-          className={`px-6 py-2 rounded text-white ${
+          className={`w-full px-6 py-3 rounded-lg text-white transition ${
             uploading
-              ? "bg-gray-400"
+              ? "bg-slate-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
           {uploading ? "Uploading..." : "Upload Document"}
         </button>
 
-        {/* Status */}
+        {/* STATUS */}
         {uploaded && (
-          <p className="text-green-600 text-sm">
-            ✔ Document uploaded successfully
-          </p>
+          <div className="flex items-center gap-2 text-green-600 text-sm">
+            <span className="text-lg">✔</span>
+            Document uploaded successfully
+          </div>
         )}
 
-        {/* Navigation Buttons */}
+        {/* NAVIGATION */}
         <div className="flex justify-between pt-6">
           <button
             onClick={() => navigate("/claims/file/step1")}
-            className="px-6 py-2 border rounded"
+            className="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 transition"
           >
             ← Back
           </button>
@@ -108,10 +126,10 @@ const FileNewClaimStep2 = () => {
           <button
             onClick={() => navigate("/claims/file/step3")}
             disabled={!uploaded}
-            className={`px-6 py-2 rounded text-white ${
+            className={`px-6 py-2.5 rounded-lg text-white transition ${
               uploaded
                 ? "bg-purple-600 hover:bg-purple-700"
-                : "bg-gray-400 cursor-not-allowed"
+                : "bg-slate-400 cursor-not-allowed"
             }`}
           >
             Next: Review →
@@ -123,6 +141,3 @@ const FileNewClaimStep2 = () => {
 };
 
 export default FileNewClaimStep2;
-
-
-

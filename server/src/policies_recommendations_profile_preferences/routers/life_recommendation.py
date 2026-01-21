@@ -8,10 +8,10 @@ from src.policies_recommendations_profile_preferences.services.life_scoring impo
 
 # ❌ DO NOT PUT PREFIX HERE
 router = APIRouter(
-    tags=["Life Recommendation"]
+   prefix="/api/recommendations", tags=["Life Recommendation"]
 )
 
-@router.post("/")
+@router.post("/life")
 def recommend_life_policies(
     input: LifeRecommendationInput,
     db: Session = Depends(get_db)

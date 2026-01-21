@@ -16,7 +16,7 @@ export default function TravelRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/travel", state)
+      .post("/api/recommendations/travel", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

@@ -25,7 +25,11 @@ export default function SavedQuotes() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7fb] px-10 py-8">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
 
       {/* ✅ CONTENT WRAPPER */}
       <div className="max-w-5xl">

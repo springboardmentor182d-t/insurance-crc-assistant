@@ -5,12 +5,10 @@ import { useState, useRef, useEffect } from "react";
 export default function TopNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
-
   // ✅ HOOKS (must be first, always)
   const [open, setOpen] = useState(false);
   const [notifications] = useState([]); // empty initially
   const bellRef = useRef(null);
-
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -18,19 +16,16 @@ export default function TopNavbar() {
         setOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () =>
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const hasUnread = notifications.some((n) => n.unread);
-
   // ✅ SHOW NAVBAR ONLY ON DASHBOARD ROUTES
   const showNavbar =
     location.pathname === "/" ||
     location.pathname === "/dashboard";
-
   if (!showNavbar) {
     return null;
   }

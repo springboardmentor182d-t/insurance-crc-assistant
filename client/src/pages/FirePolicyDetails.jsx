@@ -28,7 +28,11 @@ export default function FirePolicyDetails() {
     return <div className="p-12 text-red-500">Policy not found</div>;
 
   return (
-    <div className="min-h-screen px-10 py-8 bg-[#f6f5fb]">
+    <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
       {/* BACK */}
       <button
         onClick={() => navigate(-1)}

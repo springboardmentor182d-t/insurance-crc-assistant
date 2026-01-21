@@ -8,7 +8,11 @@ export default function ComparePolicies() {
   /* ---------------- EMPTY STATE ---------------- */
   if (policies.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white">
+      <div className="min-h-screen
+                bg-gradient-to-br
+                from-slate-100 via-blue-50 to-indigo-100
+                dark:from-gray-950 dark:via-gray-900 dark:to-black">
+
         <h2 className="text-3xl font-semibold">No policies selected</h2>
         <p className="text-slate-300 mt-3 mb-8">
           Start comparing policies to find the best fit

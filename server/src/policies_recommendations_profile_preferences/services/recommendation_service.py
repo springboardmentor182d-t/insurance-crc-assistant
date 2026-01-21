@@ -23,17 +23,21 @@ CATEGORY_SERVICE_MAP = {
 
 
 def extract_premium(policy):
-    if hasattr(policy, "monthly_premium") and policy.monthly_premium is not None:
+    if hasattr(policy, "monthly_premium") and policy.monthly_premium:
         return float(policy.monthly_premium)
 
-    if hasattr(policy, "min_monthly_premium") and policy.min_monthly_premium is not None:
+    if hasattr(policy, "min_monthly_premium") and policy.min_monthly_premium:
         return float(policy.min_monthly_premium)
 
-    if hasattr(policy, "min_annual_premium") and policy.min_annual_premium is not None:
+    if hasattr(policy, "min_annual_premium") and policy.min_annual_premium:
         return float(policy.min_annual_premium)
 
-    if hasattr(policy, "base_premium") and policy.base_premium is not None:
+    if hasattr(policy, "base_premium") and policy.base_premium:
         return float(policy.base_premium)
+
+    # ✅ TRAVEL FIX
+    if hasattr(policy, "min_premium") and policy.min_premium:
+        return float(policy.min_premium)
 
     return 0.0
 

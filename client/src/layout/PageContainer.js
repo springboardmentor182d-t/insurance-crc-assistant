@@ -1,17 +1,19 @@
 import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
+
 export default function PageContainer() {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen flex
+                    bg-gray-100 dark:bg-gray-950
+                    text-gray-900 dark:text-gray-100">
+
+      {/* SIDEBAR */}
       <Sidebar />
 
-      <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="flex-1 px-8 py-6 overflow-y-auto">
-          <Outlet />
-        </main>
-      </div>
+      {/* PAGE CONTENT */}
+      <main className="flex-1">
+        <Outlet />
+      </main>
     </div>
   );
 }

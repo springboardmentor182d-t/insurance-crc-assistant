@@ -16,7 +16,7 @@ export default function BusinessRecResults() {
     if (!state) return;
 
     api
-      .post("/recommendations/business", state)
+      .post("/api/recommendations/business", state)
       .then((res) => setPolicies(res.data))
       .finally(() => setLoading(false));
   }, [state]);

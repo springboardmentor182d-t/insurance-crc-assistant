@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
+
 export default function MyPolicies({ policies = [] }) {
   const navigate = useNavigate();
-  
+
   if (!policies.length) {
     return (
       <div className="bg-white shadow-md rounded-lg p-6 text-center">
@@ -21,9 +22,8 @@ export default function MyPolicies({ policies = [] }) {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">My Policies</h3>
 
-        {/* ✅ View All Button */}
         <button
-          onClick={() => navigate("/policies")}
+          onClick={() => navigate("/catalog")}
           className="text-blue-600 text-sm hover:underline"
         >
           View All →

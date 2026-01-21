@@ -1,43 +1,36 @@
-import { FiStar } from "react-icons/fi";
-export default function RecommendedPolicies({ recommendations = [] }) {
-  if (!recommendations.length) {
-    return (
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="flex items-center gap-2 mb-2">
-          <FiStar className="text-yellow-500 text-xl" />
-          <h3 className="text-lg font-semibold text-gray-800">Recommended</h3>
-        </div>
-        <p className="text-sm text-gray-500 mb-2">Tailored for you.</p>
-        <p className="text-gray-500 text-sm">No recommendations available.</p>
-      </div>
-    );
-  }
+import { useNavigate } from "react-router-dom";
 
-  
+export default function RecommendedPolicies() {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-6 space-y-4">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-2">
-        <FiStar className="text-yellow-500 text-xl" />
-        <h3 className="text-lg font-semibold text-gray-800">Recommended</h3>
-      </div>
-      <p className="text-sm text-gray-500 mb-4">Tailored for you.</p>
-
-      {/* Cards */}
-      {recommendations.map((r) => (
-        <div key={r.id} className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-2">
-          <h4 className="text-md font-semibold text-gray-800">{r.title}</h4>
-          <p className="text-sm text-gray-600">{r.description}</p>
-          {r.link && (
-            <a
-              href={r.link}
-              className="text-blue-600 text-sm font-medium hover:underline"
-            >
-              {r.action || "View →"}
-            </a>
-          )}
+    <div className="bg-white shadow-md rounded-lg p-6 flex flex-col justify-between h-full">
+      <div>
+        {/* Header */}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-yellow-500 text-lg">⭐</span>
+          <h3 className="text-lg font-semibold">Recommended</h3>
         </div>
-      ))}
+
+        <p className="text-sm text-gray-600 mb-3">
+          Personalized insurance suggestions based on your profile.
+        </p>
+
+        {/* ✅ BULLETED POINTS (compact, low height) */}
+        <ul className="list-disc list-inside text-sm text-gray-500 space-y-1">
+          <li>Coverage gaps identified</li>
+          <li>Cost-saving options available</li>
+          <li>Policies matched to your profile</li>
+        </ul>
+      </div>
+
+      {/* CTA BUTTON */}
+      <button
+        onClick={() => navigate("/recommendedPolicies")}
+        className="mt-5 w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+      >
+        View Recommended Policies →
+      </button>
     </div>
   );
 }
