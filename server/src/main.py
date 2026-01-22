@@ -19,7 +19,7 @@ UPLOAD_DIR = "uploads"
 os.makedirs(MEDIA_DIR, exist_ok=True)
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# ================= DB =================
+# ================= IMPORT DB & MODELS =================
 from database.core import Base, engine
 from users.models import User
 from auth.service import hash_password
@@ -44,17 +44,8 @@ app.add_middleware(
 )
 
 # ================= STATIC FILES =================
-app.mount(
-    "/media",
-    StaticFiles(directory=MEDIA_DIR),
-    name="media",
-)
-
-app.mount(
-    "/uploads",
-    StaticFiles(directory=UPLOAD_DIR),
-    name="uploads",
-)
+app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 # ================= ROUTERS =================
 from auth.routes.auth_routes import router as auth_router
@@ -66,7 +57,6 @@ from claims.controller import router as claims_router
 from api import api_router
 from policy.routes.policy import router as policy_router
 
-# Recommendations
 from policies_recommendations_profile_preferences.routers import (
     health_recommendation,
     life_recommendation,
