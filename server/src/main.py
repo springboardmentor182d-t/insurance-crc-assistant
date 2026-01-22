@@ -6,32 +6,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
-from src.database.core import Base, engine
-from src.users.models import User
-from src.auth.service import hash_password
-
-# Routers
-from src.auth.routes.auth_routes import router as auth_router
-from src.auth.routes.auth_otp_routes import router as register_otp_router
-from src.auth.routes.forgot_password import router as forgot_password_router
-from src.users.controller import router as users_router
-from src.claims.controller import router as claims_router
-from src.api import api_router
-from src.policy.routes.policy import router as policy_router
-
-# Recommendations
-from src.policies_recommendations_profile_preferences.routers import (
-    health_recommendation,
-    life_recommendation,
-    motor_recommendation,
-    travel_recommendation,
-    home_recommendation,
-    fire_recommendation,
-    business_recommendation,
-    profile,
-    recommendations,
-)
-
 # ================= LOAD ENV =================
 load_dotenv()
 
@@ -39,11 +13,16 @@ BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # ================= CREATE REQUIRED DIRECTORIES =================
-MEDIA_DIR = "src/policies_recommendations_profile_preferences/static/media"
+MEDIA_DIR = "policies_recommendations_profile_preferences/static/media"
 UPLOAD_DIR = "uploads"
 
 os.makedirs(MEDIA_DIR, exist_ok=True)
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# ================= DB =================
+from database.core import Base, engine
+from users.models import User
+from auth.service import hash_password
 
 # ================= APP INIT =================
 app = FastAPI(
@@ -77,10 +56,33 @@ app.mount(
     name="uploads",
 )
 
-# ================= DB =================
+# ================= ROUTERS =================
+from auth.routes.auth_routes import router as auth_router
+from auth.routes.auth_otp_routes import router as register_otp_router
+from auth.routes.forgot_password import router as forgot_password_router
+
+from users.controller import router as users_router
+from claims.controller import router as claims_router
+from api import api_router
+from policy.routes.policy import router as policy_router
+
+# Recommendations
+from policies_recommendations_profile_preferences.routers import (
+    health_recommendation,
+    life_recommendation,
+    motor_recommendation,
+    travel_recommendation,
+    home_recommendation,
+    fire_recommendation,
+    business_recommendation,
+    profile,
+    recommendations,
+)
+
+# ================= DB INIT =================
 Base.metadata.create_all(bind=engine)
 
-# ================= ROUTERS =================
+# ================= INCLUDE ROUTERS =================
 app.include_router(auth_router, prefix="/auth")
 app.include_router(register_otp_router)
 app.include_router(forgot_password_router)
@@ -132,4 +134,3 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
