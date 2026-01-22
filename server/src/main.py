@@ -16,9 +16,7 @@ FRONTEND_URL = os.getenv(
 )
 
 # ================= APP INIT =================
-app = FastAPI(
-    title="Insurance CRC Assistant"
-)
+app = FastAPI(title="Insurance CRC Assistant")
 
 # ================= CORS =================
 app.add_middleware(
@@ -45,7 +43,7 @@ if os.path.isdir(STATIC_PATH):
 
 # ================= DATABASE =================
 from src.database.core import Base, engine
-from src.entities.user import User
+from src.auth.models import User          # ✅ FIXED
 from src.auth.service import hash_password
 
 Base.metadata.create_all(bind=engine)
@@ -97,5 +95,3 @@ def health():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("src.main:app", host="0.0.0.0", port=port)
-
-
