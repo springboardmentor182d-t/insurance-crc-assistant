@@ -41,6 +41,22 @@ app.mount(
     name="media",
 )
 
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL, "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
+
+
+
+
 # =====================================================
 # 🔴 IMPORT ALL MODELS FIRST (CRITICAL)
 # =====================================================
@@ -145,6 +161,9 @@ app.include_router(fraud_rules_router)
 app.include_router(investigations.router)
 
 # ================= ADMIN AUTO CREATE =================
+
+
+
 @app.on_event("startup")
 def create_admin():
     db = Session(bind=engine)
@@ -153,6 +172,7 @@ def create_admin():
     admin = db.query(User).filter(User.email == admin_email).first()
     if admin is None:
         admin = User(
+            name="Admin",  # <-- Provide name
             email=admin_email,
             hashed_password=hash_password("admin123"),
             role="ADMIN",
@@ -162,6 +182,36 @@ def create_admin():
         print("✅ Admin user created")
 
     db.close()
+
+
+
+# @app.on_event("startup")
+# def create_admin():
+#     db = Session(bind=engine)
+
+#     admin_email = "admin@insurance.com"
+
+#     admin = db.query(User).filter(User.email == admin_email).first()
+
+#     if admin is None:
+#         admin = User(
+#             email=admin_email,
+#             hashed_password=hash_password("admin123"),
+#             role="ADMIN",
+#         )
+#         db.add(admin)
+#         db.commit()
+
+#     db.close()
+from src.Admin.controllers.dashboard import router as admin_dashboard_router
+app.include_router(admin_dashboard_router)
+from src.Admin.controllers import flagged_claims
+app.include_router(flagged_claims.router)
+from src.Admin.controllers.fraud_rules import router as fraud_rules_router
+app.include_router(fraud_rules_router)
+from src.Admin.controllers import investigations
+app.include_router(investigations.router)
+
 
 # ================= ROOT =================
 @app.get("/")

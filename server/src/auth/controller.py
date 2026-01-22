@@ -39,6 +39,7 @@ def register(email: str, password: str, db: Session = Depends(get_db)):
     validate_password(password)
 
     user = User(
+        name="name",
         email=email,
         hashed_password=hash_password(password),
         role="USER"   # 🔒 FORCE ROLE
