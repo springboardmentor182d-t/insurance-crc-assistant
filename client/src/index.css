@@ -1,25 +1,12 @@
-/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* optional helper */
-.container {
-  @apply mx-auto max-w-4xl px-4;
-}
-:root[data-theme="dark"] {
-  --bg-main: #0b1220;
-  --bg-card: #1b2333;
-  --bg-sidebar: #0f172a;
+/* =================================================
+   🌙 LEETCODE-STYLE THEME VARIABLES
+================================================== */
 
-  --text-main: #ffffff;
-  --text-muted: #9ca3af;
-
-  --border-color: #334155;
-  --primary: #4f46e5;
-}
-
-:root[data-theme="light"] {
+:root {
   --bg-main: #f9fafb;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
@@ -27,6 +14,346 @@
   --text-main: #111827;
   --text-muted: #6b7280;
 
-  --border-color: #e5e7eb;
-  --primary: #4f46e5;
+  --border: #e5e7eb;
+}
+
+:root[data-theme="dark"] {
+  --bg-main: #0d1117;
+  --bg-card: #161b22;
+  --bg-sidebar: #010409;
+
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+
+  --border: #30363d;
+}
+
+/* =================================================
+   🌍 GLOBAL CANVAS (NON-NEGOTIABLE)
+================================================== */
+
+html,
+body,
+#root {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+/* =================================================
+   🚫 REMOVE PASTEL / GRADIENT GARBAGE IN DARK MODE
+================================================== */
+
+[data-theme="dark"] [class*="bg-gradient"],
+[data-theme="dark"] [class*="from-"],
+[data-theme="dark"] [class*="via-"],
+[data-theme="dark"] [class*="to-"] {
+  background-image: none !important;
+  background-color: var(--bg-main) !important;
+}
+
+/* =================================================
+   🧱 GLOBAL TEXT VISIBILITY (CORE FIX)
+================================================== */
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] label,
+[data-theme="dark"] li,
+[data-theme="dark"] div {
+  color: var(--text-main) !important;
+}
+
+/* Muted text */
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .text-gray-400,
+[data-theme="dark"] .text-gray-500,
+[data-theme="dark"] .text-slate-400,
+[data-theme="dark"] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+/* =================================================
+   🧾 CARDS / PANELS
+================================================== */
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .card,
+[data-theme="dark"] .rounded-xl,
+[data-theme="dark"] .shadow {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* =================================================
+   ⌨️ INPUTS (ALL PAGES)
+================================================== */
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: #010409 !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Date picker icon */
+[data-theme="dark"]
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* =================================================
+   🔘 BUTTONS (CONSISTENT)
+================================================== */
+
+[data-theme="dark"] button {
+  background-color: #7b3fe4 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] button:hover {
+  opacity: 0.9;
+}
+
+/* =================================================
+   📂 SIDEBAR (INCLUDING BOTTOM LEFT USER + HELP)
+================================================== */
+
+[data-theme="dark"] aside {
+  background-color: var(--bg-sidebar) !important;
+  border-right: 1px solid var(--border);
+}
+
+[data-theme="dark"] aside * {
+  color: var(--text-main) !important;
+}
+
+/* Help card */
+[data-theme="dark"] aside [class*="help"],
+[data-theme="dark"] aside [class*="support"] {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* =================================================
+   🏷️ CHIPS / TAGS
+================================================== */
+
+[data-theme="dark"] .rounded-full,
+[data-theme="dark"] .chip {
+  background-color: #21262d !important;
+  color: var(--text-main) !important;
+  border: 1px solid var(--border) !important;
+}
+
+[data-theme="dark"] .bg-purple-500,
+[data-theme="dark"] .chip.active {
+  background-color: #7b3fe4 !important;
+  color: #ffffff !important;
+}
+
+/* =================================================
+   🧭 ICONS
+================================================== */
+
+[data-theme="dark"] svg,
+[data-theme="dark"] i {
+  color: var(--text-main) !important;
+  fill: var(--text-main) !important;
+}
+
+/* =================================================
+   🛑 SAFETY NET (LAST LINE OF DEFENSE)
+================================================== */
+
+[data-theme="dark"] [class*="text-"] {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] * {
+  text-shadow: none !important;
+}
+/* =====================================================
+   🔥 PROFILE PAGE — REMOVE LIGHT HEADER BACKGROUND
+   (DARK MODE ONLY)
+===================================================== */
+
+/* Remove white / gradient background behind "My Profile" */
+[data-theme="dark"] main {
+  background-image: none !important;
+  background-color: var(--bg-main) !important;
+}
+
+/* If header wrapper exists above cards */
+[data-theme="dark"] main > div:first-child {
+  background: transparent !important;
+}
+
+/* Ensure title text stays visible */
+[data-theme="dark"] main h1,
+[data-theme="dark"] main p {
+  color: var(--text-main) !important;
+}
+/* =====================================================
+   🔥 PASTEL POLICY CARDS — TEXT VISIBILITY FIX (DARK)
+===================================================== */
+
+/* Target pastel recommendation cards ONLY */
+[data-theme="dark"] .recommendations [class*="rounded-"],
+[data-theme="dark"] .recommendations [class*="bg-pink"],
+[data-theme="dark"] .recommendations [class*="bg-purple"],
+[data-theme="dark"] .recommendations [class*="bg-cyan"],
+[data-theme="dark"] .recommendations [class*="bg-indigo"] {
+  background-color: inherit !important; /* keep pastel */
+}
+
+/* FORCE readable text inside those cards */
+[data-theme="dark"] .recommendations [class*="bg-pink"] *,
+[data-theme="dark"] .recommendations [class*="bg-purple"] *,
+[data-theme="dark"] .recommendations [class*="bg-cyan"] *,
+[data-theme="dark"] .recommendations [class*="bg-indigo"] * {
+  color: #111827 !important;   /* dark readable text */
+  opacity: 1 !important;
+}
+
+/* Description text slightly muted (still readable) */
+[data-theme="dark"] .recommendations [class*="bg-"] p {
+  color: #374151 !important;
+}
+
+/* Keep buttons dark & strong */
+[data-theme="dark"] .recommendations [class*="bg-"] button {
+  background-color: #111827 !important;
+  color: #ffffff !important;
+}
+/* =====================================================
+   🔥 RECOMMENDATION CARDS — FORCE DARK BACKGROUND ONLY
+   (NO TEXT / NO SIDEBAR / NO GLOBAL IMPACT)
+===================================================== */
+
+[data-theme="dark"]
+div[class*="bg-pink"],
+[data-theme="dark"]
+div[class*="bg-rose"],
+[data-theme="dark"]
+div[class*="bg-cyan"],
+[data-theme="dark"]
+div[class*="bg-sky"],
+[data-theme="dark"]
+div[class*="bg-blue"],
+[data-theme="dark"]
+div[class*="bg-indigo"],
+[data-theme="dark"]
+div[class*="bg-yellow"],
+[data-theme="dark"]
+div[class*="bg-amber"],
+[data-theme="dark"]
+div[class*="bg-green"],
+[data-theme="dark"]
+div[class*="bg-emerald"],
+[data-theme="dark"]
+div[class*="bg-orange"] {
+  background-color: #0d1117 !important; /* LeetCode black */
+}
+/* =====================================================
+   🔥 FINAL PATCH — BUSINESS / PURPLE CARD FIX
+===================================================== */
+
+[data-theme="dark"]
+div[class*="bg-purple"],
+[data-theme="dark"]
+div[class*="bg-violet"],
+[data-theme="dark"]
+div[class*="bg-fuchsia"],
+[data-theme="dark"]
+div[class*="bg-lilac"] {
+  background-color: #0d1117 !important; /* LeetCode black */
+}
+/* =====================================================
+   🔥 SIDEBAR VISIBILITY FIX — FINAL
+   (Dark theme only, sidebar only)
+===================================================== */
+
+/* Sidebar container */
+[data-theme="dark"] aside {
+  background-color: #0d1117 !important;
+}
+
+/* Sidebar menu text */
+[data-theme="dark"] aside span,
+[data-theme="dark"] aside p,
+[data-theme="dark"] aside a,
+[data-theme="dark"] aside li {
+  color: #e6edf3 !important; /* LeetCode white */
+  opacity: 1 !important;
+}
+
+/* Sidebar icons */
+[data-theme="dark"] aside svg,
+[data-theme="dark"] aside i {
+  color: #e6edf3 !important;
+  fill: #e6edf3 !important;
+}
+
+/* Hover state */
+[data-theme="dark"] aside a:hover,
+[data-theme="dark"] aside li:hover {
+  background-color: #161b22 !important;
+}
+
+/* ACTIVE menu item (Dashboard / Recommendations etc.) */
+[data-theme="dark"] aside .active,
+[data-theme="dark"] aside [aria-current="page"] {
+  background-color: #21262d !important;
+}
+
+/* Active item text + icon */
+[data-theme="dark"] aside .active *,
+[data-theme="dark"] aside [aria-current="page"] * {
+  color: #ffffff !important;
+}
+
+/* MENU label */
+[data-theme="dark"] aside .menu,
+[data-theme="dark"] aside .menu-title {
+  color: #8b949e !important; /* muted but visible */
+}
+/* =====================================================
+   🔥 ADMIN DASHBOARD — FINAL VISIBILITY FIX (NO :has)
+===================================================== */
+
+
+/* ===============================
+   2️⃣ HIGH RISK ALERT BAR
+=============================== */
+[data-theme="dark"] .border-l-4 {
+  background-color: #21262d !important;
+  border-left-color: #ef4444 !important;
+}
+
+/* Alert text visibility */
+[data-theme="dark"] .border-l-4 * {
+  color: #e6edf3 !important;
+  opacity: 1 !important;
+}
+
+/* ===============================
+   3️⃣ ALERT BUTTON
+=============================== */
+[data-theme="dark"] .border-l-4 button,
+[data-theme="dark"] .border-l-4 a {
+  background-color: #7b3fe4 !important;
+  color: #ffffff !important;
 }

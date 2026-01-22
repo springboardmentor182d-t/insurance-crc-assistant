@@ -1,5 +1,3 @@
-
-
 export default function FraudSummaryCards({ data }) {
   const cards = [
     {
@@ -29,19 +27,24 @@ export default function FraudSummaryCards({ data }) {
       {cards.map((c, i) => (
         <div
           key={i}
-          className="bg-white/90 backdrop-blur
-           border border-gray-100
-           p-5 rounded-2xl
-           hover:shadow-md transition"
+          className="
+            p-5 rounded-2xl
+            border
+            transition hover:shadow-md
 
+            bg-white text-gray-900 border-gray-100
+            dark:bg-gray-900 dark:text-gray-100 dark:border-gray-800
+          "
         >
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {c.label}
           </p>
-          <p className="text-3xl font-bold text-gray-900 mt-1">
+
+          <p className="text-3xl font-bold mt-1">
             {c.value}
           </p>
-          <p className="text-xs text-gray-400 mt-1">
+
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
             {c.sub}
           </p>
         </div>

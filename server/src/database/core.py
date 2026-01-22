@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-
+import os
+from dotenv import load_dotenv
 # 👉 Change ONLY this line when needed
 #DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/insurance_db"
 # Example for your friend:
-DATABASE_URL = "postgresql://postgres:Nandini%40163@localhost:5432/insurance_crc"
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  useAdminApi,
   getFraudSummary,
   exportFraudCSV,
 } from "../utils/fraudApi";
@@ -16,14 +15,13 @@ import RiskDistribution from "../components/dashboard/RiskDistribution";
 import TopTriggeredRules from "../components/dashboard/TopTriggeredRules";
 
 export default function AdminDashboard() {
-  const api = useAdminApi(); // ✅ REQUIRED for admin auth
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await getFraudSummary(api); // ✅ PASS api
+        const res = await getFraudSummary(); // ✅ PASS api
         setData(res);
       } catch (err) {
         console.error(err);
@@ -32,7 +30,7 @@ export default function AdminDashboard() {
       }
     };
     load();
-  }, [api]);
+  });
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (!data) return <div className="p-6">Failed to load dashboard</div>;
@@ -52,7 +50,7 @@ export default function AdminDashboard() {
           </h1>
 
           <button
-            onClick={() => exportFraudCSV(api)} // ✅ PASS api
+            onClick={() => exportFraudCSV()} // ✅ PASS api
             className="inline-flex items-center justify-center
                        px-4 py-2 text-sm font-medium
                        rounded-lg

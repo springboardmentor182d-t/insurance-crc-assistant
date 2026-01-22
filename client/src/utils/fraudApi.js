@@ -1,59 +1,67 @@
-import createApi from "../api";
-import { useProfile } from "../context/ProfileContext";
-
-/* =====================================================
-   CUSTOM HOOK (SAFE PLACE TO USE useProfile)
-===================================================== */
-
-export const useAdminApi = () => {
-  const { token } = useProfile();
-  return createApi(token);
-};
+// src/utils/fraudApi.js
+import api from "../api";
 
 /* =====================================================
    ADMIN DASHBOARD
 ===================================================== */
 
-export const getFraudSummary = async (api) => {
+export const getFraudSummary = async () => {
   const res = await api.get("/admin/dashboard/summary");
   return res.data;
 };
 
-export const exportFraudCSV = async (api) => {
+export const exportFraudCSV = async () => {
   const res = await api.get("/admin/dashboard/export", {
     responseType: "blob",
   });
 
-  const url = window.URL.createObjectURL(new Blob([res.data]));
+  const url = window.URL.createObjectURL(
+    new Blob([res.data], { type: "text/csv" })
+  );
+
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", "fraud_dashboard.csv");
+  link.download = "fraud_dashboard.csv";
+
   document.body.appendChild(link);
   link.click();
-  link.remove();
+  document.body.removeChild(link);
+
+  window.URL.revokeObjectURL(url);
 };
 
 /* =====================================================
    FLAGGED CLAIMS
 ===================================================== */
 
-export const getFlaggedClaims = async (api, params = {}) => {
+export const getFlaggedClaims = async (params = {}) => {
   const res = await api.get("/admin/flagged-claims", { params });
   return res.data;
 };
 
-export const getFlaggedClaimDetail = async (api, claimId) => {
+export const getFlaggedClaimDetail = async (claimId) => {
   const res = await api.get(`/admin/flagged-claims/${claimId}`);
   return res.data;
 };
 
-export const approveFlaggedClaim = async (api, claimId) => {
-  const res = await api.post(`/admin/flagged-claims/${claimId}/approve`);
+export const approveFlaggedClaim = async (claimId) => {
+  const res = await api.post(
+    `/admin/flagged-claims/${claimId}/approve`
+  );
   return res.data;
 };
 
-export const denyFlaggedClaim = async (api, claimId) => {
-  const res = await api.post(`/admin/flagged-claims/${claimId}/deny`);
+export const denyFlaggedClaim = async (claimId) => {
+  const res = await api.post(
+    `/admin/flagged-claims/${claimId}/deny`
+  );
+  return res.data;
+};
+
+export const investigateFlaggedClaim = async (claimId) => {
+  const res = await api.post(
+    `/admin/flagged-claims/${claimId}/investigate`
+  );
   return res.data;
 };
 
@@ -61,19 +69,14 @@ export const denyFlaggedClaim = async (api, claimId) => {
    FRAUD RULES ENGINE
 ===================================================== */
 
-export const getFraudRules = async (api) => {
+export const getFraudRules = async () => {
   const res = await api.get("/admin/fraud-rules");
   return res.data;
 };
 
-export const toggleFraudRule = async (api, ruleId) => {
-  const res = await api.post(`/admin/fraud-rules/${ruleId}/toggle`);
-  return res.data;
-};
-
-export const investigateFlaggedClaim = async (api, claimId) => {
+export const toggleFraudRule = async (ruleId) => {
   const res = await api.post(
-    `/admin/flagged-claims/${claimId}/investigate`
+    `/admin/fraud-rules/${ruleId}/toggle`
   );
   return res.data;
 };
@@ -82,22 +85,30 @@ export const investigateFlaggedClaim = async (api, claimId) => {
    INVESTIGATIONS
 ===================================================== */
 
-export const startInvestigation = async (api, payload) => {
-  const res = await api.post("/admin/investigations/start", payload);
+export const startInvestigation = async (payload) => {
+  const res = await api.post(
+    "/admin/investigations/start",
+    payload
+  );
   return res.data;
 };
 
-export const getInvestigations = async (api) => {
+export const getInvestigations = async () => {
   const res = await api.get("/admin/investigations");
   return res.data;
 };
 
-export const updateInvestigation = async (api, id, payload) => {
-  const res = await api.put(`/admin/investigations/${id}`, payload);
+export const updateInvestigation = async (id, payload) => {
+  const res = await api.put(
+    `/admin/investigations/${id}`,
+    payload
+  );
   return res.data;
 };
 
-export const deleteInvestigation = async (api, id) => {
-  const res = await api.delete(`/admin/investigations/${id}`);
+export const deleteInvestigation = async (id) => {
+  const res = await api.delete(
+    `/admin/investigations/${id}`
+  );
   return res.data;
 };

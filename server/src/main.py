@@ -50,6 +50,9 @@ app.mount(
 from src.users.models import User
 from src.claims.models import Claim, ClaimDocument
 from src.policies_recommendations_profile_preferences.models.profile import Profile
+from src.policies_recommendations_profile_preferences.models.profile_category import ProfileCategory
+from src.policies_recommendations_profile_preferences.models.saved_quote import SavedQuote
+
 from src.policies_recommendations_profile_preferences.models.health_policy import HealthPolicy
 from src.policies_recommendations_profile_preferences.models.motor_policy import MotorPolicy
 from src.policies_recommendations_profile_preferences.models.life_policy import LifePolicy
