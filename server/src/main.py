@@ -48,16 +48,21 @@ Base.metadata.create_all(bind=engine)
 # ================= ROUTERS =================
 from src.auth.controller import router as auth_router
 from src.claims.controller import router as claims_router
-from src.recommendations_profile_preferences.routers import (
-    profile,
-    dashboard,
+
+# 🔥 FIXED IMPORTS HERE 🔥
+from src.recommendations_profile_preferences.routers.profile import (
+    router as profile_router
+)
+from src.recommendations_profile_preferences.routers.dashboard import (
+    router as dashboard_router
 )
 
 # ================= INCLUDE ROUTERS =================
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 app.include_router(claims_router, prefix="/claims", tags=["Claims"])
-app.include_router(profile.router, prefix="/profile", tags=["Profile"])
-app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])
+
+app.include_router(profile_router, prefix="/profile", tags=["Profile"])
+app.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
 
 # ================= HEALTH =================
 @app.get("/")
