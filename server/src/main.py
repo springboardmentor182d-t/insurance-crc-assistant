@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
+import uvicorn
+
 from src.database.core import Base, engine
 from src.users.models import User
 from src.auth.service import hash_password
@@ -36,12 +38,14 @@ from src.policies_recommendations_profile_preferences.routers import (
 load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv(
+    "FRONTEND_URL",
+    "https://splendid-twilight-7b79e4.netlify.app"
+)
 
 # ================= APP INIT =================
 app = FastAPI(
-    title="Insurance CRC Assistant",
-    servers=[{"url": BASE_URL}],
+    title="Insurance CRC Assistant"
 )
 
 # ================= CORS =================
@@ -121,3 +125,8 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+# ================= RENDER ENTRY POINT =================
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
