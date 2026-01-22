@@ -62,13 +62,11 @@ def login(
     email = form_data.username.lower().strip()
     user = db.query(User).filter(User.email == email).first()
 
-
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
 
     if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect password")
-
 
     token = create_access_token(
         {"sub": user.email, "role": user.role}
@@ -103,6 +101,7 @@ def forgot_password(email: str, db: Session = Depends(get_db)):
     )
     db.commit()
 
+    # (For now, print OTP instead of sending email)
     print("OTP for", email, ":", otp)
     return {"message": "OTP sent successfully"}
 
