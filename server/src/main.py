@@ -5,34 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-
 import uvicorn
-
-from src.database.core import Base, engine
-from src.users.models import User
-from src.auth.service import hash_password
-
-# Routers
-from src.auth.routes.auth_routes import router as auth_router
-from src.auth.routes.auth_otp_routes import router as register_otp_router
-from src.auth.routes.forgot_password import router as forgot_password_router
-from src.users.controller import router as users_router
-from src.claims.controller import router as claims_router
-from src.api import api_router
-from src.policy.routes.policy import router as policy_router
-
-# Recommendations
-from src.policies_recommendations_profile_preferences.routers import (
-    health_recommendation,
-    life_recommendation,
-    motor_recommendation,
-    travel_recommendation,
-    home_recommendation,
-    fire_recommendation,
-    business_recommendation,
-    profile,
-    recommendations,
-)
 
 # ================= LOAD ENV =================
 load_dotenv()
@@ -70,10 +43,36 @@ app.mount(
     name="media",
 )
 
-# ================= DB =================
+# ================= DATABASE =================
+from src.database.core import Base, engine
+from src.users.models import User
+from src.auth.service import hash_password
+
 Base.metadata.create_all(bind=engine)
 
 # ================= ROUTERS =================
+from src.auth.routes.auth_routes import router as auth_router
+from src.auth.routes.auth_otp_routes import router as register_otp_router
+from src.auth.routes.forgot_password import router as forgot_password_router
+from src.users.controller import router as users_router
+from src.claims.controller import router as claims_router
+from src.api import api_router
+from src.policy.routes.policy import router as policy_router
+
+# ================= RECOMMENDATIONS =================
+from src.policies_recommendations_profile_preferences.routers import (
+    health_recommendation,
+    life_recommendation,
+    motor_recommendation,
+    travel_recommendation,
+    home_recommendation,
+    fire_recommendation,
+    business_recommendation,
+    profile,
+    recommendations,
+)
+
+# ================= INCLUDE ROUTERS =================
 app.include_router(auth_router, prefix="/auth")
 app.include_router(register_otp_router)
 app.include_router(forgot_password_router)
@@ -84,7 +83,6 @@ app.include_router(claims_router, prefix="/claims", tags=["Claims"])
 app.include_router(api_router, prefix="/api", tags=["internal"])
 app.include_router(policy_router, prefix="/policies", tags=["policies"])
 
-# ================= RECOMMENDATIONS =================
 app.include_router(profile.router)
 app.include_router(recommendations.router)
 
@@ -118,15 +116,14 @@ def create_admin():
 @app.get("/")
 def root():
     return {
-        "status": "Insurance CRC Assistant API running",
-        "base_url": BASE_URL,
+        "status": "Insurance CRC Assistant API running"
     }
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# ================= RENDER ENTRY POINT =================
+# ================= RENDER ENTRY =================
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
+    uvicorn.run("src.main:app", host="0.0.0.0", port=port)
