@@ -34,14 +34,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ================= STATIC FILES =================
-app.mount(
-    "/media",
-    StaticFiles(
-        directory="src/policies_recommendations_profile_preferences/static/media"
-    ),
-    name="media",
+# ================= STATIC FILES (SAFE) =================
+STATIC_MEDIA_PATH = (
+    "src/policies_recommendations_profile_preferences/static/media"
 )
+
+if os.path.isdir(STATIC_MEDIA_PATH):
+    app.mount(
+        "/media",
+        StaticFiles(directory=STATIC_MEDIA_PATH),
+        name="media",
+    )
 
 # ================= DATABASE =================
 from src.database.core import Base, engine
@@ -115,9 +118,7 @@ def create_admin():
 # ================= HEALTH =================
 @app.get("/")
 def root():
-    return {
-        "status": "Insurance CRC Assistant API running"
-    }
+    return {"status": "Insurance CRC Assistant API running"}
 
 @app.get("/health")
 def health():
@@ -127,3 +128,4 @@ def health():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("src.main:app", host="0.0.0.0", port=port)
+
