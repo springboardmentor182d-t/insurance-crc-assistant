@@ -4,21 +4,16 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "light"
+    localStorage.getItem("theme") || "dark"
   );
 
   useEffect(() => {
-    const root = document.documentElement; // 🔥 THIS IS THE KEY
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () =>
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    setTheme(prev => (prev === "dark" ? "light" : "dark"));
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
