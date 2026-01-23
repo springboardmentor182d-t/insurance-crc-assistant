@@ -129,29 +129,16 @@ def save_profile(
 def get_profile(db: Session, user_id: int):
     profile = db.query(Profile).filter(Profile.user_id == user_id).first()
 
-    # 🔑 AUTO-CREATE PROFILE IF MISSING
+    # ✅ DO NOT AUTO-CREATE
     if not profile:
-        profile = Profile(
-            user_id=user_id,
-            name=None,
-            dob=None,
-            address=None,
-            family_size=1,
-            monthly_budget=None,
-            goal=None,
-            risk_level=None,
-            avatar=None,
-        )
-        db.add(profile)
-        db.commit()
-        db.refresh(profile)
+        return None
 
     categories = db.query(ProfileCategory.category).filter(
         ProfileCategory.profile_id == profile.id
     ).all()
 
     return {
-        "user_id": profile.user_id,   # ✅ critical for frontend
+        "user_id": profile.user_id,
         "id": profile.id,
         "name": profile.name,
         "dob": profile.dob.isoformat() if profile.dob else None,
@@ -163,5 +150,6 @@ def get_profile(db: Session, user_id: int):
         "avatar": profile.avatar,
         "categories": [c[0] for c in categories],
     }
+
 
 

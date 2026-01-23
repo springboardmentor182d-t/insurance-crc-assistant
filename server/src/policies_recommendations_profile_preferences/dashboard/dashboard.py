@@ -82,7 +82,7 @@ def get_dashboard(user_id: int, db: Session = Depends(get_db)):
     claims = [
         {
             "id": c.id,
-            "policy_number": c.policy,
+            "policy_number": c.user_policy_id,
             "claim_date": c.incident_date,
             "claim_amount": c.amount_claimed,
             "status": c.status,

@@ -3,88 +3,114 @@ from sqlalchemy.orm import Session
 import shutil, os
 
 from src.database.core import get_db
-from .schemas import ClaimCreate
-from .service import create_claim, get_all_claims, get_claim, save_document
+from src.auth.dependencies import get_current_user
+from src.users.models import User
 
-router = APIRouter()
+from .schemas import ClaimCreate, ClaimResponse
+from .service import (
+    create_claim,
+    get_all_claims,
+    get_claim,
+    save_document,
+    submit_claim
+)
+
+router = APIRouter(tags=["Claims"])
 
 UPLOAD_DIR = "uploaded_docs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# TEMP USER (replace with JWT later)
-def get_current_user():
-    return 1
-
 
 # =========================
-# 🔹 NEW: POLICY OPTIONS API
+# STEP 0 – Active policies
 # =========================
-@router.get("/policies")
-def get_policy_options():
-    """
-    Return available policy options for claim creation.
-    Backend-driven (no frontend hardcoding).
-    """
-    return [
-        "Health Insurance",
-        "Travel Insurance",
-        "Motor Insurance",
-        "Home Insurance",
-        "Life Insurance"
-    ]
-@router.get("/claim-types")
-def get_claim_types():
-    return [
-        "Hospitalization",
-        "Accident",
-        "Theft"
-    ]
+@router.get("/active-policies")
+def get_active_policies(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    from src.policies_recommendations_profile_preferences.models.user_policy import UserPolicy
+
+    return (
+        db.query(UserPolicy)
+        .filter(
+            UserPolicy.user_id == current_user.id,
+            UserPolicy.status == "active"
+        )
+        .all()
+    )
 
 
 # =========================
 # STEP 1 – Create Claim
 # =========================
-@router.post("/")
+@router.post("/", response_model=ClaimResponse)
 def file_claim(
     data: ClaimCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    user_id = get_current_user()
-    return create_claim(db, data, user_id)
+    return create_claim(db, data, current_user.id)
 
 
 # =========================
 # STEP 2 – Upload Documents
 # =========================
-@router.post("/{claim_id}/upload")
+@router.post("/{claim_id}/documents")
 def upload_document(
     claim_id: int,
     file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
-    path = f"{UPLOAD_DIR}/{claim_id}_{file.filename}"
+    claim = get_claim(db, claim_id, current_user.id)
+    if not claim:
+        raise HTTPException(404, "Claim not found")
 
+    if claim.status != "draft":
+        raise HTTPException(400, "Cannot upload documents after submission")
+
+    path = f"{UPLOAD_DIR}/{claim_id}_{file.filename}"
     with open(path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     save_document(db, claim_id, file.filename, path)
-    return {"message": "File uploaded successfully"}
+    return {"message": "Document uploaded"}
 
 
 # =========================
-# CLAIM STATUS PAGE
+# STEP 3 – Submit Claim
+# =========================
+@router.post("/{claim_id}/submit")
+def submit_claim_api(
+    claim_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    claim = get_claim(db, claim_id, current_user.id)
+    if not claim:
+        raise HTTPException(404, "Claim not found")
+
+    return submit_claim(db, claim)
+
+# =========================
+# STEP 4 – Track Claims
 # =========================
 @router.get("/")
-def list_claims(db: Session = Depends(get_db)):
-    return get_all_claims(db, get_current_user())
+def list_claims(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return get_all_claims(db, current_user.id)
 
 
-# =========================
-# TRACK CLAIM PAGE
-# =========================
 @router.get("/{claim_id}")
-def track_claim(claim_id: int, db: Session = Depends(get_db)):
-    claim = get_claim(db, claim_id, get_current_user())
+def track_claim(
+    claim_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    claim = get_claim(db, claim_id, current_user.id)
     if not claim:
-        raise HTTPException(status_code=404, detail="Claim not found")
+        raise HTTPException(404, "Claim not found")
     return claim

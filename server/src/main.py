@@ -59,6 +59,7 @@ from src.policies_recommendations_profile_preferences.models.fire_policy import 
 from src.policies_recommendations_profile_preferences.models.business_policy import BusinessPolicy
 from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
 from src.policies_recommendations_profile_preferences.models.recommendation import Recommendation
+from src.policies_recommendations_profile_preferences.models.user_policy import UserPolicy
 from src.Admin.models.fraud_event import FraudEvent
 from src.Admin.models.rule_trigger import RuleTrigger
 from src.auth.models import PasswordOTP
@@ -155,6 +156,9 @@ from src.policies_recommendations_profile_preferences.dashboard.dashboard import
     router as dashboard_router,
 )
 app.include_router(dashboard_router)
+from src.policies_recommendations_profile_preferences.routers.user_policies import router as policies_router
+
+app.include_router(policies_router)
 
 # ================= ADMIN AUTO CREATE =================
 from src.auth.service import hash_password
@@ -181,16 +185,16 @@ def create_admin():
 
 # ================= ADMIN ROUTERS =================
 from src.Admin.controllers.dashboard import router as admin_dashboard_router
-app.include_router(admin_dashboard_router)
+app.include_router(admin_dashboard_router, prefix="/api")
 
 from src.Admin.controllers import flagged_claims
-app.include_router(flagged_claims.router)
+app.include_router(flagged_claims.router, prefix="/api")
 
 from src.Admin.controllers.fraud_rules import router as fraud_rules_router
-app.include_router(fraud_rules_router)
+app.include_router(fraud_rules_router, prefix="/api")
 
 from src.Admin.controllers import investigations
-app.include_router(investigations.router)
+app.include_router(investigations.router, prefix="/api")
 
 # ================= ROOT =================
 @app.get("/")
