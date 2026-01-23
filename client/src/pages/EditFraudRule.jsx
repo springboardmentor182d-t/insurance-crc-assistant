@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, CheckCircle } from "lucide-react";
+import {
+  useAdminApi,
+  getFraudRuleById,
+  updateFraudRule,
+} from "../utils/fraudApi";
 
 export default function EditFraudRule() {
   const { id } = useParams();
@@ -8,18 +13,24 @@ export default function EditFraudRule() {
   const [rule, setRule] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  useEffect(() => {
-    fetch(`/admin/fraud-rules/${id}`)
-      .then(res => res.json())
-      .then(setRule);
-  }, [id]);
+  const api = useAdminApi();
+
+useEffect(() => {
+  const loadRule = async () => {
+    try {
+      const data = await getFraudRuleById(api, id);
+      setRule(data);
+    } catch (err) {
+      console.error("Failed to load rule", err);
+    }
+  };
+
+  loadRule();
+}, [api, id]);
+
 
   const handleSave = async () => {
-    await fetch(`/admin/fraud-rules/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(rule),
-    });
+    await updateFraudRule(api, id, rule);
 
     setShowSuccess(true);
 
@@ -31,6 +42,7 @@ export default function EditFraudRule() {
   if (!rule) return <div className="p-8">Loading...</div>;
 
   return (
+    <div className="pl-64">
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 px-6 py-10">
       <div className="max-w-2xl mx-auto">
 
@@ -98,6 +110,7 @@ export default function EditFraudRule() {
                 <option>Geolocation</option>
                 <option>Behavior</option>
                 <option>Device</option>
+                <option>Claim-Amount</option>
               </select>
             </div>
 
@@ -191,6 +204,7 @@ export default function EditFraudRule() {
 
         </div>
       </div>
+    </div>
     </div>
   );
 }

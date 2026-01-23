@@ -34,46 +34,53 @@ export default function FraudRateChart({ trend }) {
       </div>
 
       <ResponsiveContainer width="100%" height={260}>
-        <AreaChart data={trend}>
-          <defs>
-            <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0.05} />
-            </linearGradient>
-          </defs>
+  <AreaChart data={trend}>
+    <defs>
+      <linearGradient id="totalGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.35} />
+        <stop offset="95%" stopColor="#6366f1" stopOpacity={0.05} />
+      </linearGradient>
+    </defs>
 
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis
-            dataKey="day"
-            tick={{ fontSize: 12, fill: "#6b7280" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            tick={{ fontSize: 12, fill: "#6b7280" }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <Tooltip />
+    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
-          <Area
-            type="monotone"
-            dataKey="total"
-            stroke="#6366f1"
-            fill="url(#totalGradient)"
-            strokeWidth={2}
-          />
+    <XAxis
+      dataKey="date"
+      tickFormatter={(d) =>
+        new Date(d).toLocaleDateString("en-US", { weekday: "short" })
+      }
+      axisLine={false}
+      tickLine={false}
+    />
 
-          <Area
-            type="monotone"
-            dataKey="flagged"
-            stroke="#ef4444"
-            fill="transparent"
-            strokeDasharray="4 4"
-            strokeWidth={2}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+    <YAxis
+      allowDecimals={false}
+      domain={[0, "dataMax + 1"]}
+      axisLine={false}
+      tickLine={false}
+    />
+
+    <Tooltip />
+
+    <Area
+      type="monotone"
+      dataKey="total"
+      stroke="#6366f1"
+      fill="url(#totalGradient)"
+      strokeWidth={2}
+    />
+
+    <Area
+      type="monotone"
+      dataKey="flagged"
+      stroke="#ef4444"
+      fill="transparent"
+      strokeDasharray="4 4"
+      strokeWidth={2}
+    />
+  </AreaChart>
+</ResponsiveContainer>
+
     </div>
   );
 }

@@ -74,6 +74,10 @@ export const investigateFlaggedClaim = async (apiInstance, claimId) => {
    FRAUD RULES ENGINE
 ===================================================== */
 
+/* =====================================================
+   FRAUD RULES ENGINE
+===================================================== */
+
 export const getFraudRules = async (apiInstance) => {
   const res = await apiInstance.get("/api/admin/fraud-rules");
   return res.data;
@@ -86,20 +90,33 @@ export const toggleFraudRule = async (apiInstance, ruleId) => {
   return res.data;
 };
 
-/* =====================================================
-   INVESTIGATIONS
-===================================================== */
-
-export const startInvestigation = async (apiInstance, payload) => {
-  const res = await apiInstance.post(
-    "/api/admin/investigations/start",
-    payload
+export const deleteFraudRule = async (apiInstance, id) => {
+  const res = await apiInstance.delete(
+    `/api/admin/fraud-rules/${id}`
   );
   return res.data;
 };
 
+// GET SINGLE FRAUD RULE
+export const getFraudRuleById = async (apiInstance, id) => {
+  const res = await apiInstance.get(`/api/admin/fraud-rules/${id}`);
+  return res.data;
+};
+
+// UPDATE FRAUD RULE
+export const updateFraudRule = async (apiInstance, id, payload) => {
+  const res = await apiInstance.put(`/api/admin/fraud-rules/${id}`, payload);
+  return res.data;
+};
+
+
+/* =====================================================
+   INVESTIGATIONS
+===================================================== */
+
+
 export const getInvestigations = async (apiInstance) => {
-  const res = await apiInstance.get("/api/admin/investigations");
+  const res = await apiInstance.get("/api/admin/investigations/");
   return res.data;
 };
 

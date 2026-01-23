@@ -7,12 +7,14 @@ import {
   AlertTriangle,
   SlidersHorizontal, // ✅ NEW ICON
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useProfile } from "../../context/ProfileContext";
 
 export default function AdminSideBar() {
   const location = useLocation();
   const { profile, loading } = useProfile();
-
+  const navigate = useNavigate();
+  const { logout } = useProfile(); // 👈 same logout used in user sidebar
   const isActive = (path) => location.pathname.startsWith(path);
 
   const linkBase =
@@ -22,7 +24,12 @@ export default function AdminSideBar() {
   const inactiveLink = "text-gray-600 hover:bg-gray-100";
 
   return (
-    <aside className="w-64 bg-white border-r min-h-screen flex flex-col justify-between">
+          <aside
+        className="w-64 bg-white border-r
+                  fixed top-0 left-0
+                  h-screen
+                  flex flex-col justify-between"
+      >
       {/* ================= TOP ================= */}
       <div>
         {/* Brand */}
@@ -52,25 +59,6 @@ export default function AdminSideBar() {
             Overview
           </NavLink>
         </nav>
-
-        {/* ===== POLICY MANAGEMENT ===== */}
-        <p className="px-6 text-xs text-gray-400 uppercase tracking-wide mb-2">
-          Policy Management
-        </p>
-        <nav className="px-3 mb-6">
-          <NavLink
-            to="/admin/policies"
-            className={() =>
-              `${linkBase} ${
-                isActive("/admin/policies") ? activeLink : inactiveLink
-              }`
-            }
-          >
-            <Settings size={18} />
-            Policies
-          </NavLink>
-        </nav>
-
         {/* ===== FRAUD ===== */}
         <p className="px-6 text-xs text-gray-400 uppercase tracking-wide mb-2">
           Fraud
@@ -123,65 +111,27 @@ export default function AdminSideBar() {
 
       {/* ================= BOTTOM ================= */}
       <div className="px-4 pb-5 space-y-4">
-        {/* Help Card */}
-        <div className="bg-indigo-900 text-white rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Headphones size={18} />
-            <p className="font-semibold text-sm">Need Help?</p>
-          </div>
-
-          <p className="text-xs text-indigo-200 mb-3">
-            Admin support team is available 24/7.
-          </p>
-
-          <button className="w-full bg-white text-indigo-600 text-xs font-semibold py-2 rounded-lg hover:bg-indigo-50 transition">
-            Contact Support
-          </button>
-        </div>
 
         {/* ===== ADMIN PROFILE ===== */}
-        <NavLink
-          to="/admin/profile"
-          className={({ isActive }) =>
-            `flex items-center gap-3 p-2 rounded-lg transition ${
-              isActive
-                ? "bg-indigo-50 text-indigo-600"
-                : "hover:bg-gray-100"
-            }`
-          }
-        >
-          <div className="w-9 h-9 rounded-full overflow-hidden bg-gray-300 flex items-center justify-center">
-            {loading ? (
-              <div className="w-full h-full bg-gray-200 animate-pulse" />
-            ) : profile?.avatar ? (
-              <img
-                src={profile.avatar}
-                alt="profile"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-sm font-semibold">
-                {profile?.name?.[0] || "A"}
-              </span>
-            )}
-          </div>
+        
+                <button
+        onClick={() => {
+          logout();
+          navigate("/login");
+        }}
+        className="
+          w-full mt-4 flex items-center justify-center
+          px-4 py-2 rounded-xl
+          text-sm font-semibold
+          text-red-600
+          border border-red-100
+          hover:bg-red-50 hover:border-red-200
+          transition-all duration-200
+        "
+      >
+        Logout
+      </button>
 
-          <div>
-            {loading ? (
-              <>
-                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse mb-1" />
-                <div className="h-3 w-16 bg-gray-200 rounded animate-pulse" />
-              </>
-            ) : (
-              <>
-                <p className="text-sm font-semibold">
-                  {profile?.name || "Admin"}
-                </p>
-                <p className="text-xs text-gray-500">Admin Profile</p>
-              </>
-            )}
-          </div>
-        </NavLink>
       </div>
     </aside>
   );

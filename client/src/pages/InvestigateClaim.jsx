@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
-import { getFlaggedClaims, startInvestigation } from "../utils/fraudApi";
+import {
+  getFlaggedClaims,
+  investigateFlaggedClaim,
+  useAdminApi,
+} from "../utils/fraudApi";
 
 export default function InvestigateClaim() {
   const { claimId } = useParams();
@@ -11,6 +15,7 @@ export default function InvestigateClaim() {
   const [priority, setPriority] = useState("Medium");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const api = useAdminApi();
 
   // ✅ ONLY ADDITION
   const [successMessage, setSuccessMessage] = useState("");
@@ -20,35 +25,36 @@ export default function InvestigateClaim() {
   }, []);
 
   const loadClaim = async () => {
-    const res = await getFlaggedClaims();
+  try {
+    const res = await getFlaggedClaims(api); // ✅ FIX
     const found = res.results.find(
       (c) => String(c.claim_id) === String(claimId)
     );
     setClaim(found);
-  };
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const handleStartInvestigation = async () => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await startInvestigation({
-        claim_id: Number(claimId),
-        priority,
-        notes,
-      });
+    await investigateFlaggedClaim(api, claimId);
 
-      // ✅ ONLY CHANGE: show success popup (no redirect here)
-      setSuccessMessage("Investigation started successfully");
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setSuccessMessage("Sent for investigation successfully");
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (!claim) return <div className="p-6">Loading investigation...</div>;
 
   return (
+    <div className="pl-64">
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 px-6 py-10">
       <div className="max-w-3xl mx-auto">
 
@@ -202,15 +208,15 @@ export default function InvestigateClaim() {
             <button
               onClick={() => {
                 setSuccessMessage("");
-                navigate("/admin/flagged-claims");
+                navigate("/admin/investigations");
               }}
-              className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700"
             >
               OK
             </button>
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

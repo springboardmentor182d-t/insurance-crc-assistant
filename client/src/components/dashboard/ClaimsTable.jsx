@@ -11,12 +11,6 @@ export default function ClaimsTable({ claims = [] }) {
           Claims
         </h2>
 
-        <p className="text-sm text-gray-500">
-          {claims.length > 0
-            ? `You have ${claims.length} claim${claims.length > 1 ? "s" : ""} filed.`
-            : "You have not filed any claims yet."}
-        </p>
-
         <p className="text-small text-gray-400 mt-2">
           Track status, upload documents, or review submitted claims.
         </p>

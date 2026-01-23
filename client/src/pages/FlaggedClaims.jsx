@@ -1,20 +1,45 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
+  useAdminApi,
   getFlaggedClaims,
   approveFlaggedClaim,
   denyFlaggedClaim,
 } from "../utils/fraudApi";
-import { useNavigate } from "react-router-dom";
 
 export default function FlaggedClaims() {
+  const api = useAdminApi(); // ✅ REQUIRED
+
   const [claims, setClaims] = useState([]);
   const [selectedClaim, setSelectedClaim] = useState(null);
   const [severity, setSeverity] = useState("ALL");
   const [minScore, setMinScore] = useState(0);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const [successMessage, setSuccessMessage] = useState("");
   const [denyConfirmOpen, setDenyConfirmOpen] = useState(false);
+  const filteredClaims = claims.filter((c) => {
+  const severityMatch =
+    severity === "ALL" ? true : c.severity === severity;
+  const scoreMatch = c.fraud_score >= minScore;
+  return severityMatch && scoreMatch;
+});
+  const badge = (level) => {
+  const map = {
+    HIGH: "bg-red-100 text-red-700",
+    MEDIUM: "bg-yellow-100 text-yellow-700",
+    LOW: "bg-green-100 text-green-700",
+  };
+
+  return (
+    <span
+      className={`text-xs px-3 py-1 rounded-full font-semibold ${map[level]}`}
+    >
+      {level}
+    </span>
+  );
+};
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadClaims();
@@ -22,7 +47,10 @@ export default function FlaggedClaims() {
 
   const loadClaims = async () => {
     try {
-      const res = await getFlaggedClaims();
+      const res = await getFlaggedClaims(api, {
+        severity,
+        min_score: minScore,
+      });
       setClaims(res.results || []);
       setSelectedClaim(res.results?.[0] || null);
     } catch (err) {
@@ -32,68 +60,27 @@ export default function FlaggedClaims() {
     }
   };
 
-  const filteredClaims = claims.filter((c) => {
-    const severityMatch =
-      severity === "ALL" ? true : c.severity === severity;
-    const scoreMatch = c.fraud_score >= minScore;
-    return severityMatch && scoreMatch;
-  });
-
   const handleApprove = async () => {
-    try {
-      await approveFlaggedClaim(selectedClaim.claim_id);
-      setClaims((prev) =>
-        prev.filter((c) => c.claim_id !== selectedClaim.claim_id)
-      );
-      setSelectedClaim(null);
-      setSuccessMessage(
-        `Claim #${selectedClaim.claim_id} approved successfully`
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    await approveFlaggedClaim(api, selectedClaim.claim_id);
+    loadClaims();
+    setSuccessMessage("Claim approved successfully");
   };
 
   const handleRejectConfirm = async () => {
-    try {
-      await denyFlaggedClaim(selectedClaim.claim_id);
-      setClaims((prev) =>
-        prev.filter((c) => c.claim_id !== selectedClaim.claim_id)
-      );
-      setSelectedClaim(null);
-      setDenyConfirmOpen(false);
-      setSuccessMessage(
-        `Claim #${selectedClaim.claim_id} rejected successfully`
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    await denyFlaggedClaim(api, selectedClaim.claim_id);
+    loadClaims();
+    setDenyConfirmOpen(false);
+    setSuccessMessage("Claim rejected successfully");
   };
 
   const handleInvestigateLater = () => {
-    setDenyConfirmOpen(false);
     navigate(`/admin/flagged-claims/${selectedClaim.claim_id}/investigate`);
-    };
-
+  };
 
   if (loading) return <div className="p-6">Loading flagged claims...</div>;
 
-  const badge = (level) => {
-    const map = {
-      HIGH: "bg-red-100 text-red-700",
-      MEDIUM: "bg-yellow-100 text-yellow-700",
-      LOW: "bg-green-100 text-green-700",
-    };
-    return (
-      <span
-        className={`text-xs px-3 py-1 rounded-full font-semibold ${map[level]}`}
-      >
-        {level}
-      </span>
-    );
-  };
-
   return (
+    <div className="pl-64">
     <div className="min-h-screen bg-violet-50">
       <main className="px-6 py-6 max-w-[1400px] mx-auto space-y-6">
         {/* HEADER */}
@@ -229,16 +216,10 @@ export default function FlaggedClaims() {
                 {/* ACTIONS */}
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={handleApprove}
-                    className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700"
-                  >
-                    Approve
-                  </button>
-                  <button
                     onClick={() => setDenyConfirmOpen(true)}
                     className="flex-1 bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700"
                   >
-                    Deny
+                    Take action
                   </button>
                 </div>
               </div>
@@ -301,6 +282,7 @@ export default function FlaggedClaims() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

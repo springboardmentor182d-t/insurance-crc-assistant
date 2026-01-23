@@ -4,9 +4,12 @@ import {
   getInvestigations,
   deleteInvestigation,
   updateInvestigation,
+  useAdminApi,
 } from "../utils/fraudApi";
 
 export default function Investigations() {
+  const api = useAdminApi();
+
   const [data, setData] = useState([]);
   const [viewItem, setViewItem] = useState(null);
   const [editItem, setEditItem] = useState(null);
@@ -14,98 +17,103 @@ export default function Investigations() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    load();
+    loadInvestigations();
   }, []);
 
-  const load = async () => {
-    const res = await getInvestigations();
-    setData(res);
+  const loadInvestigations = async () => {
+    const res = await getInvestigations(api);
+    setData(res || []);
   };
 
   /* ================= DELETE ================= */
   const handleDelete = async () => {
-    await deleteInvestigation(deleteItem.id);
+    await deleteInvestigation(api, deleteItem.id);
     setDeleteItem(null);
     setSuccess("Investigation deleted successfully");
-    load();
+    loadInvestigations();
   };
 
   /* ================= UPDATE ================= */
   const handleUpdate = async () => {
-    await updateInvestigation(editItem.id, {
+    await updateInvestigation(api, editItem.id, {
       priority: editItem.priority,
       notes: editItem.notes,
     });
     setEditItem(null);
     setSuccess("Investigation updated successfully");
-    load();
+    loadInvestigations();
   };
 
   return (
-    <div className="min-h-screen bg-violet-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Investigations
-        </h1>
-        <p className="text-sm text-gray-600">
-          All fraud investigations
-        </p>
+    <div className="ml-64 min-h-screen bg-violet-50">
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
 
-        {/* ================= TABLE ================= */}
-        <div className="bg-white rounded-2xl shadow overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-violet-50 text-gray-700">
-              <tr>
-                <th className="px-4 py-3 text-left">ID</th>
-                <th>Claim</th>
-                <th>Policy</th>
-                <th>Policyholder</th>
-                <th>Fraud %</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th className="text-center">Actions</th>
-              </tr>
-            </thead>
+          {/* HEADER */}
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Investigations
+            </h1>
+            <p className="text-sm text-gray-600">
+              All fraud investigations
+            </p>
+          </div>
 
-            <tbody className="divide-y">
-              {data.map((i) => (
-                <tr
-                  key={i.id}
-                  className="hover:bg-violet-50 transition"
-                >
-                  <td className="px-4 py-3 font-semibold">
-                    {i.id}
-                  </td>
-                  <td>#{i.claim_id}</td>
-                  <td className="font-medium">{i.policy}</td>
-                  <td>{i.policyholder}</td>
-                  <td className="font-bold text-red-600">
-                    {i.fraud_score}%
-                  </td>
-                  <td>{i.priority}</td>
-                  <td>
-                    <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">
-                      {i.status}
-                    </span>
-                  </td>
-                  <td className="flex justify-center gap-4 py-3">
-                    <Eye
-                      onClick={() => setViewItem(i)}
-                      className="cursor-pointer text-gray-600 hover:text-violet-600"
-                    />
-                    <Pencil
-                      onClick={() => setEditItem({ ...i })}
-                      className="cursor-pointer text-gray-600 hover:text-violet-600"
-                    />
-                    <Trash2
-                      onClick={() => setDeleteItem(i)}
-                      className="cursor-pointer text-red-600"
-                    />
-                  </td>
+          {/* TABLE */}
+          <div className="bg-white rounded-2xl shadow overflow-x-auto">
+            <table className="w-full min-w-[900px] text-sm">
+              <thead className="bg-violet-50 text-gray-700">
+                <tr>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3">Claim</th>
+                  <th className="px-4 py-3">Policy</th>
+                  <th className="px-4 py-3">Policyholder</th>
+                  <th className="px-4 py-3">Fraud %</th>
+                  <th className="px-4 py-3">Priority</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody className="divide-y">
+                {data.map((i) => (
+                  <tr
+                    key={i.id}
+                    className="hover:bg-violet-50 transition"
+                  >
+                    <td className="px-4 py-3 font-semibold">{i.id}</td>
+                    <td className="px-4 py-3">#{i.claim_id}</td>
+                    <td className="px-4 py-3 font-medium">{i.policy}</td>
+                    <td className="px-4 py-3">{i.policyholder}</td>
+                    <td className="px-4 py-3 font-bold text-red-600">
+                      {i.fraud_score}%
+                    </td>
+                    <td className="px-4 py-3">{i.priority}</td>
+                    <td className="px-4 py-3">
+                      <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">
+                        {i.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 flex justify-center gap-4">
+                      <Eye
+                        onClick={() => setViewItem(i)}
+                        className="cursor-pointer text-gray-600 hover:text-violet-600"
+                      />
+                      <Pencil
+                        onClick={() => setEditItem({ ...i })}
+                        className="cursor-pointer text-gray-600 hover:text-violet-600"
+                      />
+                      <Trash2
+                        onClick={() => setDeleteItem(i)}
+                        className="cursor-pointer text-red-600"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
 
@@ -119,18 +127,14 @@ export default function Investigations() {
           <Detail label="Claim ID" value={`#${viewItem.claim_id}`} />
           <Detail label="Policy" value={viewItem.policy} />
           <Detail label="Policyholder" value={viewItem.policyholder} />
-          <Detail
-            label="Fraud Score"
-            value={`${viewItem.fraud_score}%`}
-            red
-          />
+          <Detail label="Fraud Score" value={`${viewItem.fraud_score}%`} red />
           <Detail label="Priority" value={viewItem.priority} />
           <Detail label="Status" value={viewItem.status} />
           <Detail label="Notes" value={viewItem.notes || "—"} />
 
           <button
             onClick={() => setViewItem(null)}
-            className="mt-6 w-full bg-violet-600 text-white py-2 rounded-lg font-semibold hover:bg-violet-700"
+            className="mt-6 w-full bg-violet-600 text-white py-2 rounded-lg font-semibold"
           >
             Close
           </button>
@@ -144,16 +148,11 @@ export default function Investigations() {
             Edit Investigation #{editItem.id}
           </h2>
 
-          <label className="block text-sm font-semibold mb-2">
-            Priority
-          </label>
+          <label className="block text-sm font-semibold mb-2">Priority</label>
           <select
             value={editItem.priority}
             onChange={(e) =>
-              setEditItem({
-                ...editItem,
-                priority: e.target.value,
-              })
+              setEditItem({ ...editItem, priority: e.target.value })
             }
             className="w-full mb-4 border rounded-lg px-3 py-2"
           >
@@ -162,31 +161,26 @@ export default function Investigations() {
             <option>Low</option>
           </select>
 
-          <label className="block text-sm font-semibold mb-2">
-            Notes
-          </label>
+          <label className="block text-sm font-semibold mb-2">Notes</label>
           <textarea
             rows={4}
             value={editItem.notes || ""}
             onChange={(e) =>
-              setEditItem({
-                ...editItem,
-                notes: e.target.value,
-              })
+              setEditItem({ ...editItem, notes: e.target.value })
             }
             className="w-full border rounded-lg px-3 py-2"
           />
 
           <button
             onClick={handleUpdate}
-            className="mt-4 w-full bg-violet-600 text-white py-2 rounded-lg font-semibold hover:bg-violet-700"
+            className="mt-4 w-full bg-violet-600 text-white py-2 rounded-lg font-semibold"
           >
             Save Changes
           </button>
         </Modal>
       )}
 
-      {/* ================= DELETE CONFIRM ================= */}
+      {/* ================= DELETE MODAL ================= */}
       {deleteItem && (
         <Modal onClose={() => setDeleteItem(null)}>
           <h2 className="text-lg font-bold text-red-600 mb-3">
@@ -213,7 +207,7 @@ export default function Investigations() {
         </Modal>
       )}
 
-      {/* ================= SUCCESS ================= */}
+      {/* ================= SUCCESS MODAL ================= */}
       {success && (
         <Modal onClose={() => setSuccess("")}>
           <p className="text-green-600 font-semibold mb-4 text-center">
@@ -237,9 +231,7 @@ function Detail({ label, value, red }) {
   return (
     <div className="flex justify-between text-sm mb-2">
       <span className="text-gray-500">{label}</span>
-      <span className={red ? "text-red-600 font-bold" : ""}>
-        {value}
-      </span>
+      <span className={red ? "text-red-600 font-bold" : ""}>{value}</span>
     </div>
   );
 }

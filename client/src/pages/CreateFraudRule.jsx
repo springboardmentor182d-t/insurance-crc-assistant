@@ -29,6 +29,7 @@ export default function CreateFraudRule() {
   };
 
   return (
+    <div className="pl-64">
     <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-50 px-6 py-10">
       <div className="max-w-2xl mx-auto">
 
@@ -97,6 +98,7 @@ export default function CreateFraudRule() {
                 <option>Geolocation</option>
                 <option>Behavior</option>
                 <option>Device</option>
+                <option>Claim-Amount</option>
               </select>
             </div>
 
@@ -191,6 +193,7 @@ export default function CreateFraudRule() {
 
         </div>
       </div>
+    </div>
     </div>
   );
 }
