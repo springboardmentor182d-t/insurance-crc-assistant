@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import Sidebar from "../layout/Sidebar";
 
 export function ComparePage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const initialPolicies = location.state?.selectedPolicies || [];
+  // Memoize initialPolicies
+  const initialPolicies = useMemo(
+    () => location.state?.selectedPolicies || [],
+    [location.state?.selectedPolicies]
+  );
+
   const [selectedPolicies, setSelectedPolicies] = useState(initialPolicies);
 
   // Redirect if accessed directly or less than 2 policies
@@ -61,7 +66,7 @@ export function ComparePage() {
   return (
     <div className="flex min-h-screen">
       <div className="w-[260px]">
-        <SidebarMenu />
+        <Sidebar />
       </div>
       <main className="flex-1 p-6 bg-gray-100">
         <h2 className="text-2xl font-bold mb-6 text-center">
@@ -122,4 +127,5 @@ export function ComparePage() {
     </div>
   );
 }
+
 export default ComparePage;

@@ -1,68 +1,24 @@
-const PolicyFilter = ({
-  filters,
-  setFilters,
-  policyTypes = [],
-  ranges = [],
-}) => {
+import React from "react";
+
+const PolicyFilter = ({ categories = [], selected, onChange }) => {
   return (
-    <div className="flex gap-4 bg-white p-4 rounded-xl shadow">
-      <input
-        type="text"
-        placeholder="Search insurance..."
-        value={filters.search}
-        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-        className="border px-4 py-2 rounded w-1/3"
-      />
+    <div className="bg-white p-4 rounded shadow">
+      <label className="block mb-2 font-semibold">
+        Filter by Category
+      </label>
+
       <select
-        value={filters.type || ""}
-        onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-        className="border px-4 py-2 rounded"
+        value={selected}
+        onChange={(e) => onChange(e.target.value)}
+        className="border p-2 rounded w-full"
       >
-        <option value="">Policy Types</option>
+        <option value="">All</option>
 
-        {Array.isArray(policyTypes) &&
-          policyTypes.map((type, index) => (
-            <option key={`${type}-${index}`} value={type}>
-              {type}
-            </option>
-          ))}
-      </select>
-      <select
-  value={
-    filters.range
-      ? ranges.findIndex(
-          r =>
-            r.min === filters.range.min &&
-            r.max === filters.range.max
-        )
-      : ""
-  }
-  onChange={(e) =>
-    setFilters({
-      ...filters,
-      range: e.target.value !== ""
-        ? ranges[Number(e.target.value)]
-        : null,
-    })
-  }
-  className="border px-4 py-2 rounded"
->
-  <option value="">coverage_amount</option>
-
-  {Array.isArray(ranges) &&
-    ranges.map((range, index) => (
-      <option key={index} value={index}>
-        {range.label}
-      </option>
-    ))}
-</select>
-
-        {Array.isArray(ranges) &&
-          ranges.map((range, index) => (
-            <option key={`range-${index}`} value={index}>
-              {range.label}
-            </option>
-          ))}
+        {categories.map((cat, index) => (
+          <option key={index} value={cat}>
+            {cat}
+          </option>
+        ))}
       </select>
     </div>
   );

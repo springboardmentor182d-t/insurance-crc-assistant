@@ -3,7 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import Sidebar from "../layout/Sidebar";
 import Header from "../components/Header";
 import PolicyFilter from "../features/policies/components/PolicyFilter";
-import { useNavigate, Link } from "react-router-dom";
+
+
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
