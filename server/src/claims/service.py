@@ -73,14 +73,3 @@ def save_document(db: Session, claim_id: int, filename: str, path: str):
     db.add(doc)
     db.commit()
 
-
-def submit_claim(db: Session, claim: Claim):
-    if claim.status != "draft":
-        raise HTTPException(400, "Only draft claims can be submitted")
-
-    if not claim.documents:
-        raise HTTPException(400, "Upload documents before submitting claim")
-
-    claim.status = "submitted"
-    db.commit()
-    return claim

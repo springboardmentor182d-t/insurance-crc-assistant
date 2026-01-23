@@ -18,6 +18,7 @@ def get_business_recommendations(
 
     return [
         {
+            "policy_id": r["policy"].id,
             "policy_name": r["policy"].policy_name,
             "insurer": r["policy"].insurer,
             "premium": float(r["policy"].base_premium),

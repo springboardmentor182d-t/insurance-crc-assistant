@@ -16,6 +16,7 @@ def get_fire_recommendations(
 
     return [
         {
+            "policy_id": r["policy"].id,
             "policy_name": r["policy"].policy_name,
             "insurer": r["policy"].insurer,
             "premium": r["policy"].base_premium,

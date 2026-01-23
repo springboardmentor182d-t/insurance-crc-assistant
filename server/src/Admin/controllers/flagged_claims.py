@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from datetime import datetime
+
 from src.database.core import SessionLocal
 from src.claims.models import Claim
 from src.Admin.models.fraud_event import FraudEvent
 from src.Admin.models.rule_trigger import RuleTrigger
 from src.users.models import User
+from src.policies_recommendations_profile_preferences.models.user_policy import UserPolicy
+from src.Admin.models.investigation import Investigation
 
 router = APIRouter(prefix="/admin", tags=["Flagged Claims"])
 
@@ -17,6 +21,9 @@ def get_db():
         db.close()
 
 
+# ============================
+# GET FLAGGED CLAIMS
+# ============================
 @router.get("/flagged-claims")
 def flagged_claims(
     severity: str | None = None,
@@ -26,7 +33,7 @@ def flagged_claims(
     query = (
         db.query(
             Claim.id.label("claim_id"),
-            Claim.policy,
+            UserPolicy.policy_name.label("policy"),
             Claim.claim_type,
             Claim.amount_claimed,
             Claim.status,
@@ -40,6 +47,7 @@ def flagged_claims(
         )
         .join(FraudEvent, FraudEvent.claim_id == Claim.id)
         .join(User, User.id == Claim.user_id)
+        .join(UserPolicy, UserPolicy.id == Claim.user_policy_id)
         .filter(FraudEvent.flagged.is_(True))
         .filter(FraudEvent.fraud_score >= min_score)
     )
@@ -82,7 +90,6 @@ def flagged_claims(
             "severity": severity_label,
             "rules": [x.rule_name for x in rules],
 
-            # ✅ POLICYHOLDER INFO
             "policyholder_id": r.user_id,
             "policyholder_name": r.policyholder_name,
         })
@@ -96,95 +103,87 @@ def flagged_claims(
     }
 
 
+# ============================
+# APPROVE CLAIM
+# ============================
 @router.post("/flagged-claims/{claim_id}/approve")
 def approve_flagged_claim(claim_id: int, db: Session = Depends(get_db)):
     claim = db.query(Claim).filter(Claim.id == claim_id).first()
     if not claim:
-        raise HTTPException(status_code=404, detail="Claim not found")
+        raise HTTPException(404, "Claim not found")
 
-    fraud_event = (
-        db.query(FraudEvent)
-        .filter(
-            FraudEvent.claim_id == claim_id,
-            FraudEvent.flagged.is_(True),
-        )
-        .first()
-    )
+    fraud_event = db.query(FraudEvent).filter(
+        FraudEvent.claim_id == claim_id,
+        FraudEvent.flagged.is_(True)
+    ).first()
 
-    claim.status = "Approved"
+    if not fraud_event:
+        raise HTTPException(400, "Claim is not flagged")
+
+    claim.status = "approved"
     fraud_event.flagged = False
     db.commit()
 
     return {"message": "Claim approved successfully"}
 
 
+
+# ============================
+# DENY CLAIM
+# ============================
+@router.post("/flagged-claims/{claim_id}/deny")
 @router.post("/flagged-claims/{claim_id}/deny")
 def deny_flagged_claim(claim_id: int, db: Session = Depends(get_db)):
     claim = db.query(Claim).filter(Claim.id == claim_id).first()
     if not claim:
-        raise HTTPException(status_code=404, detail="Claim not found")
+        raise HTTPException(404, "Claim not found")
 
-    fraud_event = (
-        db.query(FraudEvent)
-        .filter(
-            FraudEvent.claim_id == claim_id,
-            FraudEvent.flagged.is_(True),
-        )
-        .first()
-    )
+    fraud_event = db.query(FraudEvent).filter(
+        FraudEvent.claim_id == claim_id,
+        FraudEvent.flagged.is_(True)
+    ).first()
 
-    claim.status = "Rejected"
+    if not fraud_event:
+        raise HTTPException(400, "Claim is not flagged")
+
+    claim.status = "rejected"
     fraud_event.flagged = False
     db.commit()
 
     return {"message": "Claim rejected successfully"}
 
-from datetime import datetime
-from src.Admin.models.investigation import Investigation
-from src.users.models import User
 
+
+# ============================
+# INVESTIGATE CLAIM
+# ============================
 @router.post("/flagged-claims/{claim_id}/investigate")
-def investigate_flagged_claim(
-    claim_id: int,
-    db: Session = Depends(get_db),
-):
-    # 1️⃣ Get claim
+@router.post("/flagged-claims/{claim_id}/investigate")
+def investigate_flagged_claim(claim_id: int, db: Session = Depends(get_db)):
     claim = db.query(Claim).filter(Claim.id == claim_id).first()
     if not claim:
-        raise HTTPException(status_code=404, detail="Claim not found")
+        raise HTTPException(404, "Claim not found")
 
-    # 2️⃣ Get fraud event
-    fraud_event = (
-        db.query(FraudEvent)
-        .filter(
-            FraudEvent.claim_id == claim_id,
-            FraudEvent.flagged.is_(True),
-        )
-        .first()
-    )
+    fraud_event = db.query(FraudEvent).filter(
+        FraudEvent.claim_id == claim_id,
+        FraudEvent.flagged.is_(True)
+    ).first()
 
     if not fraud_event:
-        raise HTTPException(
-            status_code=400,
-            detail="Claim is not flagged for fraud",
-        )
+        raise HTTPException(400, "Claim is not flagged")
 
-    # 3️⃣ Set claim status
-    claim.status = "Under Investigation"
+    claim.status = "under_review"
 
-    # 4️⃣ Determine priority from fraud score
-    if fraud_event.fraud_score >= 70:
-        priority = "High"
-    elif fraud_event.fraud_score >= 40:
-        priority = "Medium"
-    else:
-        priority = "Low"
+    priority = (
+        "High" if fraud_event.severity == "HIGH"
+        else "Medium" if fraud_event.severity == "MEDIUM"
+        else "Low"
+    )
 
-    # 5️⃣ Create investigation record
     investigation = Investigation(
         claim_id=claim_id,
         investigator="Admin",
-        investigator_id=1,  # TEMP: admin id (ok for now)
+        investigator_id=1,
         priority=priority,
         status="PENDING",
         notes="Auto-created from flagged claims",
@@ -192,14 +191,11 @@ def investigate_flagged_claim(
     )
 
     db.add(investigation)
-
-    # 6️⃣ Clear fraud flag
     fraud_event.flagged = False
-
     db.commit()
 
     return {
         "message": "Claim sent for investigation",
-        "claim_id": claim_id,
         "priority": priority,
     }
+

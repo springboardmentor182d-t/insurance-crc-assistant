@@ -5,6 +5,7 @@ from src.Admin.models.investigation import Investigation
 from src.claims.models import Claim
 from src.Admin.models.fraud_event import FraudEvent
 from src.users.models import User
+from src.policies_recommendations_profile_preferences.models.user_policy import UserPolicy
 
 router = APIRouter(prefix="/admin/investigations", tags=["Investigations"])
 
@@ -66,20 +67,19 @@ def get_investigations(db: Session = Depends(get_db)):
         db.query(
             Investigation.id,
             Investigation.claim_id,
+
+            UserPolicy.policy_name.label("policy"),
+            User.email.label("policyholder"),
+
+            FraudEvent.fraud_score,
             Investigation.priority,
             Investigation.status,
             Investigation.notes,
-            Investigation.created_at,
-
-            Claim.policy,
-            Claim.amount_claimed,
-            FraudEvent.fraud_score,
-
-            User.email.label("policyholder_email"),
         )
         .join(Claim, Claim.id == Investigation.claim_id)
-        .outerjoin(FraudEvent, FraudEvent.claim_id == Claim.id)
+        .join(UserPolicy, UserPolicy.id == Claim.user_policy_id)
         .join(User, User.id == Claim.user_id)
+        .outerjoin(FraudEvent, FraudEvent.claim_id == Claim.id)
         .order_by(Investigation.created_at.desc())
         .all()
     )
@@ -89,17 +89,14 @@ def get_investigations(db: Session = Depends(get_db)):
             "id": r.id,
             "claim_id": r.claim_id,
             "policy": r.policy,
-            "amount": r.amount_claimed,
+            "policyholder": r.policyholder,
             "fraud_score": r.fraud_score,
-            "policyholder": r.policyholder_email,
             "priority": r.priority,
             "status": r.status,
             "notes": r.notes,
-            "created_at": r.created_at,
         }
         for r in rows
     ]
-
 
 # ================= UPDATE INVESTIGATION =================
 @router.put("/{investigation_id}")

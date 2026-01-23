@@ -53,60 +53,47 @@ def dashboard_summary(
     total_claims = db.query(Claim).count()
 
     # ---------- FLAGGED CLAIMS ----------
-    flagged_claims = (
-        db.query(FraudEvent)
-        .filter(
-            FraudEvent.flagged.is_(True),
-            FraudEvent.event_date >= start_date,
-            FraudEvent.event_date <= end_date,
-        )
-        .count()
-    )
+    flagged_claims = db.query(FraudEvent).filter(
+    FraudEvent.flagged.is_(True)
+    ).count()
+
 
     # ---------- AVG FRAUD SCORE ----------
     avg_fraud_score = (
-        db.query(func.avg(FraudEvent.fraud_score))
-        .filter(
-            FraudEvent.event_date >= start_date,
-            FraudEvent.event_date <= end_date,
-        )
-        .scalar()
-    ) or 0
+    db.query(func.avg(FraudEvent.fraud_score))
+    .scalar()
+) or 0
+
 
     # ---------- RISK DISTRIBUTION ----------
     high = db.query(FraudEvent).filter(
-        FraudEvent.event_date >= start_date,
-        FraudEvent.event_date <= end_date,
-        FraudEvent.fraud_score >= 70,
+    FraudEvent.severity == "HIGH"
     ).count()
 
+
     medium = db.query(FraudEvent).filter(
-        FraudEvent.event_date >= start_date,
-        FraudEvent.event_date <= end_date,
-        FraudEvent.fraud_score.between(40, 69),
+    FraudEvent.severity == "MEDIUM"
     ).count()
 
     low = db.query(FraudEvent).filter(
-        FraudEvent.event_date >= start_date,
-        FraudEvent.event_date <= end_date,
-        FraudEvent.fraud_score < 40,
+        FraudEvent.severity == "LOW"
     ).count()
+
 
     # ---------- RISK EXPOSURE ----------
     risk_exposure = (
-        db.query(func.sum(FraudEvent.fraud_score))
-        .filter(
-            FraudEvent.event_date >= start_date,
-            FraudEvent.event_date <= end_date,
-        )
-        .scalar()
+    db.query(func.sum(Claim.amount_claimed))
+    .join(FraudEvent, FraudEvent.claim_id == Claim.id)
+    .filter(FraudEvent.flagged.is_(True))
+    .scalar()
     ) or 0
 
-    # ---------- FRAUD TREND ----------
+
+    # ---------- FRAUD TREND (CLAIMS vs FLAGGED) ----------
     trend_rows = (
         db.query(
-            func.date(FraudEvent.event_date).label("day"),
-            func.count(FraudEvent.id).label("total"),
+            func.date(Claim.created_at).label("day"),
+            func.count(Claim.id).label("total"),
             func.sum(
                 case(
                     (FraudEvent.flagged.is_(True), 1),
@@ -114,13 +101,18 @@ def dashboard_summary(
                 )
             ).label("flagged"),
         )
-        .filter(
-            FraudEvent.event_date >= start_date,
-            FraudEvent.event_date <= end_date,
+        .outerjoin(
+            FraudEvent,
+            FraudEvent.claim_id == Claim.id
         )
-        .group_by(func.date(FraudEvent.event_date))
+        .filter(
+            Claim.created_at >= start_date,
+            Claim.created_at <= end_date,
+        )
+        .group_by(func.date(Claim.created_at))
         .all()
     )
+
 
     trend_map = {
         row.day: {
@@ -200,16 +192,97 @@ def export_dashboard_csv(
     output = StringIO()
     writer = csv.writer(output)
 
-    writer.writerow(["Metric", "Value"])
-    writer.writerow(["Total Claims", db.query(Claim).count()])
-    writer.writerow([
-        "Flagged Claims",
-        db.query(FraudEvent).filter(FraudEvent.flagged.is_(True)).count(),
-    ])
-    writer.writerow([
-        "Average Fraud Score",
-        round(db.query(func.avg(FraudEvent.fraud_score)).scalar() or 0),
-    ])
+    # ---------------- CLAIMS OVERVIEW ----------------
+    total_claims = db.query(Claim).count()
+
+    flagged_claims = db.query(FraudEvent).filter(
+        FraudEvent.flagged.is_(True)
+    ).count()
+
+    high_risk_claims = db.query(FraudEvent).filter(
+        FraudEvent.severity == "HIGH"
+    ).count()
+
+    # ---------------- INVESTIGATIONS OVERVIEW ----------------
+    from src.Admin.models.investigation import Investigation
+
+    total_investigations = db.query(Investigation).count()
+    high_inv = db.query(Investigation).filter(
+        Investigation.priority == "High"
+    ).count()
+    medium_inv = db.query(Investigation).filter(
+        Investigation.priority == "Medium"
+    ).count()
+    low_inv = db.query(Investigation).filter(
+        Investigation.priority == "Low"
+    ).count()
+
+    # ---------------- SUMMARY CARDS ----------------
+    avg_fraud_score = round(
+        db.query(func.avg(FraudEvent.fraud_score)).scalar() or 0
+    )
+
+    risk_exposure = (
+        db.query(func.sum(Claim.amount_claimed))
+        .join(FraudEvent, FraudEvent.claim_id == Claim.id)
+        .filter(FraudEvent.flagged.is_(True))
+        .scalar()
+    ) or 0
+
+    # ---------------- RISK DISTRIBUTION ----------------
+    high = db.query(FraudEvent).filter(
+        FraudEvent.severity == "HIGH"
+    ).count()
+    medium = db.query(FraudEvent).filter(
+        FraudEvent.severity == "MEDIUM"
+    ).count()
+    low = db.query(FraudEvent).filter(
+        FraudEvent.severity == "LOW"
+    ).count()
+
+    # ---------------- TOP TRIGGERED RULES ----------------
+    top_rules = (
+        db.query(
+            RuleTrigger.rule_name,
+            func.count(RuleTrigger.id).label("count"),
+        )
+        .group_by(RuleTrigger.rule_name)
+        .order_by(func.count(RuleTrigger.id).desc())
+        .limit(5)
+        .all()
+    )
+
+    # ================= WRITE CSV =================
+
+    writer.writerow(["SECTION", "METRIC", "VALUE"])
+
+    # Claims Overview
+    writer.writerow(["Claims Overview", "Total Claims", total_claims])
+    writer.writerow(["Claims Overview", "High Risk Claims", high_risk_claims])
+    writer.writerow(["Claims Overview", "Flagged Claims", flagged_claims])
+
+    # Investigations Overview
+    writer.writerow(["Investigations Overview", "Total", total_investigations])
+    writer.writerow(["Investigations Overview", "High", high_inv])
+    writer.writerow(["Investigations Overview", "Medium", medium_inv])
+    writer.writerow(["Investigations Overview", "Low", low_inv])
+
+    # Summary Cards
+    writer.writerow(["Summary", "Risk Exposure (INR)", risk_exposure])
+    writer.writerow(["Summary", "Avg Fraud Score", avg_fraud_score])
+
+    # Risk Distribution
+    writer.writerow(["Risk Distribution", "High", high])
+    writer.writerow(["Risk Distribution", "Medium", medium])
+    writer.writerow(["Risk Distribution", "Low", low])
+
+    # Top Triggered Rules
+    for rule in top_rules:
+        writer.writerow([
+            "Top Triggered Rules",
+            rule.rule_name,
+            rule.count,
+        ])
 
     output.seek(0)
 

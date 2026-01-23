@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Boolean, DateTime, ForeignKey, String
 from sqlalchemy.sql import func
 from src.database.core import Base
 
@@ -17,3 +17,4 @@ class FraudEvent(Base):
 
     fraud_score = Column(Integer, nullable=False)
     flagged = Column(Boolean, default=False, index=True)
+    severity = Column(String(10), nullable=False)

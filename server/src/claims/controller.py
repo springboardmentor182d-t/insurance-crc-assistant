@@ -1,18 +1,17 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 import shutil, os
-
+from src.Admin.services.fraud_engine import evaluate_claim_fraud
 from src.database.core import get_db
 from src.auth.dependencies import get_current_user
 from src.users.models import User
-
+from datetime import datetime
 from .schemas import ClaimCreate, ClaimResponse
 from .service import (
     create_claim,
     get_all_claims,
     get_claim,
     save_document,
-    submit_claim
 )
 
 router = APIRouter(tags=["Claims"])
@@ -91,12 +90,29 @@ def submit_claim_api(
     if not claim:
         raise HTTPException(404, "Claim not found")
 
-    return submit_claim(db, claim)
+    if claim.status != "draft":
+        raise HTTPException(400, "Claim already submitted")
+
+    claim.status = "submitted"
+    claim.submitted_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(claim)
+
+    # ✅ FRAUD CHECK (SAFE)
+    try:
+        evaluate_claim_fraud(db, claim)
+    except Exception as e:
+        print("❌ Fraud engine error:", e)
+
+    return claim
+
+
 
 # =========================
 # STEP 4 – Track Claims
 # =========================
-@router.get("/")
+@router.get("/", response_model=list[ClaimResponse])
 def list_claims(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -104,7 +120,8 @@ def list_claims(
     return get_all_claims(db, current_user.id)
 
 
-@router.get("/{claim_id}")
+
+@router.get("/{claim_id}", response_model=ClaimResponse)
 def track_claim(
     claim_id: int,
     db: Session = Depends(get_db),
@@ -114,3 +131,4 @@ def track_claim(
     if not claim:
         raise HTTPException(404, "Claim not found")
     return claim
+
