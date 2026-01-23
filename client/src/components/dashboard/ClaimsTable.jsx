@@ -1,54 +1,35 @@
-export default function ClaimsTable({ claims = [], policies = [] }) {
-  if (!claims.length) {
-    return (
-      <div className="bg-white rounded shadow p-4">
-        <h2 className="text-lg font-semibold mb-2">Claims history</h2>
-        <p className="text-gray-500 text-sm">No claims found.</p>
-      </div>
-    );
-  }
+import { useNavigate } from "react-router-dom";
+
+export default function ClaimsTable({ claims = [] }) {
+  const navigate = useNavigate();
 
   return (
-    <div className="bg-white rounded shadow p-4">
-      <h2 className="text-lg font-semibold mb-2">Claims history</h2>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="text-gray-600">
-            <tr>
-              <th className="text-left p-2">Date</th>
-              <th className="text-left p-2">Policy</th>
-              <th className="text-left p-2">Amount</th>
-              <th className="text-left p-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {claims.map((c) => (
-  <tr key={c.id} className="border-t">
-    <td className="p-2">
-      {c.claim_date
-        ? new Date(c.claim_date).toLocaleDateString("en-IN")
-        : "—"}
-    </td>
+    <div className="bg-white rounded-xl shadow-sm p-6 flex flex-col justify-between h-full">
+      {/* TEXT CONTENT */}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 mb-1">
+          Claims
+        </h2>
 
-    <td className="p-2">
-      {c.policy_number || "—"}
-    </td>
+        <p className="text-sm text-gray-500">
+          {claims.length > 0
+            ? `You have ${claims.length} claim${claims.length > 1 ? "s" : ""} filed.`
+            : "You have not filed any claims yet."}
+        </p>
 
-    <td className="p-2">
-      {c.claim_amount
-        ? c.claim_amount.toLocaleString("en-IN", {
-            style: "currency",
-            currency: "INR",
-          })
-        : "—"}
-    </td>
+        <p className="text-small text-gray-400 mt-2">
+          Track status, upload documents, or review submitted claims.
+        </p>
+      </div>
 
-    <td className="p-2">{c.status}</td>
-  </tr>
-))}
-
-          </tbody>
-        </table>
+      {/* BUTTON */}
+      <div className="mt-6">
+        <button
+          onClick={() => navigate("/claims")}
+          className="mx-auto block bg-blue-600 text-white px-5 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
+        >
+          View your claims →
+        </button>
       </div>
     </div>
   );

@@ -16,44 +16,48 @@ const FileNewClaimStep2 = () => {
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file");
-      return;
-    }
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
 
-    if (!claimId) {
-      alert("Claim ID not found. Please start again.");
-      navigate("/claims/file/step1");
-      return;
-    }
+  if (!claimId) {
+    alert("Claim ID not found. Please start again.");
+    navigate("/claims/file/step1");
+    return;
+  }
 
-    try {
-      setUploading(true);
+  try {
+    setUploading(true);
 
-      const formData = new FormData();
-      formData.append("file", file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-      const response = await fetch(
-        `${baseURL}/claims/${claimId}/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
+    const response = await fetch(
+      `${baseURL}/claims/${claimId}/documents`, // ✅ correct endpoint
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`, // ✅ required
+        },
+        body: formData,
       }
+    );
 
-      setUploaded(true);
-      alert("Document uploaded successfully");
-    } catch (error) {
-      console.error(error);
-      alert("Error uploading document");
-    } finally {
-      setUploading(false);
+    if (!response.ok) {
+      throw new Error("Upload failed");
     }
-  };
+
+    setUploaded(true);
+    alert("Document uploaded successfully");
+  } catch (error) {
+    console.error(error);
+    alert("Error uploading document");
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-20 via-pink-20 to-sky-50 px-6 py-10">
@@ -120,7 +124,7 @@ const FileNewClaimStep2 = () => {
           </button>
 
           <button
-            onClick={() => navigate("/claims/file/step3")}
+            onClick={() => navigate(`/claims/${claimId}/review`)}
             disabled={!uploaded}
             className={`px-6 py-2.5 rounded-lg text-white transition ${
               uploaded

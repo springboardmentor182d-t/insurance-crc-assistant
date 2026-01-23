@@ -4,8 +4,12 @@ import api from "../api";
 const ProfileContext = createContext();
 
 export const ProfileProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
-  const [role, setRole] = useState(null);
+  const [token, setToken] = useState(
+  localStorage.getItem("access_token")
+);
+const [role, setRole] = useState(
+  localStorage.getItem("role")
+);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -15,11 +19,13 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setRole(null);
-    setProfile(null);
-  };
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("role");
+  setToken(null);
+  setRole(null);
+  setProfile(null);
+};
+
 
   // 🔥 AUTO LOAD PROFILE AFTER LOGIN
   useEffect(() => {

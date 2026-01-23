@@ -104,18 +104,23 @@ export default function QuoteSummary() {
   // ---------------- DOWNLOAD PDF ----------------
   const downloadPDF = () => {
   const pdf = new jsPDF();
-
-  // ✅ FIX FONT SPACING ISSUE
   pdf.setFont("helvetica", "normal");
 
   let y = 20;
 
-  // ---------- TITLE ----------
+  // ================= TITLE =================
   pdf.setFontSize(18);
   pdf.text("Insurance Quote Summary", 20, y);
-  y += 15;
+  y += 14;
 
-  // ---------- POLICY INFO ----------
+  pdf.setFontSize(11);
+  pdf.setTextColor(120);
+  pdf.text("Generated quote based on your selected policy", 20, y);
+  y += 12;
+
+  pdf.setTextColor(0);
+
+  // ================= POLICY DETAILS =================
   pdf.setFontSize(12);
   pdf.text(`Policy Name: ${policy.policy_name || policy.name}`, 20, y);
   y += 8;
@@ -123,33 +128,33 @@ export default function QuoteSummary() {
   pdf.text(`Insurer: ${policy.insurer_name || policy.insurer}`, 20, y);
   y += 8;
 
-  pdf.text(`Tenure: ${tenure} Year(s)`, 20, y);
-  y += 14;
-
-  // ---------- TOTAL PREMIUM (MONTHLY) ----------
-  pdf.setFontSize(14);
-  pdf.text("Total Premium", 20, y);
+  pdf.text(`Policy Type: ${policy.policy_type}`, 20, y);
   y += 8;
 
-  pdf.setFontSize(16);
-  pdf.text(`₹ ${Math.round(monthlyTotal)} / month`, 20, y);
+  pdf.text(`Tenure: ${tenure} Year${tenure > 1 ? "s" : ""}`, 20, y);
   y += 14;
 
-  // ---------- BREAKDOWN ----------
+  // ================= FINAL PREMIUM =================
   pdf.setFontSize(14);
-  pdf.text("Detailed Breakdown (Monthly)", 20, y);
+  pdf.text("Final Premium", 20, y);
+  y += 8;
+
+  pdf.setFontSize(20);
+  pdf.text(`Rs. ${Math.round(monthlyTotal)} / month`, 20, y);
+  y += 14;
+
+  // ================= BREAKDOWN =================
+  pdf.setFontSize(14);
+  pdf.text("Premium Breakdown", 20, y);
   y += 10;
 
   pdf.setFontSize(12);
-  pdf.text(`Base Premium: ₹ ${Math.round(monthlyBase)}`, 20, y);
-  y += 8;
-
-  pdf.text(`GST (18%): ₹ ${Math.round(monthlyTax)}`, 20, y);
+  pdf.text(`Base Premium: Rs. ${Math.round(monthlyBase)}`, 20, y);
   y += 8;
 
   if (discount > 0) {
     pdf.text(
-      `Tenure Discount (${discount * 100}%): -₹ ${Math.round(
+      `Tenure Discount (${discount * 100}%): -Rs. ${Math.round(
         monthlyBase * discount
       )}`,
       20,
@@ -158,14 +163,22 @@ export default function QuoteSummary() {
     y += 8;
   }
 
-  // ---------- FOOTER ----------
-  y += 6;
+  pdf.text(`GST (18%): Rs. ${Math.round(monthlyTax)}`, 20, y);
+  y += 12;
+
+  // ================= FOOTER =================
   pdf.setFontSize(10);
-  pdf.setTextColor(90);
-  pdf.text("✓ Includes all applicable taxes & fees", 20, y);
+  pdf.setTextColor(100);
+  pdf.text(
+    "This quote is indicative and subject to insurer terms & conditions.",
+    20,
+    y
+  );
 
   pdf.save("insurance-quote-summary.pdf");
 };
+
+
 
 
 
@@ -261,10 +274,6 @@ export default function QuoteSummary() {
             className="px-6 py-3 rounded-xl border  bg-purple-600 text-white"
           >
             Save Quote
-          </button>
-
-          <button className="px-6 py-3 rounded-xl bg-purple-600 text-white">
-            Mark it as Active
           </button>
         </div>
       </div>

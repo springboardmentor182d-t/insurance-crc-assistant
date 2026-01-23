@@ -25,7 +25,7 @@ export async function login(email, password) {
   }
 
   // ✅ Save token for ProtectedRoute & API calls
-  localStorage.setItem("token", data.access_token);
+  localStorage.setItem("access_token", data.access_token);
   localStorage.setItem("role", data.role);
 
   return data;

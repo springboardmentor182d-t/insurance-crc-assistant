@@ -12,7 +12,12 @@ const TrackClaim = () => {
   useEffect(() => {
     const fetchClaim = async () => {
       try {
-        const res = await fetch(`${baseURL}/claims/${id}`);
+        const res = await fetch(`${baseURL}/claims/${id}`, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+  },
+});
+
         if (!res.ok) throw new Error("Failed to fetch claim");
 
         const data = await res.json();

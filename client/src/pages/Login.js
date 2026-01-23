@@ -66,7 +66,7 @@ function Login() {
       }
 
       // ✅ store token globally
-      localStorage.setItem("token", data.access_token);
+      localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("role", data.role);
 
       // update context (optional but fine)

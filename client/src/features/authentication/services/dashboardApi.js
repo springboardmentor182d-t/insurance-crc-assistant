@@ -1,7 +1,7 @@
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export async function fetchDashboardData(userId) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
 
   if (!BASE_URL) {
     console.error("BASE_URL is undefined");

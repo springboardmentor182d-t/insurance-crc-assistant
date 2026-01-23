@@ -3,7 +3,7 @@ import ProfileSummary from "./ProfileSummary";
 import MyPolicies from "./MyPolicies";
 import RecommendedPolicies from "./RecommendedPolicies";
 import ClaimsTable from "./ClaimsTable";
-import StatsCard from "./StatsCard";
+import ActivePolicyCard from "./MyActivePolicies";
 import { useNavigate } from "react-router-dom";
 
 export default function ExistingUserDashboard({ dashboard }) {
@@ -69,10 +69,7 @@ export default function ExistingUserDashboard({ dashboard }) {
 
         {/* ================= ROW 3 ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* STATS */}
-          <div className="bg-white rounded-xl shadow-sm border p-4">
-            <StatsCard policies={dashboard.policies || []} />
-          </div>
+           <ActivePolicyCard />
 
           {/* CLAIMS */}
           <div className="bg-white rounded-xl shadow-sm border p-4">

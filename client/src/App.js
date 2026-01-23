@@ -20,6 +20,7 @@ import PolicyCatalog from "./pages/PolicyCatalog";
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 import SavedQuotes from "./pages/SavedQuotes";
+import MyActivePolicies from "./pages/MyActivePolicies"
 import Support from "./pages/Support";
 
 /* ================= RECOMMENDATION FLOWS ================= */
@@ -133,6 +134,7 @@ export default function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/saved-quotes" element={<SavedQuotes />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/my-policies" element={<MyActivePolicies />} />
 
               {/* Recommendations */}
               <Route path="/recommendations" element={<Recommendations />} />
@@ -179,7 +181,7 @@ export default function App() {
               <Route path="/claims/start" element={<StartNewClaim />} />
               <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
               <Route path="/claims/file/step2" element={<FileNewClaimStep2 />} />
-              <Route path="/claims/file/step3" element={<ReviewClaimStep3 />} />
+              <Route path="/claims/:id/review" element={<ReviewClaimStep3 />} />
               <Route path="/claims/submitted" element={<ClaimSubmission />} />
               <Route path="/claims/status" element={<ClaimStatus />} />
               <Route path="/claims/track/:id" element={<TrackClaim />} />

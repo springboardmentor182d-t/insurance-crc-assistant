@@ -10,7 +10,12 @@ const ClaimStatus = () => {
   useEffect(() => {
     const fetchClaims = async () => {
       try {
-        const res = await fetch(`${baseURL}/claims`);
+        const res = await fetch(`${baseURL}/claims`, {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+  },
+});
+
         if (!res.ok) throw new Error("Failed to fetch claims");
         const data = await res.json();
         setClaims(data);

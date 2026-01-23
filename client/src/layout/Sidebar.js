@@ -7,6 +7,8 @@ import {
   Calculator,
   Headphones,
   Bookmark,
+  ShieldCheck,
+  LogOut,
 } from "lucide-react";
 import { useProfile } from "../context/ProfileContext";
 
@@ -15,31 +17,30 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const { profile, loading } = useProfile();
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
+
   const menu = [
     { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-
-    // 🔹 POLICY CATALOG (SPECIAL ACTIVE LOGIC)
     { name: "Policy Catalog", path: "/catalog", icon: BookOpen },
-
     { name: "Recommendations", path: "/recommendations", icon: Sparkles },
     { name: "Claims", path: "/claims", icon: FileText },
     { name: "Premium Calculator", path: "/premium-calculator", icon: Calculator },
-
-    // 🔹 SAVED QUOTES
     { name: "Saved Quotes", path: "/saved-quotes", icon: Bookmark },
+    { name: "My Policies", path: "/my-policies", icon: ShieldCheck },
   ];
 
-  // 🔹 POLICY RELATED ROUTES
   const isPolicySectionActive =
     location.pathname.startsWith("/catalog") ||
     location.pathname.startsWith("/policies") ||
     location.pathname.startsWith("/compare") ||
-    location.pathname.startsWith("/quote") ||
-    location.pathname.startsWith("/saved-quotes");
+    location.pathname.startsWith("/quote");
 
   return (
     <aside className="w-64 bg-white border-r min-h-screen flex flex-col justify-between">
-      {/* TOP */}
+      {/* ================= TOP ================= */}
       <div>
         <div className="flex items-center gap-2 px-6 py-5">
           <div className="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold">
@@ -56,7 +57,6 @@ export default function Sidebar() {
           {menu.map((item) => {
             const Icon = item.icon;
 
-            // 🔹 Recommendation active logic (existing)
             const isRecommendationActive =
               item.path === "/recommendations" &&
               (location.pathname === "/recommendations" ||
@@ -64,9 +64,12 @@ export default function Sidebar() {
                 location.pathname.endsWith("_insurance_rec") ||
                 location.pathname.endsWith("recresults"));
 
-            // 🔹 Policy catalog active logic
             const isPolicyActive =
               item.path === "/catalog" && isPolicySectionActive;
+
+            const isMyPoliciesActive =
+              item.path === "/my-policies" &&
+              location.pathname.startsWith("/my-policies");
 
             return (
               <NavLink
@@ -74,7 +77,10 @@ export default function Sidebar() {
                 to={item.path}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-2 rounded-lg text-sm transition ${
-                    isPolicyActive || isRecommendationActive || isActive
+                    isPolicyActive ||
+                    isRecommendationActive ||
+                    isMyPoliciesActive ||
+                    isActive
                       ? "bg-indigo-50 text-indigo-600 font-semibold"
                       : "text-gray-600 hover:bg-gray-100"
                   }`
@@ -88,8 +94,9 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* BOTTOM */}
+      {/* ================= BOTTOM ================= */}
       <div className="px-4 pb-5 space-y-4">
+        {/* HELP CARD */}
         <div className="bg-indigo-900 text-white rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Headphones size={18} />
@@ -112,7 +119,7 @@ export default function Sidebar() {
         <NavLink
           to="/profile"
           className={({ isActive }) =>
-            `flex items-center gap-3 p-2 rounded-lg ${
+            `flex items-center gap-3 p-2 rounded-lg transition ${
               isActive
                 ? "bg-indigo-50 text-indigo-600"
                 : "hover:bg-gray-100"
@@ -151,6 +158,17 @@ export default function Sidebar() {
             )}
           </div>
         </NavLink>
+
+        {/* LOGOUT */}
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-3 py-2
+                     rounded-lg text-sm font-semibold
+                     text-red-600 hover:bg-red-50 transition"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
       </div>
     </aside>
   );
