@@ -1,35 +1,32 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Settings,
   ShieldAlert,
-  Headphones,
   AlertTriangle,
-  SlidersHorizontal, // ✅ NEW ICON
+  SlidersHorizontal,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useProfile } from "../../context/ProfileContext";
 
 export default function AdminSideBar() {
   const location = useLocation();
-  const { profile, loading } = useProfile();
   const navigate = useNavigate();
-  const { logout } = useProfile(); // 👈 same logout used in user sidebar
+  const { logout } = useProfile();
+
   const isActive = (path) => location.pathname.startsWith(path);
 
   const linkBase =
     "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition";
-
   const activeLink = "bg-indigo-50 text-indigo-600 font-semibold";
   const inactiveLink = "text-gray-600 hover:bg-gray-100";
 
   return (
-          <aside
-        className="w-64 bg-white border-r
-                  fixed top-0 left-0
-                  h-screen
-                  flex flex-col justify-between"
-      >
+    <aside
+      className="w-64 bg-white border-r
+                 fixed top-0 left-0
+                 h-screen
+                 flex flex-col justify-between"
+    >
       {/* ================= TOP ================= */}
       <div>
         {/* Brand */}
@@ -59,6 +56,7 @@ export default function AdminSideBar() {
             Overview
           </NavLink>
         </nav>
+
         {/* ===== FRAUD ===== */}
         <p className="px-6 text-xs text-gray-400 uppercase tracking-wide mb-2">
           Fraud
@@ -92,7 +90,6 @@ export default function AdminSideBar() {
             Investigations
           </NavLink>
 
-          {/* ✅ NEW: FRAUD RULES ENGINE */}
           <NavLink
             to="/admin/fraud-rules"
             className={() =>
@@ -107,31 +104,47 @@ export default function AdminSideBar() {
             Fraud Rules Engine
           </NavLink>
         </nav>
+
+        {/* ===== MANAGEMENT ===== */}
+        <p className="px-6 text-xs text-gray-400 uppercase tracking-wide mt-6 mb-2">
+          Management
+        </p>
+        <nav className="px-3">
+          <NavLink
+            to="/admin/policies"
+            className={() =>
+              `${linkBase} ${
+                isActive("/admin/policies")
+                  ? activeLink
+                  : inactiveLink
+              }`
+            }
+          >
+            <Settings size={18} />
+            Policy Management
+          </NavLink>
+        </nav>
       </div>
 
       {/* ================= BOTTOM ================= */}
-      <div className="px-4 pb-5 space-y-4">
-
-        {/* ===== ADMIN PROFILE ===== */}
-        
-                <button
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-        className="
-          w-full mt-4 flex items-center justify-center
-          px-4 py-2 rounded-xl
-          text-sm font-semibold
-          text-red-600
-          border border-red-100
-          hover:bg-red-50 hover:border-red-200
-          transition-all duration-200
-        "
-      >
-        Logout
-      </button>
-
+      <div className="px-4 pb-5">
+        <button
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="
+            w-full mt-4 flex items-center justify-center
+            px-4 py-2 rounded-xl
+            text-sm font-semibold
+            text-red-600
+            border border-red-100
+            hover:bg-red-50 hover:border-red-200
+            transition-all
+          "
+        >
+          Logout
+        </button>
       </div>
     </aside>
   );

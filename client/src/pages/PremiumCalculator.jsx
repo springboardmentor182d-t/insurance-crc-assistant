@@ -99,10 +99,17 @@ const PremiumCalculator = () => {
                 options={["car", "bike"]}
                 onChange={(v) => setValue("vehicle_type", v)}
               />
+
               <Input
                 label="Vehicle Age"
                 onChange={(v) => setValue("vehicle_age", v)}
               />
+
+              <Input
+                label="Vehicle Value"
+                onChange={(v) => setValue("vehicle_value", v)}
+              />
+
               <EnumButtons
                 title="Coverage Type"
                 value={form.coverage_type}
@@ -111,6 +118,7 @@ const PremiumCalculator = () => {
               />
             </>
           )}
+
 
           {type === "home" && (
             <>

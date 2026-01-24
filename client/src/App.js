@@ -76,6 +76,9 @@ import CreateFraudRule from "./pages/CreateFraudRule";
 import EditFraudRule from "./pages/EditFraudRule";
 import InvestigateClaim from "./pages/InvestigateClaim";
 import Investigations from "./pages/Investigations";
+import EditPolicies from "./pages/EditPolicies";
+import CreatePolicy from "./pages/CreatePolicy";
+
 
 /* ================= TEST ================= */
 import TestFetch from "./pages/TestFetch";
@@ -114,11 +117,14 @@ export default function App() {
                 path="flagged-claims/:claimId/investigate"
                 element={<InvestigateClaim />}
               />
+              <Route path="policies/:policyType/:id/edit" element={<EditPolicies />}/>
 
               <Route path="fraud-rules" element={<FraudRulesEngine />} />
               <Route path="fraud-rules/new" element={<CreateFraudRule />} />
               <Route path="fraud-rules/:id/edit" element={<EditFraudRule />} />
               <Route path="investigations" element={<Investigations />} />
+              <Route path="policies/create" element={<CreatePolicy />}/>
+
             </Route>
 
             {/* ================= USER APP (PROTECTED) ================= */}

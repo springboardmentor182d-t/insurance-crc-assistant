@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Shield, CheckCircle } from "lucide-react";
+import { useAdminApi } from "../utils/fraudApi";
+import { createFraudRule } from "../utils/fraudApi";
 
 export default function CreateFraudRule() {
   const navigate = useNavigate();
@@ -14,19 +16,22 @@ export default function CreateFraudRule() {
     active: false,
   });
 
+  const api = useAdminApi();
+
   const handleCreate = async () => {
-    await fetch("/admin/fraud-rules", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(rule),
-    });
+    try {
+      await createFraudRule(api, rule);
+      setShowSuccess(true);
 
-    setShowSuccess(true);
-
-    setTimeout(() => {
-      navigate("/admin/fraud-rules");
-    }, 1500);
+      setTimeout(() => {
+        navigate("/admin/fraud-rules");
+      }, 1500);
+    } catch (err) {
+      console.error("Failed to create rule", err);
+      alert("Failed to create rule");
+    }
   };
+
 
   return (
     <div className="pl-64">

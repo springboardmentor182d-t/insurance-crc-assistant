@@ -109,6 +109,14 @@ export const updateFraudRule = async (apiInstance, id, payload) => {
   return res.data;
 };
 
+export const createFraudRule = async (apiInstance, payload) => {
+  const res = await apiInstance.post(
+    "/api/admin/fraud-rules",
+    payload
+  );
+  return res.data;
+};
+
 
 /* =====================================================
    INVESTIGATIONS
@@ -134,3 +142,34 @@ export const deleteInvestigation = async (apiInstance, id) => {
   );
   return res.data;
 };
+
+export const getAdminPolicies = async (type = "all") => {
+  const res = await api.get("/admin/policies", {
+    params: { policy_type: type }
+  });
+  return res.data;
+};
+
+
+export const getPolicyById = async (type, id) => {
+  const res = await api.get(`/admin/policies/${type}/${id}`);
+  return res.data;
+};
+
+export const updatePolicy = async (type, id, payload) => {
+  const res = await api.put(`/admin/policies/${type}/${id}`, payload);
+  return res.data;
+};
+
+export const deletePolicy = async (type, id) => {
+  const res = await api.delete(`/admin/policies/${type}/${id}`);
+  return res.data;
+};
+
+export const createPolicy = async (type, payload) => {
+  const res = await api.post(`/admin/policies/${type}`, payload);
+  return res.data;
+};
+
+
+
