@@ -160,6 +160,10 @@ from src.policies_recommendations_profile_preferences.routers.user_policies impo
 
 app.include_router(policies_router)
 
+from src.Admin.controllers import policy
+app.include_router(policy.router)
+
+
 # ================= ADMIN AUTO CREATE =================
 from src.auth.service import hash_password
 
