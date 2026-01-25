@@ -10,14 +10,19 @@ export default function MyPolicies({ policies = [] }) {
 
   if (!policies.length) {
     return (
-      <div className="bg-white rounded-xl p-6 border text-center">
-        <Bookmark className="mx-auto text-indigo-400 mb-3" size={28} />
-        <p className="text-gray-600 text-sm mb-2">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 text-center">
+        <Bookmark
+          className="mx-auto text-[var(--accent)] mb-3"
+          size={28}
+        />
+
+        <p className="text-[var(--text-muted)] text-sm mb-2">
           You haven’t saved any quotes yet
         </p>
+
         <button
           onClick={() => navigate("/catalog")}
-          className="text-indigo-600 text-sm font-medium hover:underline"
+          className="text-[var(--accent)] text-sm font-medium hover:underline"
         >
           Browse policy catalog →
         </button>
@@ -26,12 +31,15 @@ export default function MyPolicies({ policies = [] }) {
   }
 
   return (
-    <div className="bg-white rounded-xl border p-6">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Saved Quotes</h3>
+        <h3 className="text-lg font-semibold text-[var(--text-main)]">
+          Saved Quotes
+        </h3>
+
         <button
           onClick={() => navigate("/saved-quotes")}
-          className="text-indigo-600 text-sm hover:underline flex items-center gap-1"
+          className="text-[var(--accent)] text-sm hover:underline flex items-center gap-1"
         >
           View All <ArrowRight size={14} />
         </button>
@@ -42,15 +50,23 @@ export default function MyPolicies({ policies = [] }) {
           <div
             key={p.id}
             onClick={() => goToPolicy(p)}
-            className="border rounded-lg p-4 cursor-pointer hover:border-indigo-400 hover:shadow-sm transition"
+            className="
+              border border-[var(--border)]
+              rounded-lg p-4 cursor-pointer
+              hover:border-[var(--accent)]
+              hover:shadow-sm transition
+              bg-[var(--bg-main)]
+            "
           >
-            <h4 className="font-medium text-gray-800">
+            <h4 className="font-medium text-[var(--text-main)]">
               {p.policy_name}
             </h4>
-            <p className="text-xs text-gray-500">
+
+            <p className="text-xs text-[var(--text-muted)]">
               {p.insurer_name} • {p.tenure} yr
             </p>
-            <p className="text-sm font-semibold text-indigo-600 mt-1">
+
+            <p className="text-sm font-semibold text-[var(--accent)] mt-1">
               ₹{p.total_premium.toLocaleString()}
             </p>
           </div>

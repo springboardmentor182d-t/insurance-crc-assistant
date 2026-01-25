@@ -8,9 +8,9 @@ export default function ComparePolicies() {
   /* ---------------- EMPTY STATE ---------------- */
   if (policies.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white px-6">
         <h2 className="text-3xl font-semibold">No policies selected</h2>
-        <p className="text-slate-300 mt-3 mb-8">
+        <p className="text-slate-300 mt-3 mb-8 text-center">
           Start comparing policies to find the best fit
         </p>
         <button
@@ -26,13 +26,13 @@ export default function ComparePolicies() {
   /* ---------------- ONE POLICY ---------------- */
   if (policies.length === 1) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 text-white px-6">
         <h2 className="text-3xl font-semibold">Add one more policy</h2>
-        <p className="text-slate-300 mt-3 mb-8">
+        <p className="text-slate-300 mt-3 mb-8 text-center">
           You need at least two policies to compare
         </p>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap justify-center">
           <button
             onClick={() => navigate("/catalog")}
             className="px-8 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition shadow"
@@ -57,14 +57,14 @@ export default function ComparePolicies() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 px-10 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 px-6 sm:px-10 py-8">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-10 text-white">
-        <h2 className="text-4xl font-semibold tracking-tight">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-10 text-white">
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight">
           Compare Policies
         </h2>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {policies.length < 3 && (
             <button
               onClick={() => navigate("/catalog")}
@@ -86,17 +86,17 @@ export default function ComparePolicies() {
       {/* COMPARISON TABLE */}
       <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full">
+          <table className="min-w-full text-sm">
             <thead className="bg-slate-900 text-white sticky top-0 z-10">
               <tr>
-                <th className="p-6 text-left text-sm font-semibold text-slate-300">
+                <th className="p-6 text-left font-semibold text-slate-300">
                   Feature
                 </th>
 
                 {policies.map((policy, idx) => (
                   <th key={idx} className="p-6 text-left">
                     <div className="flex flex-col gap-1">
-                      <span className="text-base font-semibold">
+                      <span className="font-semibold">
                         {policy.policy_name}
                       </span>
                       <span className="text-xs text-slate-400">
@@ -116,12 +116,12 @@ export default function ComparePolicies() {
                     rowIdx % 2 === 0 ? "bg-white" : "bg-slate-50"
                   } hover:bg-indigo-50 transition`}
                 >
-                  <td className="p-6 text-sm font-medium text-slate-600 capitalize">
+                  <td className="p-6 font-medium text-slate-600 capitalize">
                     {key.replace(/_/g, " ")}
                   </td>
 
                   {policies.map((policy, idx) => (
-                    <td key={idx} className="p-6 text-sm text-slate-800">
+                    <td key={idx} className="p-6 text-slate-800">
                       {policy[key] === true && (
                         <span className="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-medium">
                           Yes
@@ -143,7 +143,7 @@ export default function ComparePolicies() {
 
               {/* CTA ROW */}
               <tr className="bg-slate-900">
-                <td className="p-6 text-sm font-semibold text-slate-300">
+                <td className="p-6 font-semibold text-slate-300">
                   Action
                 </td>
 

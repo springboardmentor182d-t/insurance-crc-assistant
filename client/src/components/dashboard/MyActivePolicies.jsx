@@ -17,40 +17,49 @@ export default function ActivePolicyCard() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border p-6">
-        <p className="text-sm text-gray-500">Loading active policy…</p>
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6">
+        <p className="text-sm text-[var(--text-muted)]">
+          Loading active policy…
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl border p-6 flex flex-col h-full">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 flex flex-col h-full">
       {/* HEADER */}
-      <p className="text-sm text-gray-500 mb-1">Active Policy</p>
+      <p className="text-sm text-[var(--text-muted)] mb-1">
+        Active Policy
+      </p>
 
       {policy ? (
         <>
           {/* POLICY INFO */}
           <div className="flex-1">
-            <p className="text-lg font-semibold text-gray-900">
+            <p className="text-lg font-semibold text-[var(--text-main)]">
               {policy.policy_name}
             </p>
-            <p className="text-sm text-gray-500 mb-4">
+
+            <p className="text-sm text-[var(--text-muted)] mb-4">
               {policy.provider_name}
             </p>
 
             {/* DETAILS */}
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Coverage</span>
-                <span className="text-gray-700 font-medium">
+                <span className="text-[var(--text-muted)]">
+                  Coverage
+                </span>
+                <span className="font-medium text-[var(--text-main)]">
                   ₹{policy.coverage_amount}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Renewal</span>
-                <span className="text-gray-700 font-medium">
+                <span className="text-[var(--text-muted)]">
+                  Renewal
+                </span>
+                <span className="font-medium text-[var(--text-main)]">
                   {policy.renewal_date}
                 </span>
               </div>
@@ -60,7 +69,12 @@ export default function ActivePolicyCard() {
           {/* ACTION */}
           <button
             onClick={() => navigate("/my-policies")}
-            className="mt-4 text-sm font-medium text-indigo-600 hover:underline self-start"
+            className="
+              mt-4 text-sm font-medium
+              text-[var(--accent)]
+              hover:underline
+              self-start
+            "
           >
             View all policies →
           </button>
@@ -69,7 +83,7 @@ export default function ActivePolicyCard() {
         <>
           {/* EMPTY STATE */}
           <div className="flex-1">
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-[var(--text-muted)] mt-2">
               You haven’t added any active policies yet.
             </p>
           </div>
@@ -77,7 +91,14 @@ export default function ActivePolicyCard() {
           {/* ACTION */}
           <button
             onClick={() => navigate("/my-policies")}
-            className="mt-4 px-4 py-2 text-sm rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 w-fit"
+            className="
+              mt-4 px-4 py-2
+              text-sm rounded-lg
+              bg-[var(--accent)]
+              text-white
+              hover:opacity-90
+              w-fit
+            "
           >
             Add your policies
           </button>

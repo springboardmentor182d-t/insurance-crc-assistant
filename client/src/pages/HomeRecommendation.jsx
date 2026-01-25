@@ -38,120 +38,115 @@ export default function HomeRecommendation() {
 
   /* ================= SUBMIT ================= */
   const submit = () => {
-    const payload = {
-      property_type: propertyType,
-      ownership_type: ownershipType,
-      property_age: propertyAge,
-      builtup_area: builtupArea,
+    navigate("/homerecresults", {
+      state: {
+        property_type: propertyType,
+        ownership_type: ownershipType,
+        property_age: propertyAge,
+        builtup_area: builtupArea,
 
-      need_structure: needStructure,
-      need_contents: needContents,
-      need_valuables: needValuables,
-      need_electronics: needElectronics,
-      need_rent_loss: needRentLoss,
+        need_structure: needStructure,
+        need_contents: needContents,
+        need_valuables: needValuables,
+        need_electronics: needElectronics,
+        need_rent_loss: needRentLoss,
 
-      preferred_sum_insured: sumInsured,
+        preferred_sum_insured: sumInsured,
 
-      has_security:
-        security.security24x7 ||
-        security.fireAlarm ||
-        security.cctv,
-    };
-
-    navigate("/homerecresults", { state: payload });
+        has_security:
+          security.security24x7 ||
+          security.fireAlarm ||
+          security.cctv,
+      },
+    });
   };
 
-
   return (
-    <div className="px-16 py-12 max-w-7xl mx-auto space-y-10 bg-gray-50">
+    <div className="min-h-screen px-4 sm:px-8 py-10 max-w-7xl mx-auto space-y-10
+                    bg-[var(--bg-main)] text-[var(--text-main)]">
 
       {/* HEADER */}
       <button
         onClick={() => navigate("/recommendations")}
-        className="flex items-center gap-2 text-sm text-indigo-600 hover:underline"
+        className="flex items-center gap-2 text-sm text-[var(--accent)] hover:underline"
       >
         <ArrowLeft size={16} /> Back to Catalog
       </button>
 
-      <h1 className="text-2xl font-bold">
-        Get Your{" "}
-        <span className="text-purple-600">Home Insurance</span>{" "}
-        Recommendations
-      </h1>
+      <div>
+        <h1 className="text-2xl font-bold">
+          Get Your{" "}
+          <span className="text-[var(--accent)]">
+            Home Insurance
+          </span>{" "}
+          Recommendations
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] mt-1">
+          Customize coverage for your property, valuables & security.
+        </p>
+      </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
         {/* PROPERTY DETAILS */}
-        <Section
-          title="Property Details"
-          icon={Building2}
-          className="bg-purple-50"
-        >
-          <div className="flex gap-3">
-            <PropertyPill
-              label="Apartment"
-              active={propertyType === "apartment"}
-              onClick={() => setPropertyType("apartment")}
-            />
-            <PropertyPill
-              label="Villa / House"
-              active={propertyType === "villa_house"}
-              onClick={() => setPropertyType("villa_house")}
-            />
-            <PropertyPill
-              label="Penthouse"
-              active={propertyType === "penthouse"}
-              onClick={() => setPropertyType("penthouse")}
-            />
+        <Card title="Property Details" icon={<Building2 size={18} />}>
+          <div className="flex gap-3 flex-wrap">
+            {[
+              ["Apartment", "apartment"],
+              ["Villa / House", "villa_house"],
+              ["Penthouse", "penthouse"],
+            ].map(([label, value]) => (
+              <Pill
+                key={value}
+                active={propertyType === value}
+                onClick={() => setPropertyType(value)}
+              >
+                {label}
+              </Pill>
+            ))}
           </div>
 
           <div className="flex gap-3">
-            <PropertyPill
-              label="Owned"
+            <Pill
               active={ownershipType === "owned"}
               onClick={() => setOwnershipType("owned")}
-            />
-            <PropertyPill
-              label="Rented"
+            >
+              Owned
+            </Pill>
+            <Pill
               active={ownershipType === "rented"}
               onClick={() => setOwnershipType("rented")}
-            />
+            >
+              Rented
+            </Pill>
           </div>
 
-          <Input
+          <NumberInput
             label="Property Age (Years)"
             value={propertyAge}
             onChange={setPropertyAge}
           />
 
-          <Input
+          <NumberInput
             label="Built-up Area (sq ft)"
             value={builtupArea}
             onChange={setBuiltupArea}
           />
-        </Section>
+        </Card>
 
         {/* COVERAGE */}
-        <Section
-          title="Coverage Required"
-          icon={ShieldCheck}
-          className="bg-pink-50"
-        >
-          <CoverageToggle label="Structure" value={needStructure} setValue={setNeedStructure} />
-          <CoverageToggle label="Contents" value={needContents} setValue={setNeedContents} />
-          <CoverageToggle label="Valuables" value={needValuables} setValue={setNeedValuables} />
-          <CoverageToggle label="Electronics" value={needElectronics} setValue={setNeedElectronics} />
-          <CoverageToggle label="Rent Loss Protection" value={needRentLoss} setValue={setNeedRentLoss} />
-        </Section>
+        <Card title="Coverage Required" icon={<ShieldCheck size={18} />}>
+          <Toggle label="Structure" value={needStructure} setValue={setNeedStructure} />
+          <Toggle label="Contents" value={needContents} setValue={setNeedContents} />
+          <Toggle label="Valuables" value={needValuables} setValue={setNeedValuables} />
+          <Toggle label="Electronics" value={needElectronics} setValue={setNeedElectronics} />
+          <Toggle label="Rent Loss Protection" value={needRentLoss} setValue={setNeedRentLoss} />
+        </Card>
 
         {/* SUM INSURED */}
-        <Section
-          title="Preferred Sum Insured"
-          icon={IndianRupee}
-          className="bg-emerald-50"
-        >
-          <p className="text-2xl font-bold text-emerald-600">
+        <Card title="Preferred Sum Insured" icon={<IndianRupee size={18} />} full>
+          <p className="text-2xl font-bold text-[var(--accent)]">
             ₹ {sumInsured.toLocaleString("en-IN")}
           </p>
 
@@ -162,18 +157,14 @@ export default function HomeRecommendation() {
             step={50000}
             value={sumInsured}
             onChange={(e) => setSumInsured(+e.target.value)}
-            className="w-full accent-purple-500"
+            className="w-full accent-indigo-600"
           />
-        </Section>
+        </Card>
 
         {/* SECURITY */}
-        <Section
-          title="Security Features"
-          icon={Lock}
-          className="bg-orange-50"
-        >
+        <Card title="Security Features" icon={<Lock size={18} />} full>
           <div className="flex gap-3 flex-wrap">
-            <SecurityChip
+            <Chip
               label="24/7 Security"
               icon={Lock}
               active={security.security24x7}
@@ -181,7 +172,7 @@ export default function HomeRecommendation() {
                 setSecurity(s => ({ ...s, security24x7: !s.security24x7 }))
               }
             />
-            <SecurityChip
+            <Chip
               label="Fire Alarm"
               icon={Flame}
               active={security.fireAlarm}
@@ -189,7 +180,7 @@ export default function HomeRecommendation() {
                 setSecurity(s => ({ ...s, fireAlarm: !s.fireAlarm }))
               }
             />
-            <SecurityChip
+            <Chip
               label="CCTV"
               icon={Camera}
               active={security.cctv}
@@ -198,17 +189,15 @@ export default function HomeRecommendation() {
               }
             />
           </div>
-        </Section>
+        </Card>
       </div>
 
       {/* CTA */}
       <button
         onClick={submit}
-        className="
-          w-full py-4 rounded-3xl text-white font-bold
-          bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-          shadow-lg hover:scale-[1.02] transition-all
-        "
+        className="w-full py-4 rounded-3xl text-white font-bold
+                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+                   shadow-lg hover:scale-[1.03] transition"
       >
         ⚡ GET PERSONALIZED HOME RECOMMENDATIONS →
       </button>
@@ -218,11 +207,12 @@ export default function HomeRecommendation() {
 
 /* ================= UI HELPERS ================= */
 
-function Section({ title, icon: Icon, children, className }) {
+function Card({ title, icon, children, full }) {
   return (
-    <div className={`p-6 rounded-3xl space-y-5 ${className}`}>
-      <div className="flex items-center gap-2 font-semibold text-gray-800">
-        <Icon size={18} />
+    <div className={`bg-[var(--bg-card)] rounded-3xl p-6 border border-[var(--border)] space-y-5
+      ${full ? "lg:col-span-2" : ""}`}>
+      <div className="flex items-center gap-2 font-semibold">
+        <span className="text-[var(--accent)]">{icon}</span>
         {title}
       </div>
       {children}
@@ -230,53 +220,53 @@ function Section({ title, icon: Icon, children, className }) {
   );
 }
 
-function PropertyPill({ label, active, onClick }) {
+function Pill({ active, children, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-xl text-sm font-semibold flex-1
+      className={`px-4 py-2 rounded-xl text-sm font-semibold
         ${active
           ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-          : "bg-white border text-gray-700"}
+          : "border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-main)]"}
       `}
     >
-      {label}
+      {children}
     </button>
   );
 }
 
-function Input({ label, value, onChange }) {
+function NumberInput({ label, value, onChange }) {
   return (
     <div>
-      <p className="text-xs text-gray-500 mb-1">{label}</p>
+      <p className="text-xs text-[var(--text-muted)] mb-1">{label}</p>
       <input
         type="number"
         value={value}
         onChange={(e) => onChange(+e.target.value)}
-        className="w-full px-4 py-2 rounded-xl border"
+        className="w-full px-4 py-2 rounded-xl bg-[var(--bg-main)]
+                   border border-[var(--border)]"
       />
     </div>
   );
 }
 
-function CoverageToggle({ label, value, setValue }) {
+function Toggle({ label, value, setValue }) {
   return (
-    <div className="flex justify-between items-center bg-white rounded-xl px-4 py-2">
-      <span className="text-sm font-medium">{label}</span>
-      <div className="flex bg-gray-100 rounded-full p-1">
+    <div className="flex justify-between items-center bg-[var(--bg-main)]
+                    rounded-xl px-4 py-3 border border-[var(--border)]">
+      <span className="text-sm">{label}</span>
+      <div className="flex gap-2">
         <button
           onClick={() => setValue(true)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : ""
-          }`}
+          className={`px-3 py-1 text-xs rounded-full
+            ${value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : "border border-[var(--border)]"}`}
         >
           Yes
         </button>
         <button
           onClick={() => setValue(false)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            !value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : ""
-          }`}
+          className={`px-3 py-1 text-xs rounded-full
+            ${!value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : "border border-[var(--border)]"}`}
         >
           No
         </button>
@@ -285,14 +275,14 @@ function CoverageToggle({ label, value, setValue }) {
   );
 }
 
-function SecurityChip({ label, active, onClick, icon: Icon }) {
+function Chip({ label, icon: Icon, active, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm
+      className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm border
         ${active
           ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-          : "bg-white"}
+          : "border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-main)]"}
       `}
     >
       <Icon size={14} />

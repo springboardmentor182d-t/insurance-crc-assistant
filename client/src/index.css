@@ -7,3 +7,42 @@
 .container {
   @apply mx-auto max-w-4xl px-4;
 }
+
+/* ===================== */
+/* THEME VARIABLES */
+/* ===================== */
+:root {
+  --bg-main: #f5f3ff;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #4f46e5;
+}
+
+/* DARK MODE */
+[data-theme="dark"] {
+  --bg-main: #0f172a;
+  --bg-card: #020617;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border: #1e293b;
+  --primary: #6366f1;
+}
+
+/* ===================== */
+/* DARK MODE INPUT FIX */
+/* ===================== */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  color: #ffffff;
+  background-color: #020617;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #cbd5f5; /* light readable gray */
+  opacity: 1;
+}
+

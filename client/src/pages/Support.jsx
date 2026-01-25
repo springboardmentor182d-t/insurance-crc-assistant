@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Mail, HelpCircle, User, AtSign, MessageSquare, Send } from "lucide-react";
+import {
+  Mail,
+  HelpCircle,
+  User,
+  AtSign,
+  MessageSquare,
+  Send,
+} from "lucide-react";
 
 export default function ContactSupport() {
   const [form, setForm] = useState({
@@ -34,28 +41,28 @@ export default function ContactSupport() {
   };
 
   return (
-    <div className="min-h-screen px-6 py-10 bg-gradient-to-br from-indigo-50 to-blue-100">
+    <div className="min-h-screen px-4 sm:px-6 py-10 bg-gradient-to-br from-indigo-50 to-blue-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-3xl mx-auto">
         {/* ===== HEADER ===== */}
         <div className="text-center mb-10">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center">
             <HelpCircle size={30} className="text-indigo-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
             Contact Support
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             Need help with policies, payments, or your account?  
             Our support team is here for you.
           </p>
         </div>
 
         {/* ===== FORM CARD ===== */}
-        <div className="bg-white rounded-2xl border shadow-sm p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border dark:border-gray-700 shadow-sm p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
                 <User size={14} className="text-indigo-600" />
                 Full Name
               </label>
@@ -65,13 +72,17 @@ export default function ContactSupport() {
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border rounded-lg px-3 py-2
+                           bg-white dark:bg-gray-900
+                           text-gray-900 dark:text-gray-100
+                           border-gray-300 dark:border-gray-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
                 <AtSign size={14} className="text-indigo-600" />
                 Email Address
               </label>
@@ -81,13 +92,17 @@ export default function ContactSupport() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border rounded-lg px-3 py-2
+                           bg-white dark:bg-gray-900
+                           text-gray-900 dark:text-gray-100
+                           border-gray-300 dark:border-gray-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             {/* Subject */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
                 <MessageSquare size={14} className="text-indigo-600" />
                 Subject
               </label>
@@ -97,13 +112,17 @@ export default function ContactSupport() {
                 value={form.subject}
                 onChange={handleChange}
                 placeholder="Policy issue / Payment / Account help"
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border rounded-lg px-3 py-2
+                           bg-white dark:bg-gray-900
+                           text-gray-900 dark:text-gray-100
+                           border-gray-300 dark:border-gray-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             {/* Message */}
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
                 <Mail size={14} className="text-indigo-600" />
                 Your Message
               </label>
@@ -114,14 +133,20 @@ export default function ContactSupport() {
                 onChange={handleChange}
                 required
                 placeholder="Describe your issue or question in detail..."
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border rounded-lg px-3 py-2
+                           bg-white dark:bg-gray-900
+                           text-gray-900 dark:text-gray-100
+                           border-gray-300 dark:border-gray-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-xl hover:bg-indigo-700 transition flex items-center justify-center gap-2 font-medium"
+              className="w-full bg-indigo-600 text-white py-3 rounded-xl
+                         hover:bg-indigo-700 transition
+                         flex items-center justify-center gap-2 font-medium"
             >
               <Send size={16} />
               Send Message to Support
@@ -129,7 +154,7 @@ export default function ContactSupport() {
           </form>
 
           {/* Footer */}
-          <p className="text-xs text-gray-500 text-center mt-6">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-6">
             Your message will open your email app and be sent to{" "}
             <span className="font-medium text-indigo-600">
               insureassist1@gmail.com

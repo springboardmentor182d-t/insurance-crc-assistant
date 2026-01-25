@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { baseURL } from "../config";
 
 /* ===============================
-   STATIC CLAIM TYPES (NO DYNAMIC)
+   STATIC CLAIM TYPES
 ================================ */
 const ALL_CLAIM_TYPES = [
   "Hospitalization",
@@ -36,7 +36,6 @@ const ALL_CLAIM_TYPES = [
 
 const FileNewClaimStep1 = () => {
   const navigate = useNavigate();
-
   const token = localStorage.getItem("access_token");
 
   const [policies, setPolicies] = useState([]);
@@ -50,9 +49,7 @@ const FileNewClaimStep1 = () => {
     amount_claimed: "",
   });
 
-  /* ===============================
-     FETCH ACTIVE POLICIES
-  ================================ */
+  /* ================= FETCH POLICIES ================= */
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
@@ -77,21 +74,13 @@ const FileNewClaimStep1 = () => {
     fetchPolicies();
   }, [token]);
 
-  /* ===============================
-     HANDLE FORM CHANGE
-  ================================ */
+  /* ================= HANDLE CHANGE ================= */
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  /* ===============================
-     SUBMIT CLAIM (STEP 1)
-  ================================ */
+  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     if (
       !formData.user_policy_id ||
@@ -131,26 +120,31 @@ const FileNewClaimStep1 = () => {
     }
   };
 
-  /* ===============================
-     UI
-  ================================ */
+  /* ================= UI ================= */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-sky-50 px-6 py-10">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm p-8 space-y-6">
-
+    <div
+      className="min-h-screen px-4 sm:px-8 py-10
+                 bg-[var(--bg-main)] text-[var(--text-main)]"
+    >
+      <div
+        className="max-w-3xl mx-auto
+                   bg-[var(--bg-card)]
+                   border border-[var(--border)]
+                   rounded-2xl p-6 sm:p-8 space-y-6"
+      >
         {/* HEADER */}
         <div>
-          <h1 className="text-3xl font-semibold text-slate-800">
+          <h1 className="text-2xl sm:text-3xl font-semibold">
             File New Claim
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-sm text-[var(--text-muted)] mt-1">
             Step 1 of 3 · Claim details
           </p>
         </div>
 
         {/* POLICY */}
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium">
             Select Active Policy
           </label>
           <select
@@ -158,7 +152,9 @@ const FileNewClaimStep1 = () => {
             value={formData.user_policy_id}
             onChange={handleChange}
             disabled={loadingPolicies}
-            className="w-full mt-2 px-3 py-2.5 border rounded-lg"
+            className="w-full mt-2 px-3 py-2.5 rounded-lg
+                       bg-[var(--bg-main)]
+                       border border-[var(--border)]"
           >
             <option value="">
               {loadingPolicies ? "Loading policies..." : "Select Policy"}
@@ -171,16 +167,18 @@ const FileNewClaimStep1 = () => {
           </select>
         </div>
 
-        {/* CLAIM TYPE – ALWAYS ENABLED */}
+        {/* CLAIM TYPE */}
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium">
             Claim Type
           </label>
           <select
             name="claim_type"
             value={formData.claim_type}
             onChange={handleChange}
-            className="w-full mt-2 px-3 py-2.5 border rounded-lg"
+            className="w-full mt-2 px-3 py-2.5 rounded-lg
+                       bg-[var(--bg-main)]
+                       border border-[var(--border)]"
           >
             <option value="">Select Claim Type</option>
             {ALL_CLAIM_TYPES.map((type) => (
@@ -193,7 +191,7 @@ const FileNewClaimStep1 = () => {
 
         {/* INCIDENT DATE */}
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium">
             Incident Date
           </label>
           <input
@@ -201,13 +199,15 @@ const FileNewClaimStep1 = () => {
             name="incident_date"
             value={formData.incident_date}
             onChange={handleChange}
-            className="w-full mt-2 px-3 py-2.5 border rounded-lg"
+            className="w-full mt-2 px-3 py-2.5 rounded-lg
+                       bg-[var(--bg-main)]
+                       border border-[var(--border)]"
           />
         </div>
 
         {/* DESCRIPTION */}
         <div>
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium">
             Description (optional)
           </label>
           <textarea
@@ -215,41 +215,49 @@ const FileNewClaimStep1 = () => {
             value={formData.description}
             onChange={handleChange}
             rows={4}
-            className="w-full mt-2 px-3 py-2.5 border rounded-lg resize-none"
+            className="w-full mt-2 px-3 py-2.5 rounded-lg resize-none
+                       bg-[var(--bg-main)]
+                       border border-[var(--border)]"
           />
         </div>
 
         {/* AMOUNT */}
         <div>
-          <label className="text-sm font-medium text-slate-700">
-            Amount Claimed 
+          <label className="text-sm font-medium">
+            Amount Claimed
           </label>
           <input
             type="number"
             name="amount_claimed"
             value={formData.amount_claimed}
             onChange={handleChange}
-            className="w-full mt-2 px-3 py-2.5 border rounded-lg"
+            className="w-full mt-2 px-3 py-2.5 rounded-lg
+                       bg-[var(--bg-main)]
+                       border border-[var(--border)]"
           />
         </div>
 
         {/* ACTIONS */}
-        <div className="flex justify-between pt-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 pt-4">
           <button
             onClick={() => navigate("/claims")}
-            className="px-6 py-2.5 border rounded-lg text-slate-600"
+            className="px-6 py-2.5 rounded-lg
+                       border border-[var(--border)]
+                       text-[var(--text-muted)]
+                       hover:bg-[var(--bg-main)]"
           >
             ← Back
           </button>
 
           <button
             onClick={handleSubmit}
-            className="px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            className="px-6 py-2.5 rounded-lg text-white font-medium
+                       bg-indigo-600
+                       hover:opacity-90"
           >
             Next: Upload Documents →
           </button>
         </div>
-
       </div>
     </div>
   );

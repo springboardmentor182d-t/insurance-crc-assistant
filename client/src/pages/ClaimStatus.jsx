@@ -11,14 +11,14 @@ const ClaimStatus = () => {
     const fetchClaims = async () => {
       try {
         const res = await fetch(`${baseURL}/claims`, {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-  },
-});
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
 
         if (!res.ok) throw new Error("Failed to fetch claims");
         const data = await res.json();
-        setClaims(data);
+        setClaims(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
         alert("Error loading claims");
@@ -32,37 +32,38 @@ const ClaimStatus = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-slate-50 flex items-center justify-center text-slate-600">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-main)] text-[var(--text-muted)]">
         Loading claims...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-slate-50 px-6 py-10">
+    <div className="min-h-screen px-6 py-10 bg-[var(--bg-main)] text-[var(--text-main)]">
+
       {/* HEADER */}
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-800">
+          <h1 className="text-3xl font-semibold">
             Claim Status
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-[var(--text-muted)] mt-1">
             Track and manage your submitted claims
           </p>
         </div>
 
         <button
           onClick={() => navigate("/claims/file/step1")}
-          className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+          className="px-5 py-2.5 rounded-lg bg-[var(--accent)] text-white hover:opacity-90 transition"
         >
           + File New Claim
         </button>
       </div>
 
       {/* TABLE */}
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm overflow-x-auto">
+      <div className="max-w-6xl mx-auto bg-[var(--bg-card)] rounded-2xl border border-[var(--border)] overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-indigo-50 border-b text-slate-600">
+          <thead className="border-b border-[var(--border)] text-[var(--text-muted)]">
             <tr>
               <th className="text-left px-6 py-4">Claim ID</th>
               <th className="text-left px-6 py-4">Policy</th>
@@ -78,7 +79,7 @@ const ClaimStatus = () => {
               <tr>
                 <td
                   colSpan="6"
-                  className="px-6 py-10 text-center text-slate-500"
+                  className="px-6 py-10 text-center text-[var(--text-muted)]"
                 >
                   No claims found
                 </td>
@@ -88,29 +89,36 @@ const ClaimStatus = () => {
             {claims.map((claim) => (
               <tr
                 key={claim.id}
-                className="border-b last:border-none hover:bg-slate-50 transition"
+                className="border-b border-[var(--border)] last:border-none hover:bg-[var(--bg-main)] transition"
               >
                 <td className="px-6 py-4 font-medium">
                   #{claim.id}
                 </td>
-                <td className="px-6 py-4">{claim.policy}</td>
+
+                <td className="px-6 py-4">
+                  {claim.user_policy?.policy_name || "—"}
+                </td>
+
                 <td className="px-6 py-4">
                   {claim.claim_type}
                 </td>
+
                 <td className="px-6 py-4">
                   {claim.incident_date}
                 </td>
+
                 <td className="px-6 py-4">
                   <span className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs">
                     {claim.status}
                   </span>
                 </td>
+
                 <td className="px-6 py-4">
                   <button
                     onClick={() =>
                       navigate(`/claims/track/${claim.id}`)
                     }
-                    className="text-indigo-600 hover:text-indigo-800 font-medium"
+                    className="text-[var(--accent)] hover:underline font-medium"
                   >
                     View / Track →
                   </button>
@@ -125,7 +133,7 @@ const ClaimStatus = () => {
       <div className="max-w-6xl mx-auto">
         <button
           onClick={() => navigate("/claims")}
-          className="mt-8 text-indigo-600 hover:text-indigo-800 font-medium"
+          className="mt-8 text-[var(--accent)] hover:underline font-medium"
         >
           ← Back to Dashboard
         </button>

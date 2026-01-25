@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import api from "../api";
-import { CheckCircle, Star } from "lucide-react";
+import { CheckCircle, Star, ArrowLeft } from "lucide-react";
 
 export default function FireRecResults() {
   const { state } = useLocation();
@@ -11,67 +11,94 @@ export default function FireRecResults() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("score");
 
-  
+  /* ================= FETCH ================= */
   useEffect(() => {
-    if (!state) return;
+    if (!state) {
+      setLoading(false);
+      return;
+    }
 
     api
-      .post("/api/recommendations/fire", state)
-      .then((res) => setPolicies(res.data))
+      .post("/api/recommendations/fire", {
+        property_type: state.property_type,
+        occupancy_type: state.occupancy_type,
+        construction_type: state.construction_type,
+        property_age: state.property_age,
+
+        fire: Boolean(state.fire),
+        explosion: Boolean(state.explosion),
+        lightning: Boolean(state.lightning),
+        natural_disaster: Boolean(
+          state.natural_disaster ?? state.natural
+        ),
+        burglary: Boolean(state.burglary),
+        electronic_equipment: Boolean(
+          state.electronic_equipment ?? state.electronics
+        ),
+
+        stock_value: Number(state.stock_value),
+        machinery_value: Number(state.machinery_value),
+        total_sum_insured: Number(state.total_sum_insured),
+      })
+      .then((res) => setPolicies(res.data || []))
       .finally(() => setLoading(false));
   }, [state]);
 
+  /* ================= SORT ================= */
   const sortedPolicies = useMemo(() => {
-    const data = [...policies];
-
-    return sortBy === "premium"
-      ? data.sort((a, b) => a.premium - b.premium)
-      : data.sort((a, b) => b.score - a.score);
+    if (!policies.length) return [];
+    return [...policies].sort((a, b) =>
+      sortBy === "premium"
+        ? a.premium - b.premium
+        : b.score - a.score
+    );
   }, [policies, sortBy]);
 
+  /* ================= LOADING ================= */
   if (loading) {
-    return <div className="px-16 py-12 text-gray-500">Loading…</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-[var(--text-muted)]">
+        Loading…
+      </div>
+    );
   }
 
   return (
-    <div className="px-16 py-12 max-w-7xl mx-auto space-y-10">
+    <div className="min-h-screen px-4 sm:px-8 py-10 max-w-7xl mx-auto space-y-10 bg-[var(--bg-main)] text-[var(--text-main)]">
 
       {/* HEADER */}
       <div className="flex items-center justify-between gap-6">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Recommended Fire Policies
-          </h1>
+        <h1 className="text-2xl font-bold">
+          Recommended{" "}
+          <span className="text-[var(--accent)]">
+            Fire Policies
+          </span>
+        </h1>
 
-          <div className="w-fit">
-            <button
-              onClick={() => navigate("/fire_property_insurance_rec")}
-              className="
-                inline-flex items-center gap-2
-                px-8 py-2 rounded-full text-sm font-semibold
-                bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                text-white shadow-md
-                hover:shadow-lg hover:scale-[1.05]
-                transition-all
-                whitespace-nowrap
-              "
-            >
-              ← Back to Assessment
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={() => navigate("/fire_property_insurance_rec")}
+          className="inline-flex items-center gap-2 px-8 py-2 rounded-full text-sm font-semibold
+            bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
+            text-white shadow-md hover:shadow-lg hover:scale-[1.05] transition"
+        >
+          <ArrowLeft size={16} /> Back to Assessment
+        </button>
+      </div>
 
       {/* SORT BAR */}
       <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-gray-600">Sort by:</span>
+        <span className="text-sm font-medium text-[var(--text-muted)]">
+          Sort by:
+        </span>
 
-        <div className="flex bg-gray-100 rounded-full p-1 w-[420px]">
+        <div className="flex bg-[var(--bg-card)] border border-[var(--border)] rounded-full p-1 w-[420px]">
           <button
             onClick={() => setSortBy("score")}
             className={`flex-1 py-2 rounded-full text-sm font-semibold transition-all
               ${
                 sortBy === "score"
                   ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow"
-                  : "text-gray-600 hover:text-indigo-600"
+                  : "text-[var(--text-muted)] hover:text-[var(--accent)]"
               }`}
           >
             ⭐ Best Match
@@ -83,7 +110,7 @@ export default function FireRecResults() {
               ${
                 sortBy === "premium"
                   ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow"
-                  : "text-gray-600 hover:text-indigo-600"
+                  : "text-[var(--text-muted)] hover:text-[var(--accent)]"
               }`}
           >
             💰 Lowest Premium
@@ -95,40 +122,30 @@ export default function FireRecResults() {
       <div className="space-y-8">
         {sortedPolicies.map((p, index) => (
           <div
-            key={`${p.policy_name}-${index}`}
-            className="
-              relative overflow-hidden rounded-3xl
-              bg-gradient-to-br from-white via-indigo-50 to-purple-50
-              border border-indigo-100
-              shadow-sm hover:shadow-xl
-              transition-shadow
-              p-6 flex justify-between gap-6
-            "
+            key={p.policy_id}
+            className="relative rounded-3xl p-6 bg-[var(--bg-card)]
+              border border-[var(--border)] hover:shadow-xl transition
+              flex flex-col lg:flex-row gap-6 justify-between"
           >
             {/* LEFT */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold">
                   {p.policy_name}
                 </h2>
 
                 {index === 0 && sortBy === "score" && (
-                  <span
-                    className="
-                      flex items-center gap-1
-                      px-3 py-1 rounded-full text-xs font-semibold
-                      bg-gradient-to-r from-emerald-400 to-emerald-600
-                      text-white shadow
-                    "
-                  >
+                  <span className="flex items-center gap-1 px-3 py-1 rounded-full
+                    text-xs font-semibold bg-emerald-500 text-white shadow">
                     <Star size={12} /> Best Match
                   </span>
                 )}
               </div>
 
-              <p className="text-sm text-gray-500">{p.insurer}</p>
+              <p className="text-sm text-[var(--text-muted)]">
+                {p.insurer}
+              </p>
 
-              {/* FEATURE CHIPS */}
               <div className="grid grid-cols-2 gap-3 mt-4">
                 {[
                   "Fire & allied perils",
@@ -138,15 +155,11 @@ export default function FireRecResults() {
                 ].map((label) => (
                   <div
                     key={label}
-                    className="
-                      flex items-center gap-2
-                      text-sm text-gray-700
-                      bg-white/70 backdrop-blur
-                      px-3 py-2 rounded-xl
-                      border border-indigo-100
-                    "
+                    className="flex items-center gap-2 text-sm
+                      bg-[var(--bg-main)] px-3 py-2 rounded-xl
+                      border border-[var(--border)]"
                   >
-                    <CheckCircle size={16} className="text-indigo-500" />
+                    <CheckCircle size={16} className="text-[var(--accent)]" />
                     {label}
                   </div>
                 ))}
@@ -156,12 +169,12 @@ export default function FireRecResults() {
             {/* RIGHT */}
             <div className="text-right flex flex-col justify-between items-end">
               <div>
-                <p className="text-2xl font-extrabold text-indigo-600">
+                <p className="text-2xl font-bold text-[var(--accent)]">
                   ₹ {Number(p.premium).toLocaleString("en-IN")}
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-[var(--text-muted)] mt-1">
                   Match Score{" "}
-                  <span className="font-semibold text-gray-800">
+                  <span className="font-semibold text-[var(--text-main)]">
                     {p.score}
                   </span>
                 </p>
@@ -169,27 +182,26 @@ export default function FireRecResults() {
 
               <button
                 onClick={() => navigate(`/policies/fire/${p.policy_id}`)}
-                className="
-                  mt-6 px-7 py-2 rounded-full text-sm font-semibold
+                className="mt-6 px-7 py-2 rounded-full text-sm font-semibold
                   bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                  text-white shadow-md
-                  hover:shadow-lg hover:scale-[1.05]
-                  transition-all
-                "
+                  text-white shadow-md hover:shadow-lg hover:scale-[1.05] transition"
               >
                 View Policy
               </button>
             </div>
 
-            {/* COLOR STRIP */}
-            <div
-              className="
-                absolute top-0 right-0 h-full w-2
-                bg-gradient-to-b from-indigo-500 via-purple-500 to-pink-500
-              "
-            />
+            {/* ACCENT STRIP */}
+            <div className="absolute top-0 right-0 h-full w-1.5
+              bg-gradient-to-b from-indigo-500 to-purple-500
+              rounded-tr-3xl rounded-br-3xl" />
           </div>
         ))}
+
+        {!sortedPolicies.length && (
+          <div className="text-center text-[var(--text-muted)] py-20">
+            No matching fire policies found.
+          </div>
+        )}
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ import PolicyCatalog from "./pages/PolicyCatalog";
 import ProfilePage from "./pages/ProfilePage";
 import RecommendedPolicies from "./pages/RecommendedPolicies";
 import SavedQuotes from "./pages/SavedQuotes";
-import MyActivePolicies from "./pages/MyActivePolicies"
+import MyActivePolicies from "./pages/MyActivePolicies";
 import Support from "./pages/Support";
 
 /* ================= RECOMMENDATION FLOWS ================= */
@@ -79,6 +79,8 @@ import Investigations from "./pages/Investigations";
 import EditPolicies from "./pages/EditPolicies";
 import CreatePolicy from "./pages/CreatePolicy";
 
+/* ================= ADMIN THEME PROVIDER ================= */
+import { AdminThemeProvider } from "./context/AdminThemeContext";
 
 /* ================= TEST ================= */
 import TestFetch from "./pages/TestFetch";
@@ -98,12 +100,14 @@ export default function App() {
             <Route path="/otp" element={<Otp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* ================= ADMIN (PROTECTED) ================= */}
+            {/* ================= ADMIN (PROTECTED + THEME SAFE) ================= */}
             <Route
               path="/admin"
               element={
                 <ProtectedRoute>
-                  <AdminLayout />
+                  <AdminThemeProvider>
+                    <AdminLayout />
+                  </AdminThemeProvider>
                 </ProtectedRoute>
               }
             >
@@ -117,14 +121,16 @@ export default function App() {
                 path="flagged-claims/:claimId/investigate"
                 element={<InvestigateClaim />}
               />
-              <Route path="policies/:policyType/:id/edit" element={<EditPolicies />}/>
+              <Route
+                path="policies/:policyType/:id/edit"
+                element={<EditPolicies />}
+              />
 
               <Route path="fraud-rules" element={<FraudRulesEngine />} />
               <Route path="fraud-rules/new" element={<CreateFraudRule />} />
               <Route path="fraud-rules/:id/edit" element={<EditFraudRule />} />
               <Route path="investigations" element={<Investigations />} />
-              <Route path="policies/create" element={<CreatePolicy />}/>
-
+              <Route path="policies/create" element={<CreatePolicy />} />
             </Route>
 
             {/* ================= USER APP (PROTECTED) ================= */}
@@ -142,14 +148,12 @@ export default function App() {
               <Route path="/support" element={<Support />} />
               <Route path="/my-policies" element={<MyActivePolicies />} />
 
-              {/* Recommendations */}
               <Route path="/recommendations" element={<Recommendations />} />
               <Route
                 path="/recommendedPolicies"
                 element={<RecommendedPolicies />}
               />
 
-              {/* Recommendation Forms */}
               <Route path="/health_insurance_rec" element={<HealthRecommendation />} />
               <Route path="/motor_insurance_rec" element={<MotorRecommendation />} />
               <Route path="/life_insurance_rec" element={<LifeRecommendation />} />
@@ -158,7 +162,6 @@ export default function App() {
               <Route path="/business_insurance_rec" element={<BusinessRecommendation />} />
               <Route path="/fire_property_insurance_rec" element={<FireRecommendation />} />
 
-              {/* Recommendation Results */}
               <Route path="/healthrecresults" element={<HealthRecResults />} />
               <Route path="/liferecresults" element={<LifeRecResults />} />
               <Route path="/motorrecresults" element={<MotorRecResults />} />
@@ -167,7 +170,6 @@ export default function App() {
               <Route path="/firerecresults" element={<FireRecResults />} />
               <Route path="/businessrecresults" element={<BusinessRecResults />} />
 
-              {/* Policy Details */}
               <Route path="/policies/health/:id" element={<HealthPolicyDetails />} />
               <Route path="/policies/motor/:id" element={<MotorPolicyDetails />} />
               <Route path="/policies/life/:id" element={<LifePolicyDetails />} />
@@ -178,11 +180,9 @@ export default function App() {
 
               <Route path="/premium-calculator" element={<PremiumCalculator />} />
 
-              {/* Compare & Quotes */}
               <Route path="/compare" element={<ComparePolicies />} />
               <Route path="/quote-summary" element={<QuoteSummary />} />
 
-              {/* Claims */}
               <Route path="/claims" element={<ClaimsDashboard />} />
               <Route path="/claims/start" element={<StartNewClaim />} />
               <Route path="/claims/file/step1" element={<FileNewClaimStep1 />} />
@@ -192,13 +192,11 @@ export default function App() {
               <Route path="/claims/status" element={<ClaimStatus />} />
               <Route path="/claims/track/:id" element={<TrackClaim />} />
 
-              {/* Test */}
               <Route path="/test" element={<TestFetch />} />
             </Route>
 
             {/* ================= FALLBACK ================= */}
             <Route path="*" element={<h1>Page Not Found</h1>} />
-
           </Routes>
         </BrowserRouter>
       </CompareProvider>

@@ -5,12 +5,10 @@ import {
   Plane,
   Calendar,
   Users,
-  Shield,
   HeartPulse,
-  Briefcase,
-  Luggage,
+  Shield,
   Mountain,
-  Wallet,
+  Luggage,
 } from "lucide-react";
 
 export default function TravelRecommendation() {
@@ -23,7 +21,7 @@ export default function TravelRecommendation() {
   const [tripDays, setTripDays] = useState(14);
   const [travelers, setTravelers] = useState(2);
 
-  const [age, setAge] = useState(45);
+  const [age, setAge] = useState(40);
   const [preExisting, setPreExisting] = useState(false);
 
   const [medical, setMedical] = useState(true);
@@ -52,115 +50,75 @@ export default function TravelRecommendation() {
     });
   };
 
-  const pillBase =
-    "flex-1 py-3 rounded-xl text-sm font-semibold transition-all";
-  const pillActive =
-    "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow";
-  const pillInactive =
-    "bg-white border text-gray-700 hover:bg-gray-50";
-
   return (
-    <div className="px-16 py-12 max-w-7xl mx-auto space-y-10 bg-gray-50">
-
+    <div
+      className="min-h-screen px-4 sm:px-8 py-10 max-w-7xl mx-auto space-y-10
+                 bg-[var(--bg-main)] text-[var(--text-main)]"
+    >
       {/* HEADER */}
       <button
         onClick={() => navigate("/recommendations")}
-        className="flex items-center gap-2 text-sm text-indigo-600 hover:underline"
+        className="flex items-center gap-2 text-sm text-[var(--accent)] hover:underline"
       >
-        <ArrowLeft size={16} /> Back to Catalog
+        <ArrowLeft size={16} /> Back
       </button>
 
       <div>
         <h1 className="text-2xl font-bold">
           Get Your{" "}
-          <span className="text-purple-600">
-            Travel Insurance Recommendations
-          </span>
+          <span className="text-[var(--accent)]">
+            Travel Insurance
+          </span>{" "}
+          Recommendations
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Tell us about your trip to find the perfect coverage for your journey.
+        <p className="text-sm text-[var(--text-muted)] mt-1">
+          Tell us about your trip to find the best travel coverage.
         </p>
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* TRIP BASICS */}
-        <div className="bg-purple-50 rounded-3xl p-6 space-y-6">
-          <div className="flex items-center gap-2 font-semibold">
-            <Plane size={18} /> Trip Basics
-          </div>
+        {/* TRIP DETAILS */}
+        <Card title="Trip Details" icon={<Plane size={18} />}>
+          <PillGroup
+            label="Trip Type"
+            value={tripType}
+            setValue={setTripType}
+            options={["single", "multi", "student"]}
+          />
 
-          <div>
-            <p className="text-xs text-gray-500 mb-2">Trip Type</p>
-            <div className="flex gap-3">
-              {[
-                ["single", "Single Trip"],
-                ["multi", "Multi-Trip"],
-                ["student", "Student"],
-              ].map(([k, label]) => (
-                <button
-                  key={k}
-                  onClick={() => setTripType(k)}
-                  className={`${pillBase} ${
-                    tripType === k ? pillActive : pillInactive
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <PillGroup
+            label="Destination"
+            value={destinationType}
+            setValue={setDestinationType}
+            options={[
+              "domestic",
+              "international",
+              "schengen",
+              "usa_canada",
+            ]}
+          />
 
-          <div>
-            <p className="text-xs text-gray-500 mb-2">Destination Type</p>
-            <div className="flex gap-3 flex-wrap">
-              {[
-                ["domestic", "Domestic"],
-                ["international", "International"],
-                ["schengen", "Schengen"],
-                ["usa_canada", "USA / Canada"],
-              ].map(([k, label]) => (
-                <button
-                  key={k}
-                  onClick={() => setDestinationType(k)}
-                  className={`${pillBase} ${
-                    destinationType === k ? pillActive : pillInactive
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <NumberInput
+            label="Trip Duration (Days)"
+            value={tripDays}
+            onChange={setTripDays}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <InputBox
-              label="Trip Duration (days)"
-              value={tripDays}
-              setValue={setTripDays}
-              icon={Calendar}
-            />
-            <InputBox
-              label="Travelers"
-              value={travelers}
-              setValue={setTravelers}
-              icon={Users}
-            />
-          </div>
-        </div>
+          <NumberInput
+            label="Number of Travelers"
+            value={travelers}
+            onChange={setTravelers}
+          />
+        </Card>
 
-        {/* RISK PROFILE */}
-        <div className="bg-pink-50 rounded-3xl p-6 space-y-6">
-          <div className="flex items-center gap-2 font-semibold">
-            <Shield size={18} /> Traveler Risk Profile
-          </div>
-
-          <InputBox
+        {/* TRAVELER PROFILE */}
+        <Card title="Traveler Profile" icon={<HeartPulse size={18} />}>
+          <NumberInput
             label="Age of Oldest Traveler"
             value={age}
-            setValue={setAge}
-            icon={HeartPulse}
+            onChange={setAge}
           />
 
           <Toggle
@@ -168,49 +126,40 @@ export default function TravelRecommendation() {
             value={preExisting}
             setValue={setPreExisting}
           />
-        </div>
+        </Card>
 
         {/* COVERAGE */}
-        <div className="col-span-2 bg-emerald-50 rounded-3xl p-6 space-y-4">
-          <div className="flex items-center gap-2 font-semibold">
-            <Shield size={18} /> Coverage Preferences
-          </div>
-
-          <div className="grid grid-cols-4 gap-4">
-            <CoverageChip icon={HeartPulse} label="Medical" value={medical} setValue={setMedical} />
-            <CoverageChip icon={Briefcase} label="Trip Cancellation" value={tripCancel} setValue={setTripCancel} />
-            <CoverageChip icon={Luggage} label="Baggage" value={baggage} setValue={setBaggage} />
-            <CoverageChip icon={Mountain} label="Adventure Sports" value={adventure} setValue={setAdventure} />
-          </div>
-        </div>
+        <Card title="Coverage Preferences" icon={<Shield size={18} />} full>
+          <Toggle
+            label="Medical Coverage"
+            value={medical}
+            setValue={setMedical}
+          />
+          <Toggle
+            label="Trip Cancellation"
+            value={tripCancel}
+            setValue={setTripCancel}
+          />
+          <Toggle
+            label="Baggage Protection"
+            value={baggage}
+            setValue={setBaggage}
+          />
+          <Toggle
+            label="Adventure Sports"
+            value={adventure}
+            setValue={setAdventure}
+          />
+        </Card>
 
         {/* COVERAGE AMOUNT */}
-        <div className="col-span-2 bg-orange-50 rounded-3xl p-6 space-y-4">
-          <div className="flex items-center gap-2 font-semibold">
-            <Wallet size={18} /> Coverage Amount Preference
-          </div>
-
-          <div className="flex bg-gray-100 rounded-full p-1">
-            {[
-              ["low", "Low"],
-              ["medium", "Medium"],
-              ["high", "High"],
-            ].map(([k, label]) => (
-              <button
-                key={k}
-                onClick={() => setCoverageAmount(k)}
-                className={`flex-1 py-3 rounded-full text-sm font-semibold transition-all
-                  ${
-                    coverageAmount === k
-                      ? "bg-white border border-orange-400 text-orange-600 shadow"
-                      : "text-gray-600"
-                  }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Card title="Coverage Amount" icon={<Luggage size={18} />} full>
+          <PillRow
+            value={coverageAmount}
+            setValue={setCoverageAmount}
+            options={["low", "medium", "high"]}
+          />
+        </Card>
       </div>
 
       {/* CTA */}
@@ -218,27 +167,74 @@ export default function TravelRecommendation() {
         onClick={submit}
         className="w-full py-4 rounded-3xl text-white font-bold
                    bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-                   shadow-lg hover:scale-[1.02]"
+                   shadow-lg hover:scale-[1.03] transition"
       >
-        ⚡ GET PERSONALIZED RECOMMENDATIONS →
+        ⚡ GET PERSONALIZED TRAVEL RECOMMENDATIONS →
       </button>
     </div>
   );
 }
 
-/* ================= COMPONENTS ================= */
+/* ================= UI HELPERS (SAME AS MOTOR) ================= */
 
-function InputBox({ label, value, setValue, icon: Icon }) {
+function Card({ title, icon, children, full }) {
   return (
-    <div className="bg-white rounded-xl px-4 py-3 border">
-      <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
-        <Icon size={12} /> {label}
-      </p>
+    <div
+      className={`bg-[var(--bg-card)] rounded-3xl p-6 space-y-5
+                  border border-[var(--border)]
+                  ${full ? "lg:col-span-2" : ""}`}
+    >
+      <div className="flex items-center gap-2 font-semibold">
+        <span className="text-[var(--accent)]">{icon}</span>
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function PillRow({ value, setValue, options }) {
+  return (
+    <div className="flex gap-3 flex-wrap">
+      {options.map((o) => (
+        <button
+          key={o}
+          onClick={() => setValue(o)}
+          className={`flex-1 px-4 py-2 rounded-xl text-sm font-semibold
+            ${
+              value === o
+                ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                : "border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-main)]"
+            }`}
+        >
+          {o.replace("_", " ").toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function PillGroup({ label, value, setValue, options }) {
+  return (
+    <div>
+      <p className="text-xs text-[var(--text-muted)] mb-1">{label}</p>
+      <PillRow value={value} setValue={setValue} options={options} />
+    </div>
+  );
+}
+
+function NumberInput({ label, value, onChange }) {
+  return (
+    <div>
+      <p className="text-xs text-[var(--text-muted)] mb-1">{label}</p>
       <input
         type="number"
+        min={0}
         value={value}
-        onChange={(e) => setValue(+e.target.value)}
-        className="w-full outline-none font-semibold"
+        onChange={(e) => onChange(+e.target.value)}
+        className="w-full px-4 py-2 rounded-xl
+                   bg-[var(--bg-main)]
+                   border border-[var(--border)]"
       />
     </div>
   );
@@ -246,50 +242,36 @@ function InputBox({ label, value, setValue, icon: Icon }) {
 
 function Toggle({ label, value, setValue }) {
   return (
-    <div className="flex justify-between items-center bg-white rounded-xl px-4 py-3 border">
+    <div
+      className="flex items-center justify-between
+                 bg-[var(--bg-main)] rounded-xl px-4 py-3
+                 border border-[var(--border)]"
+    >
       <span className="text-sm">{label}</span>
-      <div className="flex bg-gray-100 rounded-full p-1">
+      <div className="flex gap-2">
         <button
           onClick={() => setValue(false)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            !value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : ""
-          }`}
+          className={`px-3 py-1 text-xs rounded-full
+            ${
+              !value
+                ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                : "border border-[var(--border)]"
+            }`}
         >
           No
         </button>
         <button
           onClick={() => setValue(true)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            value ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white" : ""
-          }`}
+          className={`px-3 py-1 text-xs rounded-full
+            ${
+              value
+                ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+                : "border border-[var(--border)]"
+            }`}
         >
           Yes
         </button>
       </div>
     </div>
-  );
-}
-
-function CoverageChip({ icon: Icon, label, value, setValue }) {
-  return (
-    <button
-      onClick={() => setValue(!value)}
-      className={`flex items-center justify-between px-4 py-3 rounded-xl border text-sm
-        ${value ? "bg-white shadow" : "bg-gray-50"}
-      `}
-    >
-      <span className="flex items-center gap-2">
-        <Icon size={14} /> {label}
-      </span>
-      <span
-        className={`px-3 py-1 rounded-full text-xs ${
-          value
-            ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-            : "bg-gray-200 text-gray-600"
-        }`}
-      >
-        {value ? "Yes" : "No"}
-      </span>
-    </button>
   );
 }

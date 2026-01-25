@@ -12,7 +12,6 @@ import {
 const formatLabel = (category) => category;
 
 export default function PremiumChart({ data = [] }) {
-  // Build chart data ONLY from backend data
   const chartData = data.map((item) => ({
     category: formatLabel(item.category),
     user_cost: item.user_cost,
@@ -21,18 +20,18 @@ export default function PremiumChart({ data = [] }) {
 
   if (chartData.length === 0) {
     return (
-      <div className="bg-white rounded-lg p-6 text-sm text-gray-500">
+      <div className="bg-[var(--bg-card)] rounded-lg p-6 text-sm text-[var(--text-muted)] border border-[var(--border)]">
         No premium analysis available yet.
       </div>
     );
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h3 className="text-lg font-semibold mb-1">
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-6">
+      <h3 className="text-lg font-semibold mb-1 text-[var(--text-main)]">
         Premium Analysis (Your Cost vs Market)
       </h3>
-      <p className="text-xs text-gray-500 mb-4">
+      <p className="text-xs text-[var(--text-muted)] mb-4">
         Monthly comparison based on your selected insurance preferences
       </p>
 
@@ -40,25 +39,45 @@ export default function PremiumChart({ data = [] }) {
         <BarChart data={chartData} barCategoryGap="30%">
           <XAxis
             dataKey="category"
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+            axisLine={{ stroke: "var(--border)" }}
+            tickLine={{ stroke: "var(--border)" }}
           />
-          <YAxis />
+
+          <YAxis
+            tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+            axisLine={{ stroke: "var(--border)" }}
+            tickLine={{ stroke: "var(--border)" }}
+          />
+
           <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--bg-card)",
+              borderColor: "var(--border)",
+              color: "var(--text-main)",
+            }}
             formatter={(value) => `₹${value.toLocaleString()}`}
           />
-          <Legend />
 
+          <Legend
+            wrapperStyle={{
+              color: "var(--text-muted)",
+              fontSize: "12px",
+            }}
+          />
+
+          {/* 🔒 KEEP FIXED COLORS — DO NOT THEME THESE */}
           <Bar
             dataKey="market_cost"
             name="Market Avg"
-            fill="#8b5cf6"
+            fill="#8b5cf6"   // EXACT purple you had
             radius={[6, 6, 0, 0]}
             barSize={18}
           />
           <Bar
             dataKey="user_cost"
             name="Your Budget"
-            fill="#3b82f6"
+            fill="#3b82f6"   // EXACT blue you had
             radius={[6, 6, 0, 0]}
             barSize={18}
           />

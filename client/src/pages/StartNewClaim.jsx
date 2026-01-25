@@ -26,27 +26,31 @@ const StartNewClaim = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-4 md:p-6 bg-gray-100 dark:bg-gray-900 min-h-screen">
       {/* Page Title */}
-      <h1 className="text-2xl font-semibold mb-4">Start New Claim</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+        Start New Claim
+      </h1>
 
       {/* Info Card */}
-      <div className="bg-white rounded-xl p-6 mb-6 shadow">
-        <h2 className="text-lg font-semibold mb-2">
+      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6 shadow">
+        <h2 className="text-lg font-semibold mb-2 dark:text-gray-100">
           Start your claim process
         </h2>
-        <p className="text-sm text-gray-500 mb-4">What You Need to Do</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          What You Need to Do
+        </p>
 
         <ul className="space-y-2 text-sm">
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <span className="text-green-500">✔</span>
             Provide incident details
           </li>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <span className="text-green-500">✔</span>
             Upload supporting documents
           </li>
-          <li className="flex items-center gap-2">
+          <li className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
             <span className="text-green-500">✔</span>
             Review and submit your claim
           </li>
@@ -58,7 +62,7 @@ const StartNewClaim = () => {
         {steps.map((item) => (
           <div
             key={item.step}
-            className={`bg-white rounded-xl p-6 shadow text-center ${
+            className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow text-center ${
               item.active ? "ring-2 ring-purple-500" : ""
             }`}
           >
@@ -66,16 +70,18 @@ const StartNewClaim = () => {
               className={`mx-auto mb-4 w-12 h-12 flex items-center justify-center rounded-lg font-semibold ${
                 item.active
                   ? "bg-purple-500 text-white"
-                  : "bg-gray-200 text-gray-500"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-300"
               }`}
             >
               {item.step}
             </div>
 
-            <h3 className="font-medium mb-2">
+            <h3 className="font-medium mb-2 dark:text-gray-100">
               Step {item.step}: {item.title}
             </h3>
-            <p className="text-sm text-gray-500">{item.desc}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {item.desc}
+            </p>
           </div>
         ))}
       </div>
@@ -84,7 +90,8 @@ const StartNewClaim = () => {
       <div className="flex justify-between items-center">
         <button
           onClick={() => navigate("/claims")}
-          className="px-6 py-2 border rounded-lg text-gray-600 hover:bg-gray-100"
+          className="px-6 py-2 border rounded-lg text-gray-600 dark:text-gray-300
+                     hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           ← Back
         </button>
@@ -101,4 +108,3 @@ const StartNewClaim = () => {
 };
 
 export default StartNewClaim;
-

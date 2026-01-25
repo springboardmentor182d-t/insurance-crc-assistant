@@ -16,16 +16,19 @@ export default function FireRecommendation() {
   const [constructionType, setConstructionType] = useState("rcc");
   const [propertyAge, setPropertyAge] = useState(10);
 
-  const [fire, setFire] = useState(true);
-  const [explosion, setExplosion] = useState(true);
-  const [lightning, setLightning] = useState(true);
-  const [naturalDisaster, setNaturalDisaster] = useState(true);
-  const [burglary, setBurglary] = useState(true);
-  const [electronics, setElectronics] = useState(true);
+  const [coverage, setCoverage] = useState({
+    fire: true,
+    explosion: true,
+    lightning: true,
+    natural: true,
+    burglary: true,
+    electronics: true,
+  });
 
   const [stockValue, setStockValue] = useState(4500000);
   const [machineryValue, setMachineryValue] = useState(2500000);
 
+  /* ================= SUBMIT ================= */
   const submit = () => {
     navigate("/firerecresults", {
       state: {
@@ -33,116 +36,172 @@ export default function FireRecommendation() {
         occupancy_type: occupancyType.toLowerCase(),
         construction_type: constructionType,
         property_age: propertyAge,
-
-        fire,
-        explosion,
-        lightning,
-        natural_disaster: naturalDisaster,
-        burglary,
-        electronic_equipment: electronics,
-
+        ...coverage,
         stock_value: stockValue,
         machinery_value: machineryValue,
-        total_sum_insured: stockValue + machineryValue
-      }
+        total_sum_insured: stockValue + machineryValue,
+      },
     });
   };
 
-  /* ================= UI ================= */
+  /* ================= STYLES ================= */
+  const pill =
+    "px-4 py-2 rounded-xl text-xs font-semibold transition-all";
+  const active =
+    "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow";
+  const inactive =
+    "border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-main)]";
+
   return (
-    <div className="px-14 py-10 max-w-7xl mx-auto bg-gray-50">
+    <div className="min-h-screen px-4 sm:px-8 py-10 max-w-7xl mx-auto space-y-10 bg-[var(--bg-main)] text-[var(--text-main)]">
 
       {/* HEADER */}
       <button
         onClick={() => navigate("/recommendations")}
-        className="flex items-center gap-2 text-sm text-indigo-600 hover:underline"
+        className="flex items-center gap-2 text-sm text-[var(--accent)] hover:underline"
       >
         <ArrowLeft size={16} /> Back to Catalog
       </button>
 
-      <h1 className="mt-4 text-3xl font-bold">
-        Get Your{" "}
-        <span className="text-purple-600">Fire Insurance</span>{" "}
-        Recommendations
-      </h1>
+      <div>
+        <h1 className="text-2xl font-bold">
+          Get Your{" "}
+          <span className="text-[var(--accent)]">
+            Fire Insurance Recommendations
+          </span>
+        </h1>
+        <p className="text-sm text-[var(--text-muted)] mt-1 max-w-3xl">
+          Analyze fire-related risks and asset exposure to find the most suitable protection.
+        </p>
+      </div>
 
-      <p className="text-sm text-gray-500 mt-1">
-        Protect your assets and property with the right fire coverage tailored to your specific risks.
-      </p>
-
-      {/* MAIN GRID */}
-      <div className="grid grid-cols-2 gap-8 mt-10">
+      {/* GRID */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
         {/* PROPERTY DETAILS */}
-        <Card title="Property Details" icon={<Building />}>
-          <PillRow
-            options={["RESIDENTIAL", "COMMERCIAL", "INDUSTRIAL"]}
-            value={propertyType.toUpperCase()}
-            onChange={(v) => setPropertyType(v.toLowerCase())}
-          />
+        <div className="bg-[var(--bg-card)] rounded-3xl p-6 border border-[var(--border)] space-y-6">
+          <div className="flex items-center gap-2 font-semibold">
+            <Building size={18} className="text-[var(--accent)]" />
+            Property Details
+          </div>
 
-          <label className="text-xs text-gray-500">Occupancy Type</label>
-          <select
-            className="w-full mt-1 px-4 py-2 rounded-xl border bg-white"
-            value={occupancyType}
-            onChange={(e) => setOccupancyType(e.target.value)}
-          >
-            <option>Residential</option>
-            <option>Shop</option>
-            <option>Office</option>
-            <option>Factory</option>
-          </select>
+          <div>
+            <label className="text-xs text-[var(--text-muted)]">
+              Property Type
+            </label>
+            <div className="flex gap-3 mt-2">
+              {["residential", "commercial", "industrial"].map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPropertyType(p)}
+                  className={`${pill} ${
+                    propertyType === p ? active : inactive
+                  }`}
+                >
+                  {p.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <label className="text-xs text-gray-500 mt-4 block">
-            Property Age (Years)
-          </label>
-          <input
-            type="number"
-            value={propertyAge}
-            onChange={(e) => setPropertyAge(+e.target.value)}
-            className="w-full mt-1 px-4 py-2 rounded-xl border"
-          />
-        </Card>
+          <div>
+            <label className="text-xs text-[var(--text-muted)]">
+              Occupancy Type
+            </label>
+            <select
+              value={occupancyType}
+              onChange={(e) => setOccupancyType(e.target.value)}
+              className="w-full mt-1 px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-main)]"
+            >
+              <option>Residential</option>
+              <option>Shop</option>
+              <option>Office</option>
+              <option>Factory</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs text-[var(--text-muted)]">
+              Property Age (Years)
+            </label>
+            <input
+              type="number"
+              value={propertyAge}
+              onChange={(e) => setPropertyAge(+e.target.value)}
+              className="w-full mt-1 px-4 py-2 rounded-xl border border-[var(--border)] bg-[var(--bg-main)]"
+            />
+          </div>
+        </div>
 
         {/* CONSTRUCTION & COVERAGE */}
-        <Card title="Construction & Coverage" icon={<Flame />} pink>
-          <PillRow
-            options={["RCC", "MIXED", "WOODEN"]}
-            value={constructionType.toUpperCase()}
-            onChange={(v) => setConstructionType(v.toLowerCase())}
-          />
+        <div className="bg-[var(--bg-card)] rounded-3xl p-6 border border-[var(--border)] space-y-6">
+          <div className="flex items-center gap-2 font-semibold">
+            <Flame size={18} className="text-pink-500" />
+            Construction & Coverage
+          </div>
 
-          <CoverageToggle label="Fire" value={fire} setValue={setFire} />
-          <CoverageToggle label="Explosion" value={explosion} setValue={setExplosion} />
-          <CoverageToggle label="Lightning" value={lightning} setValue={setLightning} />
-          <CoverageToggle label="Natural Disaster" value={naturalDisaster} setValue={setNaturalDisaster} />
-          <CoverageToggle label="Burglary" value={burglary} setValue={setBurglary} />
-          <CoverageToggle label="Electronic Equip." value={electronics} setValue={setElectronics} />
-        </Card>
+          <div>
+            <label className="text-xs text-[var(--text-muted)]">
+              Construction Type
+            </label>
+            <div className="flex gap-3 mt-2">
+              {["rcc", "mixed", "wooden"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setConstructionType(c)}
+                  className={`${pill} ${
+                    constructionType === c ? active : inactive
+                  }`}
+                >
+                  {c.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {Object.entries(coverage).map(([k, v]) => (
+              <button
+                key={k}
+                onClick={() =>
+                  setCoverage((c) => ({ ...c, [k]: !c[k] }))
+                }
+                className={`${pill} ${v ? active : inactive}`}
+              >
+                {k.replace("_", " ").toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* ASSET VALUATION */}
-        <div className="col-span-2 bg-white rounded-3xl p-6 shadow-sm border">
-          <div className="flex items-center gap-2 font-semibold mb-6">
-            <ShieldAlert className="text-purple-600" size={18} />
+        <div className="lg:col-span-2 bg-[var(--bg-card)] rounded-3xl p-6 border border-[var(--border)] space-y-6">
+          <div className="flex items-center gap-2 font-semibold">
+            <ShieldAlert size={18} className="text-[var(--accent)]" />
             Asset Valuation
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
-            <SliderBox
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Slider
               label="Stock / Inventory Value"
               value={stockValue}
               setValue={setStockValue}
               max={10000000}
+              accent="accent-indigo-600"
             />
-            <SliderBox
+            <Slider
               label="Machinery Value"
               value={machineryValue}
               setValue={setMachineryValue}
               max={5000000}
+              accent="accent-pink-500"
             />
-            <div className="bg-purple-50 rounded-2xl p-4">
-              <p className="text-xs text-gray-500">Total Sum Insured</p>
-              <p className="text-2xl font-bold text-purple-600 mt-2">
+
+            <div className="rounded-2xl p-4 bg-[var(--bg-main)] border border-[var(--border)]">
+              <p className="text-xs text-[var(--text-muted)]">
+                Total Sum Insured
+              </p>
+              <p className="text-2xl font-bold text-[var(--accent)] mt-2">
                 ₹ {(stockValue + machineryValue).toLocaleString("en-IN")}
               </p>
             </div>
@@ -153,11 +212,8 @@ export default function FireRecommendation() {
       {/* CTA */}
       <button
         onClick={submit}
-        className="
-          w-full mt-10 py-4 rounded-3xl text-white font-bold
-          bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
-          shadow-lg hover:scale-[1.02] transition
-        "
+        className="w-full py-4 rounded-3xl text-white font-bold
+        bg-indigo-600 hover:bg-indigo-700 transition"
       >
         🔥 GET PERSONALIZED FIRE RECOMMENDATIONS →
       </button>
@@ -165,70 +221,13 @@ export default function FireRecommendation() {
   );
 }
 
-/* ================= COMPONENTS ================= */
+/* ================= COMPONENT ================= */
 
-function Card({ title, icon, children, pink }) {
+function Slider({ label, value, setValue, max, accent }) {
   return (
-    <div className={`rounded-3xl p-6 space-y-4 ${pink ? "bg-pink-50" : "bg-purple-50"}`}>
-      <div className="flex items-center gap-2 font-semibold">
-        {icon} {title}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function PillRow({ options, value, onChange }) {
-  return (
-    <div className="flex gap-3">
-      {options.map((o) => (
-        <button
-          key={o}
-          onClick={() => onChange(o)}
-          className={`flex-1 py-2 rounded-xl text-sm font-semibold
-            ${value === o
-              ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
-              : "bg-white border"
-            }`}
-        >
-          {o}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function CoverageToggle({ label, value, setValue }) {
-  return (
-    <div className="flex justify-between items-center bg-white rounded-xl px-4 py-2">
-      <span className="text-sm">{label}</span>
-      <div className="flex bg-gray-100 rounded-full p-1">
-        <button
-          onClick={() => setValue(true)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            value ? "bg-indigo-500 text-white" : ""
-          }`}
-        >
-          Yes
-        </button>
-        <button
-          onClick={() => setValue(false)}
-          className={`px-3 py-1 text-xs rounded-full ${
-            !value ? "bg-indigo-500 text-white" : ""
-          }`}
-        >
-          No
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function SliderBox({ label, value, setValue, max }) {
-  return (
-    <div className="bg-gray-50 rounded-2xl p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-lg font-bold mt-1">
+    <div className="rounded-2xl p-4 bg-[var(--bg-main)] border border-[var(--border)] space-y-2">
+      <p className="text-xs text-[var(--text-muted)]">{label}</p>
+      <p className="text-lg font-bold">
         ₹ {value.toLocaleString("en-IN")}
       </p>
       <input
@@ -238,7 +237,7 @@ function SliderBox({ label, value, setValue, max }) {
         step={50000}
         value={value}
         onChange={(e) => setValue(+e.target.value)}
-        className="w-full mt-3 accent-purple-500"
+        className={`w-full ${accent}`}
       />
     </div>
   );

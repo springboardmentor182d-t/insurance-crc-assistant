@@ -29,8 +29,21 @@ export default function Dashboard() {
       .catch((err) => setError(err.message));
   }, [userId]);
 
-  if (error) return <div className="p-6 text-red-600">{error}</div>;
-  if (!dashboard) return <div className="p-6">Loading dashboard...</div>;
+  /* 🔴 ERROR STATE — THEME + SIDEBAR SAFE */
+  if (error)
+    return (
+      <div className="p-6 md:ml-64 text-red-500 bg-[var(--bg-main)]">
+        {error}
+      </div>
+    );
+
+  /* ⏳ LOADING STATE — THEME + SIDEBAR SAFE */
+  if (!dashboard)
+    return (
+      <div className="p-6 md:ml-64 text-[var(--text-muted)] bg-[var(--bg-main)]">
+        Loading dashboard...
+      </div>
+    );
 
   // 🆕 New user (no profile yet)
   if (!dashboard.profile) {
