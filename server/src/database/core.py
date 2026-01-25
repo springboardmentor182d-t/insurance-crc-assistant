@@ -1,10 +1,8 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# 👉 Change ONLY this line when needed
-#DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/insurance_db"
-# Example for your friend:
-DATABASE_URL = "postgresql://postgres:Nandini%40163@localhost:5432/insurance_crc"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 
@@ -23,8 +21,7 @@ def get_db():
     finally:
         db.close()
 
-# 🔥 FORCE SQLAlchemy TO REGISTER THESE MODELS
+# register models
 from src.users.models import User
 from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
 from src.policies_recommendations_profile_preferences.models.recommendation import Recommendation
-
