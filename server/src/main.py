@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 # from src.database.core import Base, engine
-from database.core import Base, engine, get_db
+from src.database.core import Base, engine, get_db
 
 # ================= LOAD ENV =================
 load_dotenv()
