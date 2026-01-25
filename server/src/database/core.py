@@ -23,6 +23,6 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-from users.models import User
-from policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
-from policies_recommendations_profile_preferences.models.recommendation import Recommendation
+from src.users.models import User
+from src.policies_recommendations_profile_preferences.models.premium_analysis import PremiumAnalysis
+from src.policies_recommendations_profile_preferences.models.recommendation import Recommendation
