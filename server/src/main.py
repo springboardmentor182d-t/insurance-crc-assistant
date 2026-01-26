@@ -5,14 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
-# from src.database.core import Base, engine
 from src.database.core import Base, engine, get_db
 
 # ================= LOAD ENV =================
 load_dotenv()
 
-BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BASE_URL = os.getenv("BASE_URL")
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
+if not BASE_URL:
+    BASE_URL = "http://127.0.0.1:8000"
+
+if not FRONTEND_URL:
+    FRONTEND_URL = "http://localhost:3000"
 
 # ================= APP INIT =================
 app = FastAPI(
@@ -21,16 +26,11 @@ app = FastAPI(
 )
 
 # =====================================================
-# ✅ CORS MUST COME FIRST (VERY IMPORTANT)
+# ✅ CORS (ENV-DRIVEN, PROD SAFE)
 # =====================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-    ],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,7 +46,7 @@ app.mount(
 )
 
 # =====================================================
-# 🔴 IMPORT ALL MODELS FIRST (CRITICAL)
+# ✅ IMPORT MODELS (OK)
 # =====================================================
 from src.users.models import User
 from src.claims.models import Claim, ClaimDocument
@@ -65,8 +65,10 @@ from src.Admin.models.fraud_event import FraudEvent
 from src.Admin.models.rule_trigger import RuleTrigger
 from src.auth.models import PasswordOTP
 
-# ================= DATABASE =================
-Base.metadata.create_all(bind=engine)
+# =====================================================
+# ❌ REMOVE THIS (VERY IMPORTANT)
+# =====================================================
+# Base.metadata.create_all(bind=engine)
 
 # ================= CORE ROUTERS =================
 from src.auth.controller import router as auth_router
@@ -77,13 +79,8 @@ app.include_router(auth_router)
 app.include_router(users_router, prefix="/users")
 app.include_router(claims_router, prefix="/claims", tags=["Claims"])
 
-# ================= POLICY CATALOG =================
-from src.policies_recommendations_profile_preferences.routers.policy_catalog import (
-    router as policy_catalog_router,
-)
-app.include_router(policy_catalog_router)
-
 # ================= POLICY ROUTERS =================
+from src.policies_recommendations_profile_preferences.routers.policy_catalog import router as policy_catalog_router
 from src.policies_recommendations_profile_preferences.routers.health_policy import router as health_policy_router
 from src.policies_recommendations_profile_preferences.routers.motor_policy import router as motor_policy_router
 from src.policies_recommendations_profile_preferences.routers.life_policy import router as life_policy_router
@@ -94,6 +91,7 @@ from src.policies_recommendations_profile_preferences.routers.business_policy im
 from src.policies_recommendations_profile_preferences.routers.profile import router as profile_router
 from src.policies_recommendations_profile_preferences.routers import saved_quotes
 
+app.include_router(policy_catalog_router)
 app.include_router(health_policy_router)
 app.include_router(motor_policy_router)
 app.include_router(life_policy_router)
@@ -104,102 +102,45 @@ app.include_router(business_policy_router)
 app.include_router(profile_router)
 app.include_router(saved_quotes.router)
 
+# ================= PREMIUM & RECOMMENDATIONS =================
+from src.policies_recommendations_profile_preferences.routers.premium_calculator import router as premium_calculator_router
+from src.policies_recommendations_profile_preferences.routers.recommendations import router as recommendations_router
 
-# ================= PREMIUM CALCULATOR =================
-from src.policies_recommendations_profile_preferences.routers.premium_calculator import (
-    router as premium_calculator_router,
-)
 app.include_router(premium_calculator_router)
-
-# ================= RECOMMENDATIONS =================
-from src.policies_recommendations_profile_preferences.routers.recommendations import (
-    router as recommendations_router,
-)
 app.include_router(recommendations_router)
 
-from src.policies_recommendations_profile_preferences.routers.health_recommendation import (
-    router as health_recommendations_router,
-)
-app.include_router(health_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.fire_recommendation import (
-    router as fire_recommendations_router,
-)
-app.include_router(fire_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.business_recommendation import (
-    router as business_recommendations_router,
-)
-app.include_router(business_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.home_recommendation import (
-    router as home_recommendations_router,
-)
-app.include_router(home_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.travel_recommendation import (
-    router as travel_recommendations_router,
-)
-app.include_router(travel_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.motor_recommendation import (
-    router as motor_recommendations_router,
-)
-app.include_router(motor_recommendations_router)
-
-from src.policies_recommendations_profile_preferences.routers.life_recommendation import (
-    router as life_recommendations_router,
-)
-app.include_router(life_recommendations_router)
-
-# ================= DASHBOARD =================
-from src.policies_recommendations_profile_preferences.dashboard.dashboard import (
-    router as dashboard_router,
-)
+# ================= DASHBOARD & ADMIN =================
+from src.policies_recommendations_profile_preferences.dashboard.dashboard import router as dashboard_router
 app.include_router(dashboard_router)
-from src.policies_recommendations_profile_preferences.routers.user_policies import router as policies_router
-
-app.include_router(policies_router)
 
 from src.Admin.controllers import policy
 app.include_router(policy.router)
 
-
-# ================= ADMIN AUTO CREATE =================
+# ================= ADMIN AUTO CREATE (SAFE) =================
 from src.auth.service import hash_password
 
 @app.on_event("startup")
 def create_admin():
-    db = Session(bind=engine)
+    try:
+        db = Session(bind=engine)
 
-    admin_email = "admin@insurance.com"
+        admin_email = "admin@insurance.com"
+        admin = db.query(User).filter(User.email == admin_email).first()
 
-    admin = db.query(User).filter(User.email == admin_email).first()
+        if admin is None:
+            admin = User(
+                email=admin_email,
+                full_name="System Administrator",
+                hashed_password=hash_password("admin123"),
+                role="ADMIN",
+            )
+            db.add(admin)
+            db.commit()
 
-    if admin is None:
-        admin = User(
-            email=admin_email,
-            full_name="System Administrator",
-            hashed_password=hash_password("admin123"),
-            role="ADMIN",
-        )
-        db.add(admin)
-        db.commit()
-
-    db.close()
-
-# ================= ADMIN ROUTERS =================
-from src.Admin.controllers.dashboard import router as admin_dashboard_router
-app.include_router(admin_dashboard_router, prefix="/api")
-
-from src.Admin.controllers import flagged_claims
-app.include_router(flagged_claims.router, prefix="/api")
-
-from src.Admin.controllers.fraud_rules import router as fraud_rules_router
-app.include_router(fraud_rules_router, prefix="/api")
-
-from src.Admin.controllers import investigations
-app.include_router(investigations.router, prefix="/api")
+        db.close()
+    except Exception as e:
+        # ⚠️ Do NOT crash app if DB is temporarily unavailable
+        print("Admin creation skipped:", e)
 
 # ================= ROOT =================
 @app.get("/")
