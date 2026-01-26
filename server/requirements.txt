@@ -20,3 +20,4 @@ httpx
 email-validator
 python-multipart
 pandas
+requests
