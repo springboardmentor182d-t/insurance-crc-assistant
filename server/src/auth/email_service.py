@@ -1,4 +1,4 @@
-src/auth/email_service.py
+#src/auth/email_service.py
 
 def send_otp_email(to_email: str, otp: str):
     """
