@@ -116,6 +116,57 @@ app.include_router(dashboard_router)
 from src.Admin.controllers import policy
 app.include_router(policy.router)
 
+
+#extra code by girish
+from src.policies_recommendations_profile_preferences.routers.health_recommendation import (
+    router as health_recommendations_router,
+)
+app.include_router(health_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.fire_recommendation import (
+    router as fire_recommendations_router,
+)
+app.include_router(fire_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.business_recommendation import (
+    router as business_recommendations_router,
+)
+app.include_router(business_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.home_recommendation import (
+    router as home_recommendations_router,
+)
+app.include_router(home_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.travel_recommendation import (
+    router as travel_recommendations_router,
+)
+app.include_router(travel_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.motor_recommendation import (
+    router as motor_recommendations_router,
+)
+app.include_router(motor_recommendations_router)
+
+from src.policies_recommendations_profile_preferences.routers.life_recommendation import (
+    router as life_recommendations_router,
+)
+app.include_router(life_recommendations_router)
+
+
+from src.Admin.controllers.dashboard import router as admin_dashboard_router
+app.include_router(admin_dashboard_router, prefix="/api")
+
+from src.Admin.controllers import flagged_claims
+app.include_router(flagged_claims.router, prefix="/api")
+
+from src.Admin.controllers.fraud_rules import router as fraud_rules_router
+app.include_router(fraud_rules_router, prefix="/api")
+
+from src.Admin.controllers import investigations
+app.include_router(investigations.router, prefix="/api")
+#extra code end
+
 # ================= ADMIN AUTO CREATE (SAFE) =================
 from src.auth.service import hash_password
 
