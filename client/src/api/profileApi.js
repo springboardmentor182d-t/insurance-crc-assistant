@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_BASE;
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 console.log("BASE_URL from env:", BASE_URL);
 

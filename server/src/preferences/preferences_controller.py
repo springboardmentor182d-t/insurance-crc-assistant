@@ -45,12 +45,15 @@ async def get_preferences(db: AsyncSession = Depends(get_db)):
             risk_appetite="Medium",
         )
 
+    # ✅ insurance_types IS ALREADY A LIST
+    insurance_types = (
+        pref.insurance_types
+        if isinstance(pref.insurance_types, list)
+        else []
+    )
+
     return PreferencesResponse(
-        insurance_types=(
-            pref.insurance_types.split(",")
-            if pref.insurance_types
-            else []
-        ),
+        insurance_types=insurance_types,
         annual_budget=pref.annual_budget or 0,
         desired_coverage=pref.desired_coverage or 0,
         risk_appetite=pref.risk_appetite or "Medium",

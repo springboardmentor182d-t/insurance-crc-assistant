@@ -15,25 +15,22 @@ export default function Recommendations() {
   useEffect(() => {
     getRecommendations()
       .then((data) => {
-        if (!data?.items) {
+        if (!data?.items || !Array.isArray(data.items)) {
           setPolicies([]);
           return;
         }
 
+        // ✅ EXTRACT ONLY POLICY (CRITICAL FIX)
         setPolicies(
           data.items.map((item) => ({
-            id: item.id,
-            title: item.title,
-            provider: item.provider,
+            ...item.policy,          // <-- THE FIX
             score: item.score,
-            premium: item.premium,
-            coverage: item.coverage,
-            savings: item.savings ?? 0,
+            reason: item.reason,
+            savings: item.savings,
 
-            // ✅ normalize keys for PolicyCard
-            policy_type: item.type?.toLowerCase(),
+            // UI helpers
+            policy_type: item.policy?.category?.toLowerCase(),
             highlight: item.reason,
-
             best: item.score >= 90,
           }))
         );
@@ -45,18 +42,23 @@ export default function Recommendations() {
   /* ---------------- SUMMARY ---------------- */
   const summary = {
     matched: policies.length,
-    savings: policies.reduce((sum, p) => sum + p.savings, 0),
+    savings: policies.reduce(
+      (sum, p) => sum + (p.savings ?? 0),
+      0
+    ),
     avgScore:
       policies.length > 0
         ? Math.round(
-            policies.reduce((sum, p) => sum + p.score, 0) / policies.length
+            policies.reduce((sum, p) => sum + (p.score ?? 0), 0) /
+              policies.length
           )
         : 0,
   };
 
+  /* ---------------- LOADING ---------------- */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-slate-500">
         Loading recommendations...
       </div>
     );
@@ -64,7 +66,6 @@ export default function Recommendations() {
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
-
       {/* HEADER */}
       <div className="text-center mb-10">
         <div className="flex justify-center mb-3">
@@ -84,9 +85,12 @@ export default function Recommendations() {
       {/* SUMMARY BAR */}
       <div className="max-w-5xl mx-auto mb-10">
         <div className="grid grid-cols-3 bg-blue-50 border rounded-xl py-6 text-center">
-          <SummaryItem value={summary.matched} label="Policies Matched" />
           <SummaryItem
-            value={`₹ ${summary.savings.toLocaleString()}`}
+            value={summary.matched}
+            label="Policies Matched"
+          />
+          <SummaryItem
+            value={`₹ ${Number(summary.savings || 0).toLocaleString("en-IN")}`}
             label="Potential Savings"
           />
           <SummaryItem
@@ -130,8 +134,12 @@ export default function Recommendations() {
 function SummaryItem({ value, label }) {
   return (
     <div>
-      <p className="text-lg font-semibold text-gray-900">{value}</p>
-      <p className="text-sm text-gray-600">{label}</p>
+      <p className="text-lg font-semibold text-gray-900">
+        {value}
+      </p>
+      <p className="text-sm text-gray-600">
+        {label}
+      </p>
     </div>
   );
 }

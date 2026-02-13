@@ -1,10 +1,28 @@
-export default function PolicyInfoBox({ label, value, highlight }) {
+export default function PolicyInfoBox({
+  label,
+  value,
+  highlight = false,
+  className = "",
+}) {
   return (
-    <div className="bg-gray-50 rounded-lg p-3">
-      <p className="text-xs text-gray-500">{label}</p>
+    <div
+      className={`
+        rounded-xl px-5 py-4
+        ${
+          highlight
+            ? "bg-green-100 border border-green-200"
+            : "bg-blue-100 border border-blue-200"
+        }
+        ${className}
+      `}
+    >
+      <p className="text-xs text-slate-600 mb-1">
+        {label}
+      </p>
+
       <p
-        className={`text-sm font-semibold ${
-          highlight ? "text-green-600" : "text-gray-900"
+        className={`text-base font-semibold ${
+          highlight ? "text-green-700" : "text-slate-900"
         }`}
       >
         {value}

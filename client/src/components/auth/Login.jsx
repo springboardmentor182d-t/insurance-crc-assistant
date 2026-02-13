@@ -21,25 +21,17 @@ export default function Login() {
   setMsg(null);
   setLoading(true);
 
-  const result = await login(email, password);
-
-  if (!result.ok) {
-    setMsg(result.error);
-    setLoading(false);
-    return;
-  }
-
-  // 🔑 AuthContext user is now set
-  if (result.user.role === "ADMIN") {
-    nav("/admin");
-  } else {
-    nav("/dashboard");
-  }
-
-  setLoading(false);
-};
-
-
+    try {
+      const res = await login(email, password);
+      localStorage.setItem("access_token", res.data.access_token);
+      localStorage.setItem("refresh_token", res.data.refresh_token);
+      nav("/dummy");
+    } catch (err) {
+      setMsg(err?.response?.data?.detail || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="signup-page">

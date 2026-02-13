@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 /* ======================
    AXIOS INSTANCE
 ====================== */
@@ -28,7 +29,7 @@ export const getClaims = async () => {
     return res.data;
   } catch (error) {
     console.error("Error fetching claims:", error);
-    return []; // prevent UI crash
+    return [];
   }
 };
 
@@ -41,7 +42,7 @@ export const getClaimDetails = async (claimNumber) => {
     return res.data;
   } catch (error) {
     if (error.response && error.response.status === 404) {
-      return null; // important for UI
+      return null;
     }
     throw error;
   }

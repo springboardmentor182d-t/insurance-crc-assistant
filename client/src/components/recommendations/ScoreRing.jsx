@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
-export default function ScoreRing({ score, color = "blue" }) {
+export default function ScoreRing({ score = 0, color = "#2563eb" }) {
   const [progress, setProgress] = useState(0);
 
+  /* ---------- ANIMATION ---------- */
   useEffect(() => {
     let start = 0;
     const duration = 800; // ms
@@ -23,12 +24,14 @@ export default function ScoreRing({ score, color = "blue" }) {
     return () => clearInterval(timer);
   }, [score]);
 
+  /* ---------- SVG CALCS ---------- */
   const radius = 26;
   const stroke = 4;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (progress / 100) * circumference;
 
-  const COLORS = {
+  /* ---------- COLOR HANDLING ---------- */
+  const NAMED_COLORS = {
     red: "#ef4444",
     blue: "#2563eb",
     orange: "#f97316",
@@ -36,6 +39,10 @@ export default function ScoreRing({ score, color = "blue" }) {
     purple: "#7c3aed",
     gray: "#9ca3af",
   };
+
+  // ✅ If hex provided, use directly. Otherwise map name.
+  const ringColor =
+    color.startsWith("#") ? color : NAMED_COLORS[color] || NAMED_COLORS.blue;
 
   return (
     <svg width="64" height="64">
@@ -49,19 +56,19 @@ export default function ScoreRing({ score, color = "blue" }) {
         fill="none"
       />
 
-      {/* Animated ring */}
+      {/* Progress ring */}
       <circle
         cx="32"
         cy="32"
         r={radius}
-        stroke={COLORS[color] || COLORS.blue}
+        stroke={ringColor}
         strokeWidth={stroke}
         fill="none"
         strokeDasharray={circumference}
         strokeDashoffset={offset}
         strokeLinecap="round"
-        style={{ transition: "stroke-dashoffset 0.3s linear" }}
         transform="rotate(-90 32 32)"
+        style={{ transition: "stroke-dashoffset 0.3s ease" }}
       />
 
       {/* Score text */}
@@ -70,7 +77,7 @@ export default function ScoreRing({ score, color = "blue" }) {
         y="50%"
         dominantBaseline="middle"
         textAnchor="middle"
-        className="text-sm font-semibold fill-gray-700"
+        className="text-sm font-semibold fill-slate-700"
       >
         {progress}%
       </text>

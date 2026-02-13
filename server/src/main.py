@@ -8,6 +8,10 @@ from src.recommendations.controller import router as recommendations_router
 from src.admin.controller import router as admin_router
 from src.profile.controller import router as profile_router
 from src.preferences.preferences_controller import router as preferences_router
+from src.policies.controller import router as policies_router
+from src.comparison.controller import router as comparison_router
+from src.insurance_type.controller import router as insurance_type_router
+
 
 app = FastAPI(title="Insurance CRC Assistant API")
 
@@ -33,6 +37,9 @@ app.include_router(admin_router)
 app.include_router(profile_router)
 app.include_router(preferences_router)
 app.include_router(recommendations_router)
+app.include_router(policies_router)
+app.include_router(comparison_router)
+app.include_router(insurance_type_router)
 
 @app.get("/")
 async def root():

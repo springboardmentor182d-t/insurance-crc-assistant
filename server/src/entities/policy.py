@@ -1,18 +1,23 @@
-from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, JSON, DateTime
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, Numeric, JSON
 from src.database.database import Base
-
 
 class Policy(Base):
     __tablename__ = "policies"
 
     id = Column(Integer, primary_key=True, index=True)
-    provider_id = Column(Integer, ForeignKey("providers.id"))
-    policy_type = Column(String, index=True)
-    title = Column(String)
-    coverage = Column(JSON)
-    premium = Column(Numeric)
-    term_months = Column(Integer)
-    deductible = Column(Numeric)
-    tnc_url = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
+
+    name = Column(String, nullable=False)
+    provider = Column(String, nullable=False)
+    category = Column(String, index=True)
+
+    premium = Column(Numeric, nullable=False)
+    coverage = Column(Numeric, nullable=False)
+
+    term = Column(String)
+    deductible = Column(Numeric, nullable=True)
+
+    waitingPeriod = Column(String, nullable=True)
+    roomRent = Column(String, nullable=True)
+
+    benefits = Column(JSON)     # list[str]
+    exclusions = Column(JSON)   # list[str]

@@ -1,11 +1,7 @@
 import axios from "axios";
 
 /* ================= API INSTANCE ================= */
-const API_BASE = process.env.REACT_APP_API_BASE || "http://127.0.0.1:8000";
-
-const API = axios.create({
-  baseURL: API_BASE,
-});
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 /* Automatically attach token */
 API.interceptors.request.use((req) => {
@@ -27,28 +23,36 @@ export const login = (email, password) =>
     "/api/auth/login",
     new URLSearchParams({
       username: email,
-      password: password,
+      password,
     }),
     {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     }
   );
 
-export const getMe = () => API.get("/api/auth/me");
+export const getMe = async () => {
+  return API.get("/api/auth/me");
+};
 
 /* ================= OTP ================= */
 
-export const forgotPassword = (email) =>
-  API.post("/api/auth/forgot-password", { email });
+// src/api/authService.js
 
-export const verifyOtp = (email, code) =>
-  API.post("/api/auth/verify-otp", { email, code });
+export const forgotPassword = async (email) => {
+  return API.post("/api/auth/forgot-password", { email });
+};
 
-export const resetPassword = (email, password) =>
-  API.post("/api/auth/reset-password", {
+export const verifyOtp = async (email, code) => {
+  return API.post("/api/auth/verify-otp", { email, code });
+};
+
+export const resetPassword = async (email, password) => {
+  return API.post("/api/auth/reset-password", {
     email,
     new_password: password,
   });
+};
+
 
 /* ================= LOGOUT ================= */
 
