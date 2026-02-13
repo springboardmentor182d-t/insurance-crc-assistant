@@ -15,6 +15,12 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ClaimsList from "./pages/claims/ClaimsList";
 import ClaimDetails from "./pages/claims/ClaimDetails";
+
+import FileClaim from "./pages/claims/FileClaim"; 
+import IncidentDetails from "./pages/claims/IncidentDetails";
+import UploadDocuments from "./pages/claims/UploadDocuments";
+
+
 import Dummy from "./components/auth/Dummy";
 import FraudDetection from "./pages/admin/FraudDetection";
 import FraudInvestigation from "./pages/admin/FraudInvestigation";
@@ -49,6 +55,9 @@ export default function App() {
       <Route path="/landing" element={<Landing/>} />
       <Route path="/claims" element={<ClaimsList />} />
       <Route path="/claims/:claimNumber" element={<ClaimDetails />} />
+      <Route path="/file-claim" element={<FileClaim />} />
+      <Route path="/claims/incident" element={<IncidentDetails />} />
+      <Route path="/claims/upload" element={<UploadDocuments/>}/>
       <Route path="/dummy" element={<Dummy />} />
       <Route path="/admin/fraud" element={<FraudDetection />} />
       <Route path="/admin/fraud/:claimId" element={<FraudInvestigation />} />

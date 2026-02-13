@@ -1,0 +1,134 @@
+.incident-page {
+  max-width: 850px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+  font-size: 13px;
+}
+
+.step {
+  color: #9ca3af;
+}
+
+.step.active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.step.done {
+  color: #22c55e;
+}
+
+.line {
+  width: 50px;
+  height: 2px;
+  background: #e5e7eb;
+}
+
+.line.active {
+  background: #2563eb;
+}
+
+/* HEAD */
+h2 {
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* SELECTED POLICY */
+.selected-policy {
+  background: #eff6ff;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 25px;
+}
+
+.selected-policy h3 {
+  margin: 5px 0;
+}
+
+.small {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.policy-no {
+  font-size: 13px;
+  color: #374151;
+}
+
+/* FORM CARD */
+.form-card {
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.06);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* TWO COLUMN */
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.row > div {
+  flex: 1;
+}
+
+/* ACTION BUTTONS */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.back {
+  background: white;
+  border: 1px solid #2563eb;
+  color: #2563eb;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.next {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+}

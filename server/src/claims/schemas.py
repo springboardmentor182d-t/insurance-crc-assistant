@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import date
-
+from typing import Optional
 
 class ClaimBase(BaseModel):
     claim_number: str
@@ -31,3 +31,20 @@ class ClaimDetailResponse(ClaimBase):
 
     class Config:
         from_attributes = True
+
+
+class ClaimCreateRequest(BaseModel):
+    policyName: str
+    policyNumber: str
+    incidentDate: date
+    incidentType: str
+    location: str
+    amount: float
+    description: str
+
+"""class ClaimCreate(BaseModel):
+    policy_id: int
+    incident_type: str
+    incident_date: date
+    description: str
+    claim_amount: float """

@@ -1,0 +1,143 @@
+.file-claim-page {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* STEPPER */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.step span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.step.active span {
+  background: #2563eb;
+  color: white;
+}
+
+.step.active p {
+  color: #2563eb;
+}
+
+.line {
+  width: 60px;
+  height: 2px;
+  background: #e5e7eb;
+  margin: 0 10px;
+}
+
+/* HEADINGS */
+h1 {
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* POLICY CARDS */
+.policy-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.policy-card {
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.policy-card:hover {
+  transform: translateY(-3px);
+}
+
+/* LEFT STRIP */
+.policy-card .left {
+  width: 80px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+}
+
+.policy-card.pink .left { background: #fff1f2; }
+.policy-card.blue .left { background: #eff6ff; }
+.policy-card.yellow .left { background: #fff7ed; }
+
+.icon {
+  font-size: 26px;
+  background: white;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+/* MIDDLE */
+.middle {
+  flex: 1;
+  padding: 20px;
+}
+
+.middle h3 {
+  margin: 0;
+}
+
+.middle p {
+  color: #6b7280;
+  margin: 6px 0;
+}
+
+.meta {
+  display: flex;
+  gap: 40px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+/* RIGHT */
+.right {
+  font-size: 26px;
+  padding: 20px;
+  color: #9ca3af;
+}
+
+/* HELP */
+.help {
+  text-align: center;
+  margin-top: 40px;
+  color: #6b7280;
+}
+
+.help span {
+  color: #2563eb;
+  cursor: pointer;
+}
